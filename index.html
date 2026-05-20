@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Maxxed · Email Template Editor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap');
+  :root {
+    /* ─── MAXXED DESIGN TOKENS ────────────────────────────────────
+       Pulled from the Maxxed Figma DS Playground (Foundations).
+       Lime Neon brand · dark + light themes · Instrument Sans. */
+
+    /* Viewer chrome */
+    --m-bg:           #0A0A0A;
+    --m-surface:      #141414;
+    --m-surface-2:    #222222;
+    --m-line:         #333333;
+    --m-text:         #F5F5F5;
+    --m-text-dim:     #A3A3A3;
+    --m-accent:       #67FA53;   /* Lime Neon 400 — brand primary */
+    --m-accent-ink:   #0A0A0A;
+    --m-accent-2:     #0029F6;   /* Blue Electric — secondary */
+    --m-success:      #36C265;
+    --m-warn:         #E07C09;
+    --m-error:        #C23F3F;
+
+    /* Email-side tokens (consumed by every template) */
+    --e-page-bg:      #0A0A0A;   /* outer canvas */
+    --e-body-bg:      #141414;   /* email card */
+    --e-soft:         #222222;   /* detail tables, code blocks */
+    --e-ink:          #F5F5F5;
+    --e-ink-dim:      #A3A3A3;
+    --e-ink-mute:     #646464;
+    --e-line:         #333333;
+    --e-accent:       #67FA53;   /* Lime Neon 400 */
+    --e-accent-hover: #25F908;   /* Lime Neon 600 */
+    --e-accent-ink:   #0A0A0A;
+    --e-radius:       12px;
+    --e-radius-sm:    8px;
+    --e-font:         "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --e-display:      "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --e-mono:         "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: var(--e-font);
+    background: var(--m-bg);
+    color: var(--m-text);
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 56px 1fr;
+    grid-template-areas: "topbar topbar" "sidebar main";
+  }
+  .topbar {
+    grid-area: topbar;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    background: var(--m-surface);
+    border-bottom: 1px solid var(--m-line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.01em; }
+  .brand .dot {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: var(--m-accent); color: var(--m-accent-ink);
+    display: grid; place-items: center; font-weight: 900; font-size: 13px;
+  }
+  .top-actions { display: flex; gap: 8px; align-items: center; }
+  .pill { font-size: 12px; padding: 6px 10px; border-radius: 999px; background: var(--m-surface-2); color: var(--m-text-dim); border: 1px solid var(--m-line); }
+  .theme-toggle {
+    display: inline-flex; background: var(--m-surface-2);
+    border: 1px solid var(--m-line); border-radius: 8px; padding: 3px;
+  }
+  .tt-btn {
+    background: transparent; color: var(--m-text-dim); border: 0;
+    padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    cursor: pointer;
+  }
+  .tt-btn:hover { color: var(--m-text); }
+  .tt-btn.active { background: var(--m-accent); color: var(--m-accent-ink); }
+  .btn {
+    background: var(--m-accent); color: var(--m-accent-ink);
+    border: 0; padding: 9px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;
+    font-size: 13px;
+  }
+  .btn.ghost { background: transparent; color: var(--m-text); border: 1px solid var(--m-line); }
+  .btn:hover { filter: brightness(1.05); }
+
+  .sidebar {
+    grid-area: sidebar;
+    background: var(--m-surface);
+    border-right: 1px solid var(--m-line);
+    overflow-y: auto;
+    padding: 12px 8px 32px;
+  }
+  .group-title {
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--m-text-dim); font-size: 11px; font-weight: 600;
+    padding: 14px 12px 6px;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 8px 12px; border-radius: 8px; cursor: pointer;
+    color: var(--m-text);
+  }
+  .nav-item:hover { background: var(--m-surface-2); }
+  .nav-item.active { background: var(--m-accent); color: var(--m-accent-ink); }
+  .nav-item .id { font-size: 11px; opacity: 0.65; font-family: var(--e-mono); }
+  .nav-item .label { font-size: 13px; font-weight: 500; }
+  .nav-item.active .id { opacity: 0.7; }
+
+  .main {
+    grid-area: main;
+    display: grid; grid-template-rows: 1fr;
+    min-height: 0; overflow: hidden;
+  }
+
+  .stage { min-height: 0; overflow: auto; }
+  .stage.preview {
+    overflow: auto;
+    background: #050505;
+    padding: 28px;
+    display: flex; justify-content: center; align-items: flex-start;
+  }
+  .preview-shell {
+    width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .subject-strip {
+    background: var(--m-surface); border: 1px solid var(--m-line);
+    border-radius: 10px; padding: 14px 18px;
+    color: var(--m-text); font-size: 14px;
+  }
+  .subject-strip .from { color: var(--m-text-dim); font-size: 12px; }
+  .subject-strip .subject { font-weight: 600; margin-top: 2px; }
+  .subject-strip .preheader { color: var(--m-text-dim); margin-top: 2px; font-size: 12px; }
+
+  .banner-control {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--m-surface); border: 1px solid var(--m-line);
+    border-radius: 10px; padding: 8px 10px;
+  }
+  .banner-control .bc-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--m-text-dim); font-size: 12px; font-weight: 600;
+    padding: 0 8px 0 6px;
+  }
+  .banner-control .bc-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--m-accent);
+  }
+  .banner-control .bc-input {
+    flex: 1 1 auto;
+    background: var(--m-surface-2); color: var(--m-text);
+    border: 1px solid var(--m-line); border-radius: 8px;
+    padding: 7px 10px; font-size: 12.5px; font-family: var(--e-mono);
+    min-width: 0; outline: none;
+  }
+  .banner-control .bc-input:focus { border-color: var(--m-accent); }
+  .banner-control .bc-input::placeholder { color: var(--m-text-dim); }
+  .banner-control .bc-file-btn { cursor: pointer; }
+
+  .email-frame { width: 100%; min-height: 600px; border: 0; background: transparent; display: block; }
+
+  /* ─── Modal ─────────────────────────────────────────────────── */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.65);
+    display: none; align-items: stretch; justify-content: center;
+    padding: 32px; z-index: 50;
+    backdrop-filter: blur(6px);
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--m-surface); border: 1px solid var(--m-line);
+    border-radius: 14px; width: 100%; max-width: 1180px;
+    display: grid; grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6);
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--m-line);
+  }
+  .modal-head h2 {
+    margin: 0; font-size: 15px; font-weight: 600; color: var(--m-text);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-head h2 .id-tag {
+    font-family: var(--e-mono); font-size: 11px; color: var(--m-accent-ink);
+    background: var(--m-accent); padding: 3px 8px; border-radius: 6px; font-weight: 700;
+  }
+  .modal-head .actions { display: flex; gap: 8px; align-items: center; }
+  .icon-btn {
+    background: transparent; border: 0; color: var(--m-text-dim); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 8px; font-size: 18px;
+    display: grid; place-items: center;
+  }
+  .icon-btn:hover { background: var(--m-surface-2); color: var(--m-text); }
+
+  /* Code-modal body */
+  .modal.code-modal { max-width: 980px; max-height: calc(100vh - 64px); }
+  .modal.code-modal .modal-body { background: #050505; }
+  textarea.code {
+    width: 100%; height: 100%; min-height: 60vh;
+    font-family: var(--e-mono); font-size: 12.5px; line-height: 1.55;
+    background: #050505; color: #d7d9e0;
+    border: 0; padding: 18px 22px; resize: none; outline: none;
+    tab-size: 2; white-space: pre;
+  }
+
+  /* Footer-modal body — split editor + preview */
+  .modal.footer-modal { max-width: 1180px; max-height: calc(100vh - 64px); }
+  .modal.footer-modal .modal-body {
+    display: grid; grid-template-columns: 1fr 1fr; min-height: 0; background: var(--m-surface);
+  }
+  .modal.footer-modal .pane { display: grid; grid-template-rows: auto 1fr; min-height: 0; border-right: 1px solid var(--m-line); overflow: hidden; }
+  .modal.footer-modal .pane:last-child { border-right: 0; }
+  .modal.footer-modal .pane h3 {
+    margin: 0; padding: 10px 16px; font-size: 11px;
+    border-bottom: 1px solid var(--m-line); color: var(--m-text-dim);
+    font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .modal.footer-modal .pane.preview .body { background: #0A0A0A; padding: 16px; overflow: auto; }
+  textarea.footer-src {
+    width: 100%; height: 100%; min-height: 60vh;
+    font-family: var(--e-mono); font-size: 12.5px; line-height: 1.55;
+    background: #050505; color: #d7d9e0;
+    border: 0; padding: 16px; resize: none; outline: none;
+  }
+  .modal-foot {
+    display: flex; gap: 8px; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-top: 1px solid var(--m-line);
+  }
+  .modal-foot .hint { color: var(--m-text-dim); font-size: 12px; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--m-accent); color: var(--m-accent-ink);
+    padding: 10px 16px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 880px) {
+    body { grid-template-columns: 1fr; grid-template-areas: "topbar" "main"; }
+    .sidebar { display: none; }
+    .modal.footer-modal .modal-body { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot">M</span> Maxxed · Email Templates</div>
+  <div class="top-actions">
+    <span class="pill" id="count-pill">32 templates</span>
+    <div class="theme-toggle" role="tablist" aria-label="Theme">
+      <button class="tt-btn active" data-theme="dark"  aria-pressed="true">Dark</button>
+      <button class="tt-btn"        data-theme="light" aria-pressed="false">Light</button>
+    </div>
+    <button class="btn ghost" id="open-footer-btn">Footer</button>
+    <button class="btn ghost" id="open-code-btn">Code</button>
+    <button class="btn" id="copy-current">Copy HTML</button>
+  </div>
+</header>
+
+<aside class="sidebar" id="sidebar"></aside>
+
+<section class="main">
+  <div class="stage preview" id="stage-preview">
+    <div class="preview-shell">
+      <div class="subject-strip">
+        <div class="from">Maxxed &lt;noreply@maxxed.io&gt;</div>
+        <div class="subject" id="sub-line"></div>
+        <div class="preheader" id="pre-line"></div>
+      </div>
+
+      <div class="banner-control" id="banner-control" hidden>
+        <span class="bc-label"><span class="bc-dot"></span>Banner</span>
+        <input type="text" class="bc-input" id="banner-url" spellcheck="false"
+               placeholder="./banners/A-01.png · or paste an https:// URL" />
+        <label class="btn ghost bc-file-btn" for="banner-file">Choose file</label>
+        <input type="file" id="banner-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden />
+        <button class="btn ghost" id="banner-reset" title="Revert to placeholder">Reset</button>
+      </div>
+
+      <iframe class="email-frame" id="frame" title="Email preview"></iframe>
+    </div>
+  </div>
+
+</section>
+
+<!-- ─── Code modal ───────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal-code">
+  <div class="modal code-modal">
+    <div class="modal-head">
+      <h2><span class="id-tag" id="code-id-tag">A-01</span> <span id="code-title">Email HTML</span></h2>
+      <div class="actions">
+        <button class="btn" id="copy-code">Copy HTML</button>
+        <button class="icon-btn" data-close="modal-code" aria-label="Close">×</button>
+      </div>
+    </div>
+    <div class="modal-body"><textarea class="code" id="code-out" spellcheck="false"></textarea></div>
+    <div class="modal-foot">
+      <span class="hint">Email-safe HTML · table-based layout · inline styles · dark mode</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Footer modal ─────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal-footer">
+  <div class="modal footer-modal">
+    <div class="modal-head">
+      <h2>Shared footer component</h2>
+      <div class="actions">
+        <button class="btn ghost" id="reset-footer">Reset</button>
+        <button class="btn" id="apply-footer">Apply to all 32</button>
+        <button class="icon-btn" data-close="modal-footer" aria-label="Close">×</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="pane">
+        <h3>Source</h3>
+        <textarea class="footer-src" id="footer-src" spellcheck="false"></textarea>
+      </div>
+      <div class="pane preview">
+        <h3>Live preview</h3>
+        <div class="body"><iframe class="email-frame" id="footer-frame" title="Footer preview"></iframe></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <span class="hint">Changes here re-render every email immediately. Saved to your browser.</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+/* ─── EMAIL DEFINITIONS ────────────────────────────────────────── */
+const EMAILS = [
+  /* A · Welcome */
+  { id:"A-01", group:"Welcome", name:"Welcome to Maxxed", subject:"You're in. Here's what's waiting.",
+    pre:"Casino, sports, a welcome pack, and daily races. Your account is ready.", register:"loud", banner:true,
+    body:[
+      {h:"Welcome to Maxxed."},
+      {p:"Casino, sports, a welcome pack, and daily races. Pick where you want to start."},
+      {packs:true},
+      {p:"Every bet earns loyalty XP. 30 levels, 6 tiers, cashback from day one."},
+      {p:"Daily and weekly races are running right now. Cash prizes, no entry fees."}
+    ], cta:"Pick your welcome pack" },
+
+  /* B · Welcome Pack */
+  { id:"B-01", group:"Welcome Pack", name:"Welcome Pack intro", subject:"Three welcome packs. One is yours.",
+    pre:"Casino, Sports, or Highroller — pick and deposit to unlock your rewards.", register:"loud", banner:true,
+    body:[
+      {h:"Three packs. Pick one."},
+      {p:"All three are open until your pack expires. Choose the one that fits how you play."},
+      {packs:true},
+    ], cta:"Pick your pack" },
+
+  { id:"B-02", group:"Welcome Pack", name:"Welcome Pack nudge 2", subject:"Your welcome pack expires in {{days_remaining}} days.",
+    pre:"Casino, Sports, or Highroller — {{days_remaining}} days to pick and deposit.", register:"loud", banner:true,
+    body:[
+      {h:"{{days_remaining}} days left on your welcome pack."},
+      {p:"Three packs are still on the table. Pick one and deposit to unlock the rewards."},
+      {packs:true},
+      {p:"Other players are already through milestone 2."}
+    ], cta:"Pick your pack" },
+
+  { id:"B-03", group:"Welcome Pack", name:"Welcome Pack final nudge", subject:"4 days left on your welcome pack.",
+    pre:"Your pack expires {{expiry_date}}. Pick one and deposit before it closes.", register:"quiet-loud", banner:true,
+    body:[
+      {h:"Last call on your welcome pack."},
+      {p:"Your pack expires <strong>{{expiry_date}}</strong>. Pick one and make your first deposit before it closes."},
+    ], cta:"Claim your pack" },
+
+  { id:"B-04", group:"Welcome Pack", name:"Pack activated — no deposit", subject:"Your {{pack_name}} is waiting for a deposit.",
+    pre:"Deposit to start your pack.", register:"loud", banner:true,
+    body:[
+      {h:"You picked {{pack_name}}."},
+      {p:"Deposit any amount to start your pack. Milestone 1 unlocks on your first deposit."},
+      {detail: [["Pack","{{pack_name}}"],["First milestone","{{milestone_1_target}}"],["Reward","{{milestone_1_reward}}"]]}
+    ], cta:"Make your first deposit" },
+
+  { id:"B-05", group:"Welcome Pack", name:"Milestone 1 nudge", subject:"You're ${{amount_to_milestone}} away from your first reward.",
+    pre:"Milestone 1 of {{total}} is almost done. Keep going.", register:"loud", banner:true,
+    body:[
+      {h:"Almost there."},
+      {p:"<strong>${{amount_to_milestone}}</strong> more in bets and milestone 1 is yours."},
+      {detail: [["Reward","{{milestone_reward}}"],["Milestone","1 of {{total}}"]]}
+    ], cta:"Continue playing" },
+
+  { id:"B-06", group:"Welcome Pack", name:"Pack mid-progress", subject:"Milestone {{completed}} done. {{remaining}} to go.",
+    pre:"Bet ${{amount_to_next}} more to hit milestone {{next_number}} and get {{next_reward}}.", register:"loud", banner:true,
+    body:[
+      {h:"Milestone {{completed}} done."},
+      {p:"You unlocked one. Bet <strong>${{amount_to_next}}</strong> more to hit milestone {{next_number}} and earn {{next_reward}}."},
+      {detail: [["Done","{{completed}}"],["Remaining","{{remaining}}"],["Next reward","{{next_reward}}"]]}
+    ], cta:"Keep going" },
+
+  { id:"B-07", group:"Welcome Pack", name:"Highroller inactivity", subject:"Your cashback window is still open.",
+    pre:"{{days_remaining}} days left to earn 20% back on net losses. No cap.", register:"quiet", banner:true,
+    body:[
+      {h:"Your Highroller week is still running."},
+      {p:"20% back on net losses for {{days_remaining}} more days. No cap."},
+      {detail: [["Earned so far","{{cashback_earned_so_far}}"],["Days left","{{days_remaining}}"]]}
+    ], cta:"Keep playing" },
+
+  /* C · Loyalty */
+  { id:"C-01", group:"Loyalty", name:"Loyalty intro", subject:"Every bet you place earns something back.",
+    pre:"30 levels. 6 tiers. No wagering requirements on cashback.", register:"loud", banner:true,
+    body:[
+      {h:"Bet. Earn XP. Level up. Get rewards."},
+      {p:"30 levels across 6 tiers. Daily, weekly, and monthly cashback unlock from Bronze 1. No wagering requirements."},
+      {detail: [["Your tier","{{current_tier}}"],["Level","{{current_level}}"],["XP to next","{{xp_to_next}}"]]}
+    ], cta:"See your loyalty rewards" },
+
+  { id:"C-02", group:"Loyalty", name:"Level-up / tier-up", subject:"You're on {{tier_name}} {{level_number}} now.",
+    pre:"{{new_perks_summary}}. {{xp_to_next}} XP to {{next_level}}.", register:"loud", banner:true,
+    body:[
+      {h:"Welcome to {{tier_name}} {{level_number}}."},
+      {p:"{{new_perks_summary}}"},
+      {detail: [["XP to next level","{{xp_to_next}}"],["Next level","{{next_level}}"]]}
+    ], cta:"See your perks" },
+
+  { id:"C-03", group:"Loyalty", name:"Unclaimed daily cashback", subject:"Your daily cashback is waiting.",
+    pre:"${{daily_cashback_amount}} ready to claim. Goes to your balance in one tap.", register:"quiet", banner:false,
+    body:[
+      {h:"${{daily_cashback_amount}} cashback ready."},
+      {p:"One tap and it's in your balance."},
+    ], cta:"Claim it" },
+
+  { id:"C-04", group:"Loyalty", name:"Unclaimed weekly cashback", subject:"Your weekly cashback dropped.",
+    pre:"${{weekly_cashback_amount}} in your rewards. Claim before it expires.", register:"quiet", banner:false,
+    body:[
+      {h:"${{weekly_cashback_amount}} from last week's play."},
+      {p:"Sitting in your rewards. Expires in {{expiry_hours}} hours."},
+    ], cta:"Claim it" },
+
+  { id:"C-05", group:"Loyalty", name:"Unclaimed monthly cashback", subject:"Your monthly cashback is ready.",
+    pre:"${{monthly_cashback_amount}} from this month's play. Claim before it expires.", register:"quiet", banner:false,
+    body:[
+      {h:"${{monthly_cashback_amount}} monthly cashback."},
+      {p:"Built from your play this month. Expires {{expiry_date}}."},
+    ], cta:"Claim it" },
+
+  { id:"C-06", group:"Loyalty", name:"Unclaimed wheel spin", subject:"You have a wheel spin. 2 days left.",
+    pre:"You levelled up and earned a spin. Claim it before it's gone.", register:"loud", banner:true,
+    body:[
+      {h:"One free spin."},
+      {p:"You unlocked it at level {{level_reached}}. {{days_remaining}} days to spin it."},
+    ], cta:"Spin now" },
+
+  /* D · Leaderboards */
+  { id:"D-00", group:"Leaderboards", name:"Weekly race announcement", subject:"New weekly race. ${{prize_pool}}. Starts now.",
+    pre:"Bet more than everyone else this week. Ends {{race_end_date}}.", register:"loud", banner:true,
+    body:[
+      {h:"${{prize_pool}} weekly race. Live now."},
+      {p:"Top prize ${{top_prize}}. Race ends {{race_end_date}}."},
+      {detail: [["Prize pool","${{prize_pool}}"],["Top prize","${{top_prize}}"],["Ends","{{race_end_date}}"]]}
+    ], cta:"Join the race" },
+
+  { id:"D-01", group:"Leaderboards", name:"Daily race win", subject:"You finished {{position}} in today's race. ${{prize_amount}} is yours.",
+    pre:"Claim your prize before midnight — expires in 24 hours.", register:"loud", banner:true,
+    body:[
+      {h:"You placed {{position}}."},
+      {p:"<strong>${{prize_amount}}</strong> is waiting. Claim before {{expiry_time}}."},
+    ], cta:"Claim your prize" },
+
+  { id:"D-02", group:"Leaderboards", name:"Daily prize expiry", subject:"4 hours to claim your ${{prize_amount}} race prize.",
+    pre:"Your daily race win expires tonight. Don't leave it.", register:"loud", banner:false,
+    body:[
+      {h:"4 hours left."},
+      {p:"<strong>${{prize_amount}}</strong> expires at {{exact_expiry_time}}."},
+    ], cta:"Claim it now" },
+
+  { id:"D-03", group:"Leaderboards", name:"Weekly race win", subject:"You placed {{position}} in the weekly race. ${{prize_amount}} waiting.",
+    pre:"You have 7 days to claim. Don't sit on it.", register:"loud", banner:true,
+    body:[
+      {h:"You placed {{position}} on the week."},
+      {p:"<strong>${{prize_amount}}</strong> is yours. Claim within 7 days."},
+      {detail: [["Position","{{position}}"],["Prize","${{prize_amount}}"],["Expires","{{expiry_date}}"]]}
+    ], cta:"Claim your prize" },
+
+  { id:"D-04", group:"Leaderboards", name:"Weekly prize expiry", subject:"2 days left to claim your ${{prize_amount}} race prize.",
+    pre:"Your weekly race win expires {{expiry_date}}. Claim it.", register:"loud", banner:false,
+    body:[
+      {h:"2 days left."},
+      {p:"<strong>${{prize_amount}}</strong> expires {{expiry_date}}."},
+    ], cta:"Claim it now" },
+
+  /* E · Transactional & system */
+  { id:"E-01", group:"Transactional", name:"Email verification", subject:"Confirm your email",
+    pre:"Enter the code to finish setting up your account.", register:"neutral", banner:false, plain:true,
+    body:[
+      {p:"Enter this code to confirm your email and finish setting up your account."},
+      {code:"{CODE}"},
+      {p:"Expires in {EXPIRY_MINUTES} minutes."},
+    ], cta:null },
+
+  { id:"E-02", group:"Transactional", name:"Login 2FA code", subject:"Your login code",
+    pre:"Use this code to log in.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"Use this code to log in."},
+      {meta:[["IP","{IP_ADDRESS}"],["Location","{LOCATION}"]]},
+      {code:"{CODE}"},
+      {p:"Expires in {EXPIRY_MINUTES} minutes."},
+      {p:"Not you? Secure your account immediately."},
+    ], cta:"Secure your account" },
+
+  { id:"E-03", group:"Transactional", name:"Password reset", subject:"Reset your password",
+    pre:"We got a request to reset your Maxxed password.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"We got a request to reset your Maxxed password."},
+      {meta:[["IP","{IP_ADDRESS}"],["Location","{LOCATION}"]]},
+      {code:"{CODE}"},
+      {p:"Expires in {EXPIRY_MINUTES} minutes."},
+      {p:"Not you? Secure your account immediately."},
+    ], cta:"Secure your account" },
+
+  { id:"E-04", group:"Transactional", name:"New IP login alert", subject:"New login location",
+    pre:"Your Maxxed account was accessed from a new location.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"Your Maxxed account was accessed from a new location."},
+      {meta:[["IP","{IP_ADDRESS}"],["Location","{LOCATION}"]]},
+      {p:"If this wasn't you, secure your account immediately."},
+    ], cta:"Secure your account" },
+
+  { id:"E-05", group:"Transactional", name:"New device login alert", subject:"New device login",
+    pre:"Your Maxxed account was accessed from a new device.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"Your Maxxed account was accessed from a new device."},
+      {meta:[["Device","{DEVICE}"],["Location","{LOCATION}"]]},
+      {p:"If this wasn't you, secure your account immediately."},
+    ], cta:"Secure your account" },
+
+  { id:"E-06", group:"Transactional", name:"Account paused", subject:"Your account has been paused",
+    pre:"Our team is reviewing it and will restore access once everything checks out.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"We've temporarily paused your Maxxed account."},
+      {p:"Our team is reviewing it and will restore access once everything checks out. If you have questions in the meantime, contact support."},
+    ], cta:"Contact support" },
+
+  { id:"E-07", group:"Transactional", name:"Deposit confirmed", subject:"Deposit confirmed",
+    pre:"{CRYPTO_AMOUNT} is confirmed and in your Maxxed balance.", register:"quiet+", banner:false, plain:true,
+    body:[
+      {p:"<strong>{CRYPTO_AMOUNT}</strong> is confirmed and in your Maxxed balance."},
+      {p:"You're ready to go."},
+    ], cta:"Open the lobby" },
+
+  { id:"E-08", group:"Transactional", name:"Withdrawal sent", subject:"Withdrawal sent",
+    pre:"{CRYPTO_AMOUNT} is on its way.", register:"quiet+", banner:false, plain:true,
+    body:[
+      {p:"<strong>{CRYPTO_AMOUNT}</strong> is on its way."},
+      {p:"Track it on-chain anytime."},
+    ], cta:"Track transaction" },
+
+  { id:"E-09", group:"Transactional", name:"Withdrawal not processed", subject:"Withdrawal not processed",
+    pre:"Your withdrawal of {CRYPTO_AMOUNT} wasn't processed.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"Your withdrawal of <strong>{CRYPTO_AMOUNT}</strong> wasn't processed."},
+      {p:"Contact support and we'll sort it out."},
+    ], cta:"Contact support" },
+
+  { id:"E-10", group:"Transactional", name:"Withdrawal 2FA", subject:"Confirm your withdrawal",
+    pre:"Use this code to confirm your withdrawal of {CRYPTO_AMOUNT}.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"Use this code to confirm your withdrawal of <strong>{CRYPTO_AMOUNT}</strong>."},
+      {code:"{CODE}"},
+      {p:"Expires in {EXPIRY_MINUTES} minutes."},
+      {p:"Not you? Secure your account immediately."},
+    ], cta:"Secure your account" },
+
+  { id:"E-11", group:"Transactional", name:"KYC required", subject:"Verify your identity to continue",
+    pre:"Before your next withdrawal clears, we need to verify your identity.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"Before your next withdrawal clears, we need to verify your identity."},
+      {p:"Takes about 3 minutes. One-time step."},
+    ], cta:"Start verification" },
+
+  { id:"E-12", group:"Transactional", name:"KYC approved", subject:"Verification complete",
+    pre:"Your identity is verified.", register:"quiet+", banner:false, plain:true,
+    body:[
+      {p:"Your identity is verified."},
+      {p:"Withdrawals and all account features are fully open."},
+    ], cta:"Go to your account" },
+
+  { id:"E-13", group:"Transactional", name:"KYC needs attention", subject:"Verification needs attention",
+    pre:"We weren't able to verify your identity with the documents submitted.", register:"quiet", banner:false, plain:true,
+    body:[
+      {p:"We weren't able to verify your identity with the documents submitted."},
+      {p:"Contact support — our team will tell you exactly what's needed to complete it."},
+    ], cta:"Contact support" },
+];
+
+/* Inline Maxxed logo (SVG · 120×48). For production email handoff, replace
+   the inline <svg> with <img src="https://cdn.maxxed.io/email/logo.png"
+   width="120" height="48" alt="Maxxed"> — Outlook for Windows desktop
+   doesn't render SVG. The file also lives in ./assets/logo.svg. */
+const LOGO_SVG = `<svg width="120" height="48" viewBox="0 0 120 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Maxxed">
+<path d="M66.0935 12.5644L120 0L119.83 44.612H56.6084L58.1294 37.2963L0 48V4.40405H67.5579L66.0935 12.5644Z" fill="#8FFC80"/>
+<path d="M18.2275 27.0434L18.1676 27.0529L15.9192 14.3234L7.95508 15.4919V37.5375L13.1637 36.7723V20.3468L13.2235 20.3373L16.19 36.3278L20.202 35.7372L23.1684 18.8767L23.2283 18.8671V35.2926L28.44 34.5274V12.4818L20.4728 13.6534L18.2275 27.0434Z" fill="#050505"/>
+<path d="M43.2027 28.7453V20.5945C43.2027 19.5022 43.0484 18.6354 42.7398 17.9908C42.4312 17.3462 41.9903 16.8668 41.4235 16.5492C40.8535 16.2317 40.1764 16.0539 39.386 16.0158C38.5956 15.9777 37.7327 16.0285 36.7943 16.165C36.1739 16.2571 35.5063 16.4222 34.7883 16.6604C34.0703 16.9017 33.3995 17.2668 32.7823 17.759C32.1619 18.2512 31.6455 18.8926 31.2235 19.6864C30.8047 20.4802 30.5937 21.4835 30.5937 22.6965L35.2638 22.0106C35.2827 21.1247 35.415 20.5119 35.6543 20.1785C35.8936 19.8451 36.2715 19.6387 36.7911 19.5625C37.7107 19.4292 38.1673 19.8737 38.1673 20.9025C38.1673 21.4169 38.0476 21.8296 37.8083 22.144C37.569 22.4583 37.1596 22.7282 36.5801 22.9568L34.4545 23.7951C33.5948 24.1285 32.8768 24.4841 32.2974 24.8683C31.7179 25.2525 31.2582 25.6812 30.9212 26.1511C30.5811 26.6242 30.3386 27.1577 30.1875 27.7578C30.0394 28.3579 29.9639 29.0469 29.9639 29.8281C29.9639 30.5488 30.0426 31.1966 30.2032 31.7681C30.3638 32.3428 30.622 32.8191 30.981 33.197C31.34 33.5748 31.8061 33.832 32.3729 33.9654C32.9429 34.0987 33.6357 34.1051 34.4545 33.9844C35.2922 33.8606 36.0354 33.5653 36.6841 33.1017C37.3328 32.635 37.8083 32.0094 38.1075 31.2252L38.1673 31.2156C38.2082 31.5586 38.246 31.8824 38.287 32.1873C38.3279 32.4889 38.3972 32.7778 38.4948 33.0509L43.7034 32.2857C43.483 31.8856 43.3444 31.3934 43.2846 30.806C43.2248 30.2186 43.1933 29.5328 43.1933 28.7517L43.2027 28.7453ZM38.1736 27.0465C38.1736 27.9737 38.0445 28.6818 37.7831 29.174C37.5249 29.6661 37.0935 29.9551 36.4951 30.0408C36.0952 30.1011 35.7771 29.9805 35.5378 29.6883C35.2985 29.393 35.1788 28.9707 35.1788 28.4151C35.1788 27.8594 35.2575 27.399 35.4181 27.037C35.5787 26.675 35.8684 26.3575 36.2873 26.0908C36.6872 25.8463 37.0525 25.6748 37.38 25.5764C37.7107 25.478 37.9532 25.3033 38.1138 25.0525L38.1736 25.043V27.0497V27.0465Z" fill="#050505"/>
+<path d="M83.2536 17.9273L77.8623 18.7179L76.0044 23.4681L74.3889 19.2291L68.9976 20.0198V20.0261L54.8014 22.1122L54.7636 22.0456L58.8386 13.3581L53.4473 14.1488L51.5893 18.8989L49.9738 14.66L44.5825 15.4538L48.6858 22.9378L44.4912 32.1682L49.7943 31.3903L51.7688 26.0654L53.6583 30.8219L54.6534 30.6758V30.679L72.8741 28.0023L68.9063 36.7374L74.2094 35.9594L76.1839 30.6346L78.0702 35.3911L83.4615 34.6004L79.1787 26.6147L83.2536 17.9273Z" fill="#050505"/>
+<path d="M95.1572 17.4891C94.6093 16.943 93.9291 16.5937 93.1198 16.4445C92.3104 16.2952 91.3688 16.3016 90.2887 16.4603C89.07 16.6382 88.0276 16.9525 87.1585 17.4002C86.2893 17.8479 85.5745 18.4607 85.0171 19.2419C84.4565 20.023 84.0472 20.9882 83.7889 22.1377C83.5307 23.2871 83.3984 24.6652 83.3984 26.2718C83.3984 27.8785 83.5118 29.1867 83.7417 30.2663C83.9716 31.3427 84.3558 32.1873 84.8943 32.7969C85.4328 33.4066 86.1413 33.7971 87.0199 33.9654C87.8985 34.1337 88.985 34.1242 90.2856 33.9337C92.5214 33.6066 94.1275 32.8509 95.1068 31.6665C96.0862 30.4822 96.5932 28.8596 96.6341 26.7957L91.7845 27.507C91.7845 28.6374 91.6491 29.4248 91.3814 29.8662C91.1106 30.3075 90.739 30.5616 90.2572 30.6346C89.8762 30.6917 89.5392 30.5901 89.24 30.3361C88.9409 30.0821 88.7897 29.501 88.7897 28.5961V26.4052L96.7853 25.2303V23.5316C96.7853 22.0075 96.6499 20.7564 96.3822 19.7785C96.1114 18.8005 95.702 18.0353 95.1541 17.4891H95.1572ZM91.7593 22.9442L89.5203 23.2744C89.1361 23.3316 88.7929 23.0299 88.7929 22.6394C88.7929 21.7535 88.8968 21.0898 89.1078 20.6485C89.3188 20.2071 89.703 19.9436 90.2604 19.861C90.8398 19.7753 91.2334 19.9245 91.4444 20.3056C91.6554 20.6866 91.7593 21.3185 91.7593 22.2043V22.9442Z" fill="#050505"/>
+<path d="M106.223 9.21126V16.4349L106.163 16.4444C105.883 15.6221 105.439 15.0854 104.831 14.8346C104.22 14.5838 103.537 14.5139 102.781 14.625C102.041 14.733 101.364 14.9775 100.744 15.3553C100.123 15.7332 99.6004 16.2857 99.1722 17.0065C98.7407 17.7272 98.4069 18.6417 98.1676 19.7467C97.9283 20.8517 97.8086 22.198 97.8086 23.7824C97.8086 26.891 98.1676 29.1231 98.8856 30.479C99.6036 31.8348 100.863 32.3809 102.658 32.1174C103.616 31.9777 104.384 31.657 104.963 31.1616C105.543 30.6663 106.003 29.9297 106.34 28.9517L106.399 28.9422V31.2283L111.611 30.4631V8.41745L106.22 9.20808L106.223 9.21126ZM106.163 25.1509C106.122 25.7542 106.047 26.2432 105.94 26.6211C105.829 26.9989 105.675 27.272 105.477 27.4466C105.278 27.6213 105.026 27.7292 104.727 27.7737C104.409 27.8213 104.148 27.7864 103.949 27.6721C103.751 27.5578 103.594 27.3291 103.486 26.983C103.376 26.6401 103.301 26.1702 103.263 25.5796C103.222 24.989 103.203 24.2492 103.203 23.3664C103.203 22.4837 103.222 21.7058 103.263 21.1025C103.304 20.4992 103.376 20.0102 103.486 19.6324C103.597 19.2577 103.751 18.9815 103.949 18.8068C104.148 18.6354 104.409 18.5242 104.727 18.4766C105.026 18.4321 105.275 18.4671 105.477 18.5814C105.675 18.6957 105.833 18.9275 105.94 19.2704C106.05 19.6133 106.125 20.0833 106.163 20.6738C106.204 21.2644 106.223 22.0138 106.223 22.9187C106.223 23.8237 106.204 24.5476 106.163 25.1509Z" fill="#050505"/>
+</svg>`;
+
+/* ─── THEME TOKENS ─────────────────────────────────────────────── */
+const THEMES = {
+  dark: {
+    pageBg:'#0A0A0A', bodyBg:'#141414', bodyBorder:'#222222',
+    ink:'#F5F5F5', inkSoft:'#E0E0E0', inkDim:'#A3A3A3', inkMute:'#646464',
+    line:'#333333',
+    accent:'#67FA53', accentInk:'#0A0A0A', accentText:'#67FA53',
+    packBg:'#222222', packBorder:'#333333',
+    detailBg:'#0A0A0A', detailBorder:'#333333',
+    codeBg:'#0A0A0A', codeBorder:'#333333', codeColor:'#67FA53',
+    bannerBg:'0A0A0A', bannerInk:'67FA53',
+    footerBg:'#0A0A0A', footerInk:'#A3A3A3', footerMute:'#646464', footerLine:'#333333',
+  },
+  light: {
+    pageBg:'#F5F5F5', bodyBg:'#FFFFFF', bodyBorder:'#E0E0E0',
+    ink:'#0A0A0A', inkSoft:'#222222', inkDim:'#646464', inkMute:'#A3A3A3',
+    line:'#E0E0E0',
+    accent:'#67FA53', accentInk:'#0A0A0A', accentText:'#1BBF04',
+    packBg:'#F5F5F5', packBorder:'#E0E0E0',
+    detailBg:'#F5F5F5', detailBorder:'#E0E0E0',
+    codeBg:'#F5F5F5', codeBorder:'#E0E0E0', codeColor:'#1BBF04',
+    bannerBg:'F5F5F5', bannerInk:'1BBF04',
+    footerBg:'#F5F5F5', footerInk:'#646464', footerMute:'#A3A3A3', footerLine:'#E0E0E0',
+  },
+};
+
+/* ─── SHARED FOOTER COMPONENT ──────────────────────────────────── */
+function buildDefaultFooter(theme){
+  const t = THEMES[theme];
+  return `<!-- ▸ Footer · shared component · ${theme} (edit in the Footer panel) -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${t.footerBg};">
+  <tr>
+    <td style="padding:32px 32px 24px 32px;font-family:Inter,Helvetica,Arial,sans-serif;color:${t.footerInk};font-size:13px;line-height:1.6;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+          <td valign="middle" style="line-height:0;">
+            <!-- Maxxed logo · swap to <img src="https://cdn.maxxed.io/email/logo.png"> for Outlook desktop -->
+            ${LOGO_SVG}
+          </td>
+          <td align="right" valign="middle">
+            <a href="https://twitter.com/maxxed"   style="display:inline-block;margin-left:8px;color:${t.footerInk};text-decoration:none;font-size:12px;">X</a>
+            <a href="https://t.me/maxxed"          style="display:inline-block;margin-left:12px;color:${t.footerInk};text-decoration:none;font-size:12px;">Telegram</a>
+            <a href="https://instagram.com/maxxed" style="display:inline-block;margin-left:12px;color:${t.footerInk};text-decoration:none;font-size:12px;">Instagram</a>
+          </td>
+        </tr>
+      </table>
+      <hr style="border:0;border-top:1px solid ${t.footerLine};margin:20px 0;">
+      <p style="margin:0 0 10px 0;color:${t.footerInk};">
+        Play responsibly. 18+ only. Gambling can be addictive — set deposit limits in your account settings, or take a break with our self-exclusion tool. Help at <a href="https://www.begambleaware.org" style="color:${t.accentText};text-decoration:underline;">BeGambleAware.org</a>.
+      </p>
+      <p style="margin:0 0 14px 0;color:${t.footerMute};font-size:12px;">
+        Maxxed is operated by Maxxed N.V., registered in Curaçao. Licence #XXXX/JAZ.
+      </p>
+      <p style="margin:0;color:${t.footerMute};font-size:12px;">
+        You're receiving this email because you have a Maxxed account.
+        <a href="{{unsubscribe_url}}" style="color:${t.footerInk};text-decoration:underline;">Unsubscribe</a> ·
+        <a href="https://maxxed.io/privacy" style="color:${t.footerInk};text-decoration:underline;">Privacy</a> ·
+        <a href="https://maxxed.io/terms"   style="color:${t.footerInk};text-decoration:underline;">Terms</a> ·
+        <a href="mailto:support@maxxed.io"  style="color:${t.footerInk};text-decoration:underline;">Support</a>
+      </p>
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ─── BANNER IMAGE OVERRIDES ───────────────────────────────────
+   To swap a banner permanently, set the path here. The viewer also
+   has a UI control (file picker / URL input) above each preview
+   that saves overrides to localStorage — those take priority over
+   this map. Use `null` to keep the placeholder. */
+const BANNERS = {
+  "A-01": null,
+  "B-01": null,  // e.g. "./banners/B-01.png"
+  "B-02": null,
+  "B-03": null,
+  "B-04": null,
+  "B-05": null,
+  "B-06": null,
+  "C-01": null,
+  "C-02": null,
+  "C-06": null,
+  "D-00": null,
+  "D-01": null,
+  "D-03": null,
+};
+
+/* Per-email custom banner srcs (loaded from localStorage at startup;
+   updated by the UI controls in the preview pane). */
+let customBanners = (() => {
+  try { return JSON.parse(localStorage.getItem("maxxed-banners") || "{}"); }
+  catch { return {}; }
+})();
+
+function bannerSrcFor(id, name, theme){
+  // Priority: UI override → BANNERS map → placeholder
+  const t = THEMES[theme];
+  if (customBanners[id]) return customBanners[id];
+  if (BANNERS[id])       return BANNERS[id];
+  const label = encodeURIComponent(`${id} · ${name}`);
+  return `https://placehold.co/1200x600/${t.bannerBg}/${t.bannerInk}/png?text=${label}&font=instrument-sans`;
+}
+
+function bannerSlot(id, name, theme){
+  const src = bannerSrcFor(id, name, theme);
+  return `<!-- ▸ Banner slot · swap via BANNERS map or viewer UI -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td style="padding:0;line-height:0;">
+      <img src="${src}"
+           alt="${id} ${name}"
+           width="600"
+           style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;text-decoration:none;">
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ─── EMAIL RENDERER ───────────────────────────────────────────── */
+const FONT_BODY    = `'Instrument Sans',Helvetica,Arial,sans-serif`;
+const FONT_DISPLAY = `'Instrument Sans',Helvetica,Arial,sans-serif`;
+
+function emailHeader(){
+  return `<!-- ▸ Email header · Maxxed logo (centered) -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td align="center" style="padding:28px 32px 12px 32px;line-height:0;text-align:center;">${LOGO_SVG}</td>
+  </tr>
+</table>`;
+}
+
+function packsBlock(t){
+  // Fixed-width pack cards (168px each, 4px gutter). Height is NOT fixed —
+  // the <tr> row auto-equalizes all cells to the tallest one (HIGHROLLER),
+  // so cards hug content while staying visually balanced.
+  const card = (title, line) => `
+    <td valign="top" width="168" style="width:168px;padding:0 4px;">
+      <table role="presentation" width="168" cellpadding="0" cellspacing="0" border="0" style="width:168px;background:${t.packBg};border:1px solid ${t.packBorder};border-radius:12px;">
+        <tr>
+          <td valign="top" width="168" style="width:168px;padding:18px 16px;font-family:${FONT_BODY};color:${t.ink};">
+            <div style="font-family:${FONT_DISPLAY};font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:${t.accentText};font-weight:700;">${title}</div>
+            <div style="font-size:14px;font-weight:500;margin-top:8px;line-height:1.45;color:${t.inkSoft};">${line}</div>
+          </td>
+        </tr>
+      </table>
+    </td>`;
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="528" align="center" style="width:528px;margin:8px 0 4px 0;">
+  <tr>
+    ${card("CASINO PACK","Milestone-based rewards as you play.")}
+    ${card("SPORTS PACK","Milestone-based rewards as you bet.")}
+    ${card("HIGHROLLER","20% cashback on net losses · 7 days · no cap.")}
+  </tr>
+</table>`;
+}
+
+function detailTable(rows, t){
+  const trs = rows.map(([k,v]) => `
+    <tr>
+      <td style="padding:12px 16px;border-bottom:1px solid ${t.detailBorder};font-family:${FONT_BODY};font-size:14px;color:${t.inkDim};">${k}</td>
+      <td align="right" style="padding:12px 16px;border-bottom:1px solid ${t.detailBorder};font-family:${FONT_BODY};font-size:14px;color:${t.ink};font-weight:700;">${v}</td>
+    </tr>`).join("");
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${t.detailBg};border:1px solid ${t.detailBorder};border-radius:12px;overflow:hidden;margin:10px 0;">
+  ${trs}
+</table>`;
+}
+
+function metaLine(rows, t){
+  const cells = rows.map(([k,v])=>`<span style="color:${t.inkDim};">${k}:</span> <span style="color:${t.ink};font-weight:700;">${v}</span>`).join(' &nbsp;·&nbsp; ');
+  return `<p style="margin:6px 0 14px 0;font-size:13px;color:${t.inkDim};font-family:${FONT_BODY};">${cells}</p>`;
+}
+
+function codeBlock(code, t){
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:14px 0;">
+  <tr><td align="center" style="padding:22px;background:${t.codeBg};border:1px solid ${t.codeBorder};border-radius:12px;">
+    <div style="font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;font-size:36px;font-weight:700;letter-spacing:0.20em;color:${t.codeColor};">${code}</div>
+  </td></tr>
+</table>`;
+}
+
+function ctaButton(label, t){
+  if(!label) return "";
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:22px auto 8px auto;">
+  <tr>
+    <td bgcolor="${t.accent}" style="border-radius:8px;" align="center">
+      <a href="{{primary_cta_url}}" target="_blank"
+         style="display:inline-block;padding:12px 22px;font-family:${FONT_DISPLAY};font-size:16px;font-weight:700;letter-spacing:0.02em;color:${t.accentInk};text-decoration:none;border-radius:8px;">${label}</a>
+    </td>
+  </tr>
+</table>`;
+}
+
+function renderBody(blocks, t){
+  return blocks.map(b=>{
+    if(b.h) return `<h1 style="margin:0 0 12px 0;font-family:${FONT_DISPLAY};font-size:36px;line-height:1.1;color:${t.ink};font-weight:700;letter-spacing:-0.01em;">${b.h}</h1>`;
+    if(b.p) return `<p style="margin:0 0 14px 0;font-family:${FONT_BODY};font-size:15px;line-height:1.6;color:${t.inkSoft};font-weight:400;">${b.p}</p>`;
+    if(b.packs) return packsBlock(t);
+    if(b.detail) return detailTable(b.detail, t);
+    if(b.meta) return metaLine(b.meta, t);
+    if(b.code) return codeBlock(b.code, t);
+    return "";
+  }).join("\n      ");
+}
+
+function buildEmail(def, footer, theme){
+  theme = theme || 'dark';
+  const t = THEMES[theme];
+  const footerHtml = footer || buildDefaultFooter(theme);
+  const banner = def.banner ? bannerSlot(def.id, def.name, theme) : "";
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="${theme === 'dark' ? 'dark' : 'light'}">
+<meta name="supported-color-schemes" content="light dark">
+<title>${def.subject.replace(/</g,'&lt;')}</title>
+<!--[if !mso]><!-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!--<![endif]-->
+</head>
+<body style="margin:0;padding:0;background:${t.pageBg};">
+<!-- Preheader (hidden) -->
+<div style="display:none;font-size:1px;color:${t.pageBg};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${def.pre || ""}</div>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${t.pageBg};">
+  <tr>
+    <td align="center" style="padding:24px 12px;">
+
+      <!-- Email body · 600px -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;background:${t.bodyBg};border:1px solid ${t.bodyBorder};border-radius:14px;overflow:hidden;">
+        <tr><td>${emailHeader()}</td></tr>
+        ${banner ? `<tr><td>${banner}</td></tr>` : ""}
+        <tr>
+          <td style="padding:${def.banner ? '32px' : '8px'} 32px 8px 32px;">
+            <!-- ▸ Body -->
+            ${renderBody(def.body, t)}
+            ${ctaButton(def.cta, t)}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 32px 28px 32px;">
+            <p style="margin:28px 0 0 0;font-family:${FONT_BODY};font-size:12px;color:${t.inkMute};line-height:1.5;">
+              Need help? <a href="mailto:support@maxxed.io" style="color:${t.inkDim};text-decoration:underline;">support@maxxed.io</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Footer · shared component -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin-top:8px;border-radius:14px;overflow:hidden;">
+        <tr><td>${footerHtml}</td></tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+</body>
+</html>`;
+  return html;
+}
+
+/* ─── UI ───────────────────────────────────────────────────────── */
+const sidebar = document.getElementById("sidebar");
+const frame   = document.getElementById("frame");
+const footerFrame = document.getElementById("footer-frame");
+const codeOut = document.getElementById("code-out");
+const footerSrc = document.getElementById("footer-src");
+const subLine = document.getElementById("sub-line");
+const preLine = document.getElementById("pre-line");
+const codeIdTag = document.getElementById("code-id-tag");
+const codeTitle = document.getElementById("code-title");
+const toast = document.getElementById("toast");
+
+let state = {
+  currentId: EMAILS[0].id,
+  theme: localStorage.getItem("maxxed-theme") || "dark",
+  footers: {
+    dark:  localStorage.getItem("maxxed-footer-dark")  || buildDefaultFooter("dark"),
+    light: localStorage.getItem("maxxed-footer-light") || buildDefaultFooter("light"),
+  },
+};
+
+function currentFooter(){ return state.footers[state.theme]; }
+footerSrc.value = currentFooter();
+
+function buildSidebar(){
+  const groups = {};
+  EMAILS.forEach(e => { (groups[e.group] = groups[e.group] || []).push(e); });
+  sidebar.innerHTML = Object.entries(groups).map(([g, items]) => `
+    <div class="group-title">${g}</div>
+    ${items.map(i => `
+      <div class="nav-item ${i.id===state.currentId?'active':''}" data-id="${i.id}">
+        <span class="id">${i.id}</span>
+        <span class="label">${i.name}</span>
+      </div>`).join('')}
+  `).join('');
+  sidebar.querySelectorAll(".nav-item").forEach(n => {
+    n.addEventListener("click", () => { state.currentId = n.dataset.id; render(); });
+  });
+}
+
+function current(){ return EMAILS.find(e => e.id === state.currentId); }
+
+function autoResize(iframeEl){
+  iframeEl.onload = () => {
+    try {
+      const h = iframeEl.contentDocument.documentElement.scrollHeight;
+      iframeEl.style.height = (h + 8) + "px";
+    } catch(e){}
+  };
+}
+
+function render(){
+  const def = current();
+  const html = buildEmail(def, currentFooter(), state.theme);
+  // preview
+  autoResize(frame);
+  frame.srcdoc = html;
+  // code
+  codeOut.value = html;
+  codeIdTag.textContent = def.id;
+  codeTitle.textContent = def.name;
+  // meta strip
+  subLine.textContent = def.subject;
+  preLine.textContent = def.pre;
+  // sidebar selection
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.id === def.id));
+  // footer preview (synced to theme)
+  footerSrc.value = currentFooter();
+  renderFooterPreview();
+  // banner control visibility & value
+  syncBannerControl(def);
+}
+
+/* ─── Banner control ───────────────────────────────────────── */
+const bannerControl = document.getElementById("banner-control");
+const bannerUrlInput = document.getElementById("banner-url");
+const bannerFileInput = document.getElementById("banner-file");
+const bannerResetBtn = document.getElementById("banner-reset");
+
+function syncBannerControl(def){
+  if (!def.banner) {
+    bannerControl.hidden = true;
+    return;
+  }
+  bannerControl.hidden = false;
+  const override = customBanners[def.id];
+  // Show the override URL if it's a normal path; if it's a data URL, hint at that instead.
+  if (override) {
+    bannerUrlInput.value = override.startsWith("data:") ? "(local file loaded — preview only)" : override;
+    bannerUrlInput.disabled = override.startsWith("data:");
+  } else {
+    bannerUrlInput.value = "";
+    bannerUrlInput.disabled = false;
+  }
+}
+
+function saveCustomBanners(){
+  // Don't persist data URLs (they bloat localStorage). Only persist real paths/URLs.
+  const persistable = Object.fromEntries(
+    Object.entries(customBanners).filter(([_, v]) => v && !v.startsWith("data:"))
+  );
+  localStorage.setItem("maxxed-banners", JSON.stringify(persistable));
+}
+
+bannerUrlInput.addEventListener("input", () => {
+  const def = current();
+  const v = bannerUrlInput.value.trim();
+  if (v) customBanners[def.id] = v;
+  else   delete customBanners[def.id];
+  saveCustomBanners();
+  render();
+});
+
+bannerFileInput.addEventListener("change", (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const def = current();
+    customBanners[def.id] = reader.result; // data URL (preview only — not persisted)
+    render();
+    showToast("Loaded locally — preview only (not saved)");
+  };
+  reader.readAsDataURL(file);
+  // reset the input so picking the same file again still fires change
+  bannerFileInput.value = "";
+});
+
+bannerResetBtn.addEventListener("click", () => {
+  const def = current();
+  delete customBanners[def.id];
+  saveCustomBanners();
+  render();
+  showToast(`${def.id} banner reset`);
+});
+
+function renderFooterPreview(){
+  const t = THEMES[state.theme];
+  const wrap = `<!doctype html><html><head><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></head><body style="margin:0;padding:0;background:${t.pageBg};font-family:'Instrument Sans',Helvetica,Arial,sans-serif;">
+    <div style="max-width:600px;margin:0 auto;border-radius:14px;overflow:hidden;">${currentFooter()}</div>
+  </body></html>`;
+  autoResize(footerFrame);
+  footerFrame.srcdoc = wrap;
+}
+
+function setTheme(theme){
+  state.theme = theme;
+  localStorage.setItem("maxxed-theme", theme);
+  document.querySelectorAll(".tt-btn").forEach(b => {
+    const active = b.dataset.theme === theme;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-pressed", active);
+  });
+  render();
+}
+
+document.querySelectorAll(".tt-btn").forEach(b => {
+  b.addEventListener("click", () => setTheme(b.dataset.theme));
+});
+
+/* Modal helpers */
+function openModal(id){ document.getElementById(id).classList.add("open"); }
+function closeModal(id){ document.getElementById(id).classList.remove("open"); }
+
+document.getElementById("open-code-btn").addEventListener("click", () => openModal("modal-code"));
+document.getElementById("open-footer-btn").addEventListener("click", () => { renderFooterPreview(); openModal("modal-footer"); });
+document.querySelectorAll("[data-close]").forEach(el => {
+  el.addEventListener("click", () => closeModal(el.dataset.close));
+});
+document.querySelectorAll(".modal-backdrop").forEach(bd => {
+  bd.addEventListener("click", (e) => { if(e.target === bd) bd.classList.remove("open"); });
+});
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Escape") document.querySelectorAll(".modal-backdrop.open").forEach(b => b.classList.remove("open"));
+});
+
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1300);
+}
+
+function copyText(text, label){
+  navigator.clipboard.writeText(text).then(() => showToast(label || "Copied"));
+}
+
+document.getElementById("copy-current").addEventListener("click", () => copyText(codeOut.value, "HTML copied"));
+document.getElementById("copy-code").addEventListener("click",    () => copyText(codeOut.value, "HTML copied"));
+
+document.getElementById("apply-footer").addEventListener("click", () => {
+  state.footers[state.theme] = footerSrc.value;
+  localStorage.setItem(`maxxed-footer-${state.theme}`, footerSrc.value);
+  render();
+  showToast(`Footer applied (${state.theme} mode)`);
+});
+document.getElementById("reset-footer").addEventListener("click", () => {
+  const def = buildDefaultFooter(state.theme);
+  footerSrc.value = def;
+  state.footers[state.theme] = def;
+  localStorage.removeItem(`maxxed-footer-${state.theme}`);
+  render();
+  showToast(`Footer reset (${state.theme} mode)`);
+});
+
+document.getElementById("count-pill").textContent = `${EMAILS.length} templates`;
+// Sync initial theme button state with persisted setting
+setTheme(state.theme);
+buildSidebar();
+render();
+</script>
+</body>
+</html>
