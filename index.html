@@ -765,7 +765,7 @@ function emailHeader(){
   return `<!-- ▸ Email header · Maxxed logo (centered) -->
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
   <tr>
-    <td align="center" valign="middle" height="120" style="height:120px;padding:24px 32px;line-height:0;text-align:center;vertical-align:middle;">
+    <td align="center" valign="middle" style="padding:16px 32px;line-height:0;text-align:center;vertical-align:middle;">
       <div style="display:inline-block;line-height:0;margin:0 auto;vertical-align:middle;">${LOGO_SVG}</div>
     </td>
   </tr>
@@ -1082,11 +1082,26 @@ bannerFileInput.addEventListener("change", (e) => {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = () => {
+  reader.onload = async () => {
     const def = current();
-    customBanners[def.id] = reader.result; // data URL (preview — click Save locally / Save & deploy to persist)
+    customBanners[def.id] = reader.result; // data URL (preview)
     render();
-    showToast("Loaded — click Save locally to write to /banners");
+
+    // Auto-persist: deploy to GitHub if configured, and write to /banners if
+    // we have a folder handle. The user just picks a file once.
+    const hasGh    = !!(ghConfig.token && ghConfig.repo);
+    const hasLocal = !!bannersDirHandle;
+    if (!hasGh && !hasLocal){
+      showToast("Loaded — add GitHub token in ⚙ to auto-deploy");
+      return;
+    }
+    if (hasLocal){
+      try { await saveBannerLocally(); } catch (err){ console.warn(err); }
+    }
+    if (hasGh){
+      try { await saveBannerToRepo(); }
+      catch (err){ console.warn(err); showToast("GitHub save failed — see console"); }
+    }
   };
   reader.readAsDataURL(file);
   // reset the input so picking the same file again still fires change
