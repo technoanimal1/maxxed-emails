@@ -764,20 +764,23 @@ function emailHeader(){
   return `<!-- ▸ Email header · Maxxed logo (centered) -->
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
   <tr>
-    <td align="center" style="padding:28px 32px 12px 32px;line-height:0;text-align:center;">${LOGO_SVG}</td>
+    <td align="center" style="padding:28px 32px 12px 32px;line-height:0;text-align:center;">
+      <div style="display:inline-block;line-height:0;margin:0 auto;">${LOGO_SVG}</div>
+    </td>
   </tr>
 </table>`;
 }
 
 function packsBlock(t){
-  // Fixed-width pack cards (168px each, 4px gutter). Height is NOT fixed —
-  // the <tr> row auto-equalizes all cells to the tallest one (HIGHROLLER),
-  // so cards hug content while staying visually balanced.
+  // Fixed-width pack cards (168px each, 4px gutter). All three cards
+  // stretch to the height of the tallest one — every inner element carries
+  // height="100%" + style="height:100%" so Outlook + Gmail + Apple Mail all
+  // equalize correctly, not just the outer <tr>.
   const card = (title, line) => `
-    <td valign="top" width="168" style="width:168px;padding:0 4px;">
-      <table role="presentation" width="168" cellpadding="0" cellspacing="0" border="0" style="width:168px;background:${t.packBg};border:1px solid ${t.packBorder};border-radius:12px;">
+    <td valign="top" width="168" height="100%" style="width:168px;height:100%;padding:0 4px;">
+      <table role="presentation" width="168" cellpadding="0" cellspacing="0" border="0" height="100%" style="width:168px;height:100%;background:${t.packBg};border:1px solid ${t.packBorder};border-radius:12px;">
         <tr>
-          <td valign="top" width="168" style="width:168px;padding:18px 16px;font-family:${FONT_BODY};color:${t.ink};">
+          <td valign="top" width="168" height="100%" style="width:168px;height:100%;padding:18px 16px;font-family:${FONT_BODY};color:${t.ink};">
             <div style="font-family:${FONT_DISPLAY};font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:${t.accentText};font-weight:700;">${title}</div>
             <div style="font-size:14px;font-weight:500;margin-top:8px;line-height:1.45;color:${t.inkSoft};">${line}</div>
           </td>
@@ -827,7 +830,7 @@ function ctaButton(label, t){
   <tr>
     <td bgcolor="${t.accent}" style="border-radius:8px;" align="center">
       <a href="{{primary_cta_url}}" target="_blank"
-         style="display:inline-block;padding:12px 22px;font-family:${FONT_DISPLAY};font-size:16px;font-weight:700;letter-spacing:0.02em;color:${t.accentInk};text-decoration:none;border-radius:8px;">${label}</a>
+         style="display:inline-block;padding:12px 22px;font-family:${FONT_DISPLAY};font-size:16px;font-weight:500;letter-spacing:0.02em;color:${t.accentInk};text-decoration:none;border-radius:8px;">${label}</a>
     </td>
   </tr>
 </table>`;
