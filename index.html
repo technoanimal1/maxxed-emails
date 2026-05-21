@@ -773,23 +773,23 @@ function emailHeader(){
 }
 
 function packsBlock(t){
-  // Fixed-width pack cards (168px each, 4px gutter). All three cards
-  // stretch to the height of the tallest one — every inner element carries
-  // height="100%" + style="height:100%" so Outlook + Gmail + Apple Mail all
-  // equalize correctly, not just the outer <tr>.
+  // Static-width pack cards — 160px each, 4px gutter. All three cards stretch
+  // to the height of the tallest one. Text is center-aligned to match the
+  // rest of the email body.
   const card = (title, line) => `
-    <td valign="top" width="168" height="100%" style="width:168px;height:100%;padding:0 4px;">
-      <table role="presentation" width="168" cellpadding="0" cellspacing="0" border="0" height="100%" style="width:168px;height:100%;background:${t.packBg};border:1px solid ${t.packBorder};border-radius:12px;">
+    <td valign="top" width="160" height="100%" style="width:160px;height:100%;padding:0 4px;">
+      <table role="presentation" width="160" cellpadding="0" cellspacing="0" border="0" height="100%" style="width:160px;height:100%;background:${t.packBg};border:1px solid ${t.packBorder};border-radius:12px;">
         <tr>
-          <td valign="top" width="168" height="100%" style="width:168px;height:100%;padding:18px 16px;font-family:${FONT_BODY};color:${t.ink};">
-            <div style="font-family:${FONT_DISPLAY};font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:${t.accentText};font-weight:700;">${title}</div>
-            <div style="font-size:14px;font-weight:500;margin-top:8px;line-height:1.45;color:${t.inkSoft};">${line}</div>
+          <td valign="top" width="160" height="100%" align="center" style="width:160px;height:100%;padding:18px 14px;font-family:${FONT_BODY};color:${t.ink};text-align:center;">
+            <div style="font-family:${FONT_DISPLAY};font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:${t.accentText};font-weight:700;text-align:center;">${title}</div>
+            <div style="font-size:14px;font-weight:500;margin-top:8px;line-height:1.45;color:${t.inkSoft};text-align:center;">${line}</div>
           </td>
         </tr>
       </table>
     </td>`;
+  // 3 cards × (160 + 8 padding) = 504
   return `
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="528" align="center" style="width:528px;margin:8px 0 4px 0;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="504" align="center" style="width:504px;margin:8px auto 4px auto;">
   <tr>
     ${card("CASINO PACK","Milestone-based rewards as you play.")}
     ${card("SPORTS PACK","Milestone-based rewards as you bet.")}
@@ -812,7 +812,7 @@ function detailTable(rows, t){
 
 function metaLine(rows, t){
   const cells = rows.map(([k,v])=>`<span style="color:${t.inkDim};">${k}:</span> <span style="color:${t.ink};font-weight:700;">${v}</span>`).join(' &nbsp;·&nbsp; ');
-  return `<p style="margin:6px 0 14px 0;font-size:13px;color:${t.inkDim};font-family:${FONT_BODY};">${cells}</p>`;
+  return `<p style="margin:6px 0 14px 0;font-size:13px;color:${t.inkDim};font-family:${FONT_BODY};text-align:center;">${cells}</p>`;
 }
 
 function codeBlock(code, t){
@@ -839,8 +839,8 @@ function ctaButton(label, t){
 
 function renderBody(blocks, t){
   return blocks.map(b=>{
-    if(b.h) return `<h1 style="margin:0 0 12px 0;font-family:${FONT_DISPLAY};font-size:36px;line-height:1.1;color:${t.ink};font-weight:700;letter-spacing:-0.01em;">${b.h}</h1>`;
-    if(b.p) return `<p style="margin:0 0 14px 0;font-family:${FONT_BODY};font-size:15px;line-height:1.6;color:${t.inkSoft};font-weight:400;">${b.p}</p>`;
+    if(b.h) return `<h1 style="margin:0 0 12px 0;font-family:${FONT_DISPLAY};font-size:36px;line-height:1.1;color:${t.ink};font-weight:700;letter-spacing:-0.01em;text-align:center;">${b.h}</h1>`;
+    if(b.p) return `<p style="margin:0 0 14px 0;font-family:${FONT_BODY};font-size:15px;line-height:1.6;color:${t.inkSoft};font-weight:400;text-align:center;">${b.p}</p>`;
     if(b.packs) return packsBlock(t);
     if(b.detail) return detailTable(b.detail, t);
     if(b.meta) return metaLine(b.meta, t);
@@ -889,7 +889,7 @@ function buildEmail(def, footer, theme){
         </tr>
         <tr>
           <td style="padding:0 32px 28px 32px;">
-            <p style="margin:28px 0 0 0;font-family:${FONT_BODY};font-size:12px;color:${t.inkMute};line-height:1.5;">
+            <p style="margin:28px 0 0 0;font-family:${FONT_BODY};font-size:12px;color:${t.inkMute};line-height:1.5;text-align:center;">
               Need help? <a href="mailto:support@maxxed.io" style="color:${t.inkDim};text-decoration:underline;">support@maxxed.io</a>
             </p>
           </td>
