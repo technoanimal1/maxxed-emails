@@ -283,6 +283,7 @@
                placeholder="./banners/A-01.png · or paste an https:// URL" />
         <label class="btn ghost bc-file-btn" for="banner-file">Choose file</label>
         <input type="file" id="banner-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden />
+        <button class="btn" id="banner-save-local" title="Write file into the /banners folder on this computer" hidden>Save locally</button>
         <button class="btn" id="banner-save" title="Commit to GitHub and redeploy" hidden>Save &amp; deploy</button>
         <button class="btn ghost" id="banner-reset" title="Revert to placeholder">Reset</button>
       </div>
@@ -987,6 +988,53 @@ const bannerUrlInput = document.getElementById("banner-url");
 const bannerFileInput = document.getElementById("banner-file");
 const bannerResetBtn = document.getElementById("banner-reset");
 const bannerSaveBtn = document.getElementById("banner-save");
+const bannerSaveLocalBtn = document.getElementById("banner-save-local");
+
+/* In-memory handle to the user's /banners folder.
+   Persisted across reloads via IndexedDB — the browser still requires a
+   user-gesture permission re-prompt on a new tab. */
+let bannersDirHandle = null;
+const supportsFSA = typeof window.showDirectoryPicker === "function";
+
+/* Tiny IndexedDB key/value helpers — used only for the dir handle. */
+function idb(){
+  return new Promise((res, rej) => {
+    const req = indexedDB.open("maxxed-fsa", 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("kv");
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+async function idbGet(key){
+  const db = await idb();
+  return new Promise((res, rej) => {
+    const tx = db.transaction("kv", "readonly").objectStore("kv").get(key);
+    tx.onsuccess = () => res(tx.result);
+    tx.onerror = () => rej(tx.error);
+  });
+}
+async function idbSet(key, val){
+  const db = await idb();
+  return new Promise((res, rej) => {
+    const tx = db.transaction("kv", "readwrite");
+    tx.objectStore("kv").put(val, key);
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
+  });
+}
+
+/* Try to restore a previously-granted /banners folder handle. */
+(async () => {
+  if (!supportsFSA) return;
+  try {
+    const handle = await idbGet("bannersDir");
+    if (!handle) return;
+    // Re-verify permission — may still need a user gesture if revoked.
+    const perm = await handle.queryPermission({ mode: "readwrite" });
+    if (perm === "granted") bannersDirHandle = handle;
+    else if (perm === "prompt") bannersDirHandle = handle; // request on next click
+  } catch {}
+})();
 
 /* GitHub deploy config — stored locally per browser */
 let ghConfig = (() => {
@@ -1010,6 +1058,7 @@ function syncBannerControl(def){
     bannerUrlInput.disabled = false;
   }
   bannerSaveBtn.hidden = !(isDataUrl && ghConfig.token && ghConfig.repo);
+  bannerSaveLocalBtn.hidden = !isDataUrl;
 }
 
 function saveCustomBanners(){
@@ -1035,9 +1084,9 @@ bannerFileInput.addEventListener("change", (e) => {
   const reader = new FileReader();
   reader.onload = () => {
     const def = current();
-    customBanners[def.id] = reader.result; // data URL (preview only — not persisted)
+    customBanners[def.id] = reader.result; // data URL (preview — click Save locally / Save & deploy to persist)
     render();
-    showToast("Loaded locally — preview only (not saved)");
+    showToast("Loaded — click Save locally to write to /banners");
   };
   reader.readAsDataURL(file);
   // reset the input so picking the same file again still fires change
@@ -1068,6 +1117,77 @@ document.getElementById("save-settings").addEventListener("click", () => {
   showToast("GitHub deploy settings saved");
   syncBannerControl(current());
 });
+
+/* ─── Save banner locally (File System Access API) ─────── */
+bannerSaveLocalBtn.addEventListener("click", saveBannerLocally);
+
+function dataUrlParts(dataUrl){
+  const m = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+  if (!m) return null;
+  const mime = m[1];
+  const ext = ({
+    "image/png":"png","image/jpeg":"jpg","image/jpg":"jpg",
+    "image/webp":"webp","image/svg+xml":"svg","image/gif":"gif"
+  })[mime] || "png";
+  // base64 → Uint8Array
+  const bin = atob(m[2]);
+  const bytes = new Uint8Array(bin.length);
+  for (let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return { mime, ext, bytes };
+}
+
+async function saveBannerLocally(){
+  const def = current();
+  const dataUrl = customBanners[def.id];
+  if (!dataUrl || !dataUrl.startsWith("data:")) return;
+  const parts = dataUrlParts(dataUrl);
+  if (!parts) { showToast("Couldn't read banner data"); return; }
+  const filename = `${def.id}.${parts.ext}`;
+
+  // Modern browsers: write straight into /banners folder
+  if (supportsFSA){
+    try {
+      if (!bannersDirHandle){
+        showToast("Pick your /banners folder once…");
+        bannersDirHandle = await window.showDirectoryPicker({
+          mode: "readwrite", id: "maxxed-banners", startIn: "documents",
+        });
+        await idbSet("bannersDir", bannersDirHandle);
+      } else {
+        // Re-prompt permission if needed (browsers drop it across tabs)
+        const perm = await bannersDirHandle.queryPermission({ mode: "readwrite" });
+        if (perm !== "granted") {
+          const ask = await bannersDirHandle.requestPermission({ mode: "readwrite" });
+          if (ask !== "granted") { showToast("Permission denied"); return; }
+        }
+      }
+      const fileHandle = await bannersDirHandle.getFileHandle(filename, { create: true });
+      const writable   = await fileHandle.createWritable();
+      await writable.write(new Blob([parts.bytes], { type: parts.mime }));
+      await writable.close();
+
+      // Point the override at the relative path so future loads pick up the file
+      customBanners[def.id] = `./banners/${filename}`;
+      saveCustomBanners();
+      render();
+      showToast(`Saved → /banners/${filename}`);
+      return;
+    } catch (err){
+      if (err && err.name === "AbortError") return; // user dismissed picker
+      console.warn("FSA save failed, falling back to download:", err);
+      // fall through to download fallback
+    }
+  }
+
+  // Fallback (Safari / Firefox without FSA): trigger a download with the right name
+  const blob = new Blob([parts.bytes], { type: parts.mime });
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  showToast(`Downloaded ${filename} — move it into /banners`);
+}
 
 /* ─── Save & deploy banner ───────────────────────────────── */
 bannerSaveBtn.addEventListener("click", saveBannerToRepo);
