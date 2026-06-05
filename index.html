@@ -387,9 +387,19 @@ const EMAILS = [
   { id:"B-01", group:"Welcome Pack", name:"Welcome Pack intro", subject:"Three welcome packs. One is yours.",
     pre:"Casino, Sports, or Highroller — pick and deposit to unlock your rewards.", register:"loud", banner:true,
     body:[
-      {h:"Three packs. Pick one."},
-      {p:"All three are open until your pack expires. Choose the one that fits how you play."},
+      {eyebrow:"Welcome offer · Pack 1 of 3"},
+      {h:"Three packs. One is yours."},
+      {p:"Casino, Sports, or Highroller — choose the one that fits how you play. Open until {{expiry_date}}."},
       {packs:true},
+      {cta:"Pick your pack"},
+      {divider:true},
+      {features:["No wagering on cashback","Milestone-based rewards","14-day window"]},
+      {eyebrow:"How it works"},
+      {steps:[
+        ["01","Pick","Choose Casino, Sports or Highroller"],
+        ["02","Deposit","Min ${{min_deposit}} in any crypto"],
+        ["03","Earn","Rewards drop on every milestone"],
+      ]},
     ], cta:"Pick your pack" },
 
   { id:"B-02", group:"Welcome Pack", name:"Welcome Pack nudge 2", subject:"Your welcome pack expires in {{days_remaining}} days.",
@@ -837,14 +847,59 @@ function ctaButton(label, t){
 </table>`;
 }
 
+/* ─── Decorative blocks (eyebrow / divider / features / steps) ─── */
+function eyebrowBlock(text, t){
+  return `<!-- ▸ Eyebrow tag -->
+<p style="margin:0 0 10px 0;font-family:${FONT_DISPLAY};font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${t.accentText};text-align:center;">${text}</p>`;
+}
+
+function dividerBlock(t){
+  return `<!-- ▸ Divider -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:24px 0;">
+  <tr><td height="1" style="height:1px;line-height:1px;background:${t.detailBorder};font-size:0;">&nbsp;</td></tr>
+</table>`;
+}
+
+function featuresBlock(items, t){
+  // One-line tag strip: item · item · item
+  const sep = `<span style="color:${t.inkMute};padding:0 8px;">·</span>`;
+  const html = items.map(x => `<span style="color:${t.inkDim};">${x}</span>`).join(sep);
+  return `<!-- ▸ Features strip -->
+<p style="margin:6px 0 14px 0;font-family:${FONT_BODY};font-size:12px;font-weight:500;letter-spacing:0.04em;text-align:center;line-height:1.7;">${html}</p>`;
+}
+
+function stepsBlock(steps, t){
+  // 3 numbered columns: lime number, title, line of body.
+  // Equal-height via the same height="100%" chain as packs.
+  const cell = ([num, title, line]) => `
+    <td valign="top" width="160" height="100%" align="center" style="width:160px;height:100%;padding:0 4px;text-align:center;">
+      <table role="presentation" width="160" height="100%" cellpadding="0" cellspacing="0" border="0" style="width:160px;height:100%;">
+        <tr><td align="center" valign="top" style="text-align:center;padding:6px 8px;font-family:${FONT_BODY};">
+          <div style="font-family:${FONT_DISPLAY};font-size:28px;line-height:1;font-weight:700;color:${t.accentText};letter-spacing:-0.01em;">${num}</div>
+          <div style="margin-top:10px;font-family:${FONT_DISPLAY};font-size:14px;font-weight:700;color:${t.ink};letter-spacing:0.02em;text-transform:uppercase;">${title}</div>
+          <div style="margin-top:6px;font-size:13px;font-weight:400;line-height:1.5;color:${t.inkSoft};">${line}</div>
+        </td></tr>
+      </table>
+    </td>`;
+  return `<!-- ▸ Steps · 3-column flow -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="504" align="center" style="width:504px;margin:6px auto 4px auto;">
+  <tr>${steps.map(cell).join("")}</tr>
+</table>`;
+}
+
 function renderBody(blocks, t){
   return blocks.map(b=>{
-    if(b.h) return `<h1 style="margin:0 0 12px 0;font-family:${FONT_DISPLAY};font-size:36px;line-height:1.1;color:${t.ink};font-weight:700;letter-spacing:-0.01em;text-align:center;">${b.h}</h1>`;
-    if(b.p) return `<p style="margin:0 0 14px 0;font-family:${FONT_BODY};font-size:15px;line-height:1.6;color:${t.inkSoft};font-weight:400;text-align:center;">${b.p}</p>`;
-    if(b.packs) return packsBlock(t);
-    if(b.detail) return detailTable(b.detail, t);
-    if(b.meta) return metaLine(b.meta, t);
-    if(b.code) return codeBlock(b.code, t);
+    if(b.cta)      return ctaButton(b.cta, t);
+    if(b.eyebrow)  return eyebrowBlock(b.eyebrow, t);
+    if(b.h)        return `<h1 style="margin:0 0 12px 0;font-family:${FONT_DISPLAY};font-size:36px;line-height:1.1;color:${t.ink};font-weight:700;letter-spacing:-0.01em;text-align:center;">${b.h}</h1>`;
+    if(b.p)        return `<p style="margin:0 0 14px 0;font-family:${FONT_BODY};font-size:15px;line-height:1.6;color:${t.inkSoft};font-weight:400;text-align:center;">${b.p}</p>`;
+    if(b.packs)    return packsBlock(t);
+    if(b.steps)    return stepsBlock(b.steps, t);
+    if(b.features) return featuresBlock(b.features, t);
+    if(b.divider)  return dividerBlock(t);
+    if(b.detail)   return detailTable(b.detail, t);
+    if(b.meta)     return metaLine(b.meta, t);
+    if(b.code)     return codeBlock(b.code, t);
     return "";
   }).join("\n      ");
 }
@@ -888,7 +943,7 @@ function buildEmail(def, footer, theme){
           <td style="padding:${hasBanner ? '32px' : '8px'} 32px 8px 32px;">
             <!-- ▸ Body -->
             ${renderBody(def.body, t)}
-            ${ctaButton(def.cta, t)}
+            ${def.body.some(b => b.cta) ? "" : ctaButton(def.cta, t)}
           </td>
         </tr>
         <tr>
