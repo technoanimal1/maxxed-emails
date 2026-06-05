@@ -853,7 +853,11 @@ function buildEmail(def, footer, theme){
   theme = theme || 'dark';
   const t = THEMES[theme];
   const footerHtml = footer || buildDefaultFooter(theme);
-  const banner = def.banner ? bannerSlot(def.id, def.name, theme) : "";
+  // A banner renders if the email is flagged for one (def.banner) OR if the
+  // designer has uploaded/pinned an override for this email (works for
+  // transactional emails too — they originally had banner:false).
+  const hasBanner = def.banner || !!customBanners[def.id] || !!BANNERS[def.id];
+  const banner = hasBanner ? bannerSlot(def.id, def.name, theme) : "";
   const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -881,7 +885,7 @@ function buildEmail(def, footer, theme){
         <tr><td>${emailHeader()}</td></tr>
         ${banner ? `<tr><td>${banner}</td></tr>` : ""}
         <tr>
-          <td style="padding:${def.banner ? '32px' : '8px'} 32px 8px 32px;">
+          <td style="padding:${hasBanner ? '32px' : '8px'} 32px 8px 32px;">
             <!-- ▸ Body -->
             ${renderBody(def.body, t)}
             ${ctaButton(def.cta, t)}
@@ -1043,10 +1047,9 @@ let ghConfig = (() => {
 })();
 
 function syncBannerControl(def){
-  if (!def.banner) {
-    bannerControl.hidden = true;
-    return;
-  }
+  // Always show — transactional emails (E-01 to E-13) didn't have a banner by
+  // default, but the designer can still attach one and it will render above
+  // the body the same way it does for marketing emails.
   bannerControl.hidden = false;
   const override = customBanners[def.id];
   const isDataUrl = !!(override && override.startsWith("data:"));
