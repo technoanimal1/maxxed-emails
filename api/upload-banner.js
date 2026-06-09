@@ -185,9 +185,10 @@ export default async function handler(req, res) {
       console.warn("BANNERS map wire failed (file still uploaded):", e);
     }
 
+    const publicBase = (process.env.PUBLIC_URL || `https://${req.headers.host || "maxxed-emails-site.vercel.app"}`).replace(/\/$/, "");
     return res.status(200).json({
       ok: true,
-      url: `./${path}`,
+      url: `${publicBase}/${path}`,
       mapWired,
       message: `${id} uploaded — live in ~30s after Vercel rebuilds`,
     });

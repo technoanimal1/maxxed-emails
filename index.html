@@ -722,11 +722,11 @@ function buildDefaultFooter(theme){
    this map. Use `null` to keep the placeholder. */
 const BANNERS = {
   "A-01": "https://maxxed-emails-site.vercel.app/banners/A-01.png",
-  "B-01": "https://maxxed-emails-site.vercel.app/banners/B-01.png",  // e.g. "./banners/B-01.png"
-  "B-02": "https://maxxed-emails-site.vercel.app/banners/B-02.png",
+  "B-01": null,  // e.g. "./banners/B-01.png"
+  "B-02": null,
   "B-03": null,
-  "B-04": "https://maxxed-emails-site.vercel.app/banners/B-04.png",
-  "B-05": "https://maxxed-emails-site.vercel.app/banners/B-05.png",
+  "B-04": null,
+  "B-05": null,
   "B-06": null,
   "C-01": null,
   "C-02": null,
@@ -734,7 +734,6 @@ const BANNERS = {
   "D-00": null,
   "D-01": null,
   "D-03": null,
-  "B-07": "https://maxxed-emails-site.vercel.app/banners/B-07.png",
 };
 
 /* Per-email custom banner srcs (loaded from localStorage at startup;
@@ -744,11 +743,25 @@ let customBanners = (() => {
   catch { return {}; }
 })();
 
+/* Resolve relative ./banners/X paths to absolute against the live origin.
+   Real email clients can't follow ./relative paths, and the srcdoc iframe
+   has no base URL. Always emit absolute URLs. */
+function resolveBannerUrl(src){
+  if (!src) return src;
+  if (src.startsWith("data:") || src.startsWith("http")) return src;
+  const origin = (typeof window !== "undefined" && window.location && window.location.origin)
+    ? window.location.origin
+    : "https://maxxed-emails-site.vercel.app";
+  if (src.startsWith("./")) return `${origin}/${src.slice(2)}`;
+  if (src.startsWith("/"))  return `${origin}${src}`;
+  return `${origin}/${src}`;
+}
+
 function bannerSrcFor(id, name, theme){
   // Priority: UI override → BANNERS map → placeholder
   const t = THEMES[theme];
-  if (customBanners[id]) return customBanners[id];
-  if (BANNERS[id])       return BANNERS[id];
+  if (customBanners[id]) return resolveBannerUrl(customBanners[id]);
+  if (BANNERS[id])       return resolveBannerUrl(BANNERS[id]);
   const label = encodeURIComponent(`${id} · ${name}`);
   return `https://placehold.co/1200x600/${t.bannerBg}/${t.bannerInk}/png?text=${label}&font=instrument-sans`;
 }
