@@ -1142,29 +1142,65 @@ bannerFileInput.addEventListener("change", (e) => {
   const reader = new FileReader();
   reader.onload = async () => {
     const def = current();
-    customBanners[def.id] = reader.result; // data URL (preview)
+    customBanners[def.id] = reader.result; // data URL — instant preview
     render();
+    showToast(`Uploading ${def.id}…`);
 
-    // Auto-persist: deploy to GitHub if configured, and write to /banners if
-    // we have a folder handle. The user just picks a file once.
-    const hasGh    = !!(ghConfig.token && ghConfig.repo);
-    const hasLocal = !!bannersDirHandle;
-    if (!hasGh && !hasLocal){
-      showToast("Loaded — add GitHub token in ⚙ to auto-deploy");
-      return;
+    // Always publish via the Vercel function — no per-user PAT needed.
+    // Falls back to direct GitHub PAT if the function isn't responding
+    // (e.g. local file:// preview during development).
+    try {
+      await publishBannerViaApi(def.id, reader.result);
+    } catch (err) {
+      console.warn("Server upload failed, trying direct GitHub PAT…", err);
+      if (ghConfig.token && ghConfig.repo) {
+        try {
+          await saveBannerToRepo();
+          return;
+        } catch (e2) {
+          console.error(e2);
+        }
+      }
+      showToast(err.message || "Upload failed — see console");
     }
-    if (hasLocal){
+    // Best-effort: also write to the local /banners folder if granted
+    if (bannersDirHandle) {
       try { await saveBannerLocally(); } catch (err){ console.warn(err); }
-    }
-    if (hasGh){
-      try { await saveBannerToRepo(); }
-      catch (err){ console.warn(err); showToast("GitHub save failed — see console"); }
     }
   };
   reader.readAsDataURL(file);
   // reset the input so picking the same file again still fires change
   bannerFileInput.value = "";
 });
+
+/* POST the upload to our own /api/upload-banner endpoint.
+   The server has the GitHub token, so every visitor can upload. */
+async function publishBannerViaApi(id, dataUrl){
+  const parts = dataUrlParts(dataUrl);
+  if (!parts) throw new Error("Could not parse banner data");
+  const res = await fetch("/api/upload-banner", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id,
+      mime: parts.mime,
+      // re-encode bytes (skip the data: prefix) so we send pure base64
+      base64: dataUrl.split(",")[1] || "",
+    }),
+  });
+  if (!res.ok) {
+    let msg = `Upload failed (${res.status})`;
+    try { const j = await res.json(); if (j && j.error) msg = j.error; } catch {}
+    throw new Error(msg);
+  }
+  const j = await res.json();
+  // Flip our local override to the deployed path so the preview reads
+  // the committed file after Vercel rebuilds.
+  customBanners[id] = j.url || `./banners/${id}.${parts.ext}`;
+  saveCustomBanners();
+  render();
+  showToast(j.message || `${id} uploaded — live in ~30s`);
+}
 
 bannerResetBtn.addEventListener("click", () => {
   const def = current();
