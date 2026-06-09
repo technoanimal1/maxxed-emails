@@ -59,14 +59,22 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Server is missing GH_TOKEN — set it in Vercel env vars." });
   }
 
-  const { id, mime, base64 } = req.body || {};
+  const { id, mime, base64, url: externalUrl } = req.body || {};
   if (!id || !VALID_IDS.has(id)) {
     return res.status(400).json({ error: `Invalid id: ${id}` });
   }
-  if (!base64 || typeof base64 !== "string") {
-    return res.status(400).json({ error: "Missing base64 data" });
+
+  // Two modes:
+  //   1. File upload (base64) → commit file to /banners, wire BANNERS map
+  //   2. External URL (e.g. Supabase Storage) → only wire BANNERS map
+  const urlOnly = !!externalUrl && (!base64 || base64.length === 0);
+  if (!urlOnly && (!base64 || typeof base64 !== "string")) {
+    return res.status(400).json({ error: "Missing base64 data or url" });
   }
-  if (base64.length > 8 * 1024 * 1024) {
+  if (urlOnly && !/^https:\/\/\S+$/i.test(externalUrl)) {
+    return res.status(400).json({ error: "URL must start with https://" });
+  }
+  if (!urlOnly && base64.length > 8 * 1024 * 1024) {
     return res.status(413).json({ error: "Banner too large (max 8 MB)" });
   }
 
@@ -87,35 +95,37 @@ export default async function handler(req, res) {
   const fileApi = `https://api.github.com/repos/${owner}/${repoName}/contents/${path}`;
 
   try {
-    // Look up existing file SHA (required to update, not just create)
-    let sha;
-    const headRes = await fetch(`${fileApi}?ref=${encodeURIComponent(branch)}`, { headers });
-    if (headRes.ok) {
-      const data = await headRes.json();
-      sha = data.sha;
-    } else if (headRes.status !== 404) {
-      const txt = await headRes.text();
-      return res.status(headRes.status).json({
-        error: `GitHub HEAD failed (${headRes.status}): ${txt.slice(0, 300)}`,
-      });
-    }
+    if (!urlOnly) {
+      // Look up existing file SHA (required to update, not just create)
+      let sha;
+      const headRes = await fetch(`${fileApi}?ref=${encodeURIComponent(branch)}`, { headers });
+      if (headRes.ok) {
+        const data = await headRes.json();
+        sha = data.sha;
+      } else if (headRes.status !== 404) {
+        const txt = await headRes.text();
+        return res.status(headRes.status).json({
+          error: `GitHub HEAD failed (${headRes.status}): ${txt.slice(0, 300)}`,
+        });
+      }
 
-    // PUT the banner file
-    const putRes = await fetch(fileApi, {
-      method: "PUT",
-      headers,
-      body: JSON.stringify({
-        message: `banners: ${sha ? "update" : "add"} ${id} (via upload-banner)`,
-        content: base64,
-        branch,
-        ...(sha ? { sha } : {}),
-      }),
-    });
-    if (!putRes.ok) {
-      const errText = await putRes.text();
-      return res.status(putRes.status).json({
-        error: `GitHub upload failed (${putRes.status}): ${errText.slice(0, 300)}`,
+      // PUT the banner file
+      const putRes = await fetch(fileApi, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({
+          message: `banners: ${sha ? "update" : "add"} ${id} (via upload-banner)`,
+          content: base64,
+          branch,
+          ...(sha ? { sha } : {}),
+        }),
       });
+      if (!putRes.ok) {
+        const errText = await putRes.text();
+        return res.status(putRes.status).json({
+          error: `GitHub upload failed (${putRes.status}): ${errText.slice(0, 300)}`,
+        });
+      }
     }
 
     // Patch the BANNERS map in index.html so all visitors see the banner.
@@ -131,9 +141,11 @@ export default async function handler(req, res) {
         const ihText = Buffer.from(ihData.content, "base64").toString("utf-8");
         // Absolute URL so the BANNERS map works in real email clients
         // (Gmail / Outlook can't resolve "./banners/X.png") and inside the
-        // viewer iframe srcdoc.
+        // viewer iframe srcdoc. In urlOnly mode use the caller's URL
+        // directly (e.g. Supabase Storage); otherwise point at our /banners.
         const publicBase = (process.env.PUBLIC_URL || `https://${req.headers.host || "maxxed-emails-site.vercel.app"}`).replace(/\/$/, "");
-        const wantLine = `"${id}": "${publicBase}/${path}"`;
+        const finalUrl = urlOnly ? externalUrl : `${publicBase}/${path}`;
+        const wantLine = `"${id}": "${finalUrl}"`;
         const re = new RegExp(`"${id.replace(/[-]/g, "\\-")}":\\s*(?:null|"[^"]*")`);
         if (re.test(ihText)) {
           if (!ihText.includes(wantLine)) {
@@ -186,11 +198,14 @@ export default async function handler(req, res) {
     }
 
     const publicBase = (process.env.PUBLIC_URL || `https://${req.headers.host || "maxxed-emails-site.vercel.app"}`).replace(/\/$/, "");
+    const responseUrl = urlOnly ? externalUrl : `${publicBase}/${path}`;
     return res.status(200).json({
       ok: true,
-      url: `${publicBase}/${path}`,
+      url: responseUrl,
       mapWired,
-      message: `${id} uploaded — live in ~30s after Vercel rebuilds`,
+      message: urlOnly
+        ? `${id} URL wired — live in ~30s after Vercel rebuilds`
+        : `${id} uploaded — live in ~30s after Vercel rebuilds`,
     });
   } catch (e) {
     console.error("upload-banner error:", e);

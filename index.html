@@ -730,13 +730,10 @@ const BANNERS = {
   "B-06": null,
   "C-01": null,
   "C-02": null,
-  "C-06": "https://maxxed-emails-site.vercel.app/banners/C-06.png",
+  "C-06": null,
   "D-00": null,
-  "D-01": "https://maxxed-emails-site.vercel.app/banners/D-01.png",
+  "D-01": null,
   "D-03": null,
-  "C-05": "https://maxxed-emails-site.vercel.app/banners/C-05.png",
-  "C-04": "https://maxxed-emails-site.vercel.app/banners/C-04.png",
-  "C-03": "https://maxxed-emails-site.vercel.app/banners/C-03.png",
 };
 
 /* Per-email custom banner srcs (loaded from localStorage at startup;
@@ -1145,6 +1142,11 @@ function saveCustomBanners(){
   localStorage.setItem("maxxed-banners", JSON.stringify(persistable));
 }
 
+// Debounced auto-deploy: when you paste/type a full https:// URL, push it
+// to the server so it lands in the BANNERS map and every visitor sees it.
+let urlDeployTimer = null;
+let lastDeployedUrl = {}; // per-id memo to avoid re-posting the same URL
+
 bannerUrlInput.addEventListener("input", () => {
   const def = current();
   const v = bannerUrlInput.value.trim();
@@ -1152,7 +1154,35 @@ bannerUrlInput.addEventListener("input", () => {
   else   delete customBanners[def.id];
   saveCustomBanners();
   render();
+
+  // Auto-deploy only fully-formed https URLs (skip while user is mid-typing).
+  // Debounce 700ms so we don't fire on every keystroke.
+  clearTimeout(urlDeployTimer);
+  if (v && /^https:\/\/\S+\.\S+/i.test(v) && lastDeployedUrl[def.id] !== v) {
+    urlDeployTimer = setTimeout(() => publishUrlViaApi(def.id, v), 700);
+  }
 });
+
+async function publishUrlViaApi(id, url){
+  try {
+    const res = await fetch("/api/upload-banner", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, url }),
+    });
+    if (!res.ok) {
+      let msg = `URL deploy failed (${res.status})`;
+      try { const j = await res.json(); if (j && j.error) msg = j.error; } catch {}
+      throw new Error(msg);
+    }
+    const j = await res.json();
+    lastDeployedUrl[id] = url;
+    showToast(j.message || `${id} URL deployed — live in ~30s`);
+  } catch (err) {
+    console.warn("URL auto-deploy failed:", err);
+    // Quiet failure — the URL still works locally; we just couldn't share it.
+  }
+}
 
 bannerFileInput.addEventListener("change", (e) => {
   const file = e.target.files && e.target.files[0];
