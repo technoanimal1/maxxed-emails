@@ -721,7 +721,7 @@ function buildDefaultFooter(theme){
    that saves overrides to localStorage — those take priority over
    this map. Use `null` to keep the placeholder. */
 const BANNERS = {
-  "A-01": "./banners/A-01.png",
+  "A-01": "https://maxxed-emails-site.vercel.app/banners/A-01.png",
   "B-01": null,  // e.g. "./banners/B-01.png"
   "B-02": null,
   "B-03": null,
@@ -917,6 +917,7 @@ function buildEmail(def, footer, theme){
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<base href="${(typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin + '/' : 'https://maxxed-emails-site.vercel.app/'}">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
 <meta name="color-scheme" content="${theme === 'dark' ? 'dark' : 'light'}">

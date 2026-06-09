@@ -129,7 +129,11 @@ export default async function handler(req, res) {
       if (ihRes.ok) {
         const ihData = await ihRes.json();
         const ihText = Buffer.from(ihData.content, "base64").toString("utf-8");
-        const wantLine = `"${id}": "./${path}"`;
+        // Absolute URL so the BANNERS map works in real email clients
+        // (Gmail / Outlook can't resolve "./banners/X.png") and inside the
+        // viewer iframe srcdoc.
+        const publicBase = (process.env.PUBLIC_URL || `https://${req.headers.host || "maxxed-emails-site.vercel.app"}`).replace(/\/$/, "");
+        const wantLine = `"${id}": "${publicBase}/${path}"`;
         const re = new RegExp(`"${id.replace(/[-]/g, "\\-")}":\\s*(?:null|"[^"]*")`);
         if (re.test(ihText)) {
           if (!ihText.includes(wantLine)) {
