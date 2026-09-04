@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Maxxed Partners — Affiliate Program</title>
+<meta name="description" content="Maxxed Partners is the official affiliate program for Maxxed.io — up to 50% RevShare, no negative carryover, monthly crypto payouts. Casino & sport, one deal." />
+<meta name="theme-color" content="#050505" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Maxxed Partners — Affiliate Program" />
+<meta property="og:description" content="Up to 50% RevShare. No negative carryover. Monthly crypto payouts. Casino & sport, one deal." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Anton&display=swap" rel="stylesheet" />
+<style>
+  /* ─── Maxxed Partners — responsive rebuild of the Framer landing ─── */
+  @font-face {
+    font-family: "PP Right Grotesk Compact Dark";
+    src: url("https://framerusercontent.com/assets/MCsGYC4nzIhUPFZcPpY9pBD50.woff2") format("woff2");
+    font-display: swap; font-style: normal; font-weight: 800;
+  }
+
+  :root {
+    --bg:      #050505;
+    --surface: #0e0e0e;
+    --surface2:#171717;
+    --line:    #1c1c1c;
+    --line2:   #262626;
+    --accent:  #22f779;
+    --accent-2:#8ffc80;
+    --accent-ink:#050505;
+    --white:   #ffffff;
+    --dim:     #8a8a8a;
+    --muted:   #555555;
+
+    --display: "PP Right Grotesk Compact Dark", "Anton", "Inter", system-ui, sans-serif;
+    --body:    "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --maxw: 1240px;
+    --gutter: clamp(20px, 5vw, 48px);
+    --radius: 18px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, svg, video { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+
+  /* ── Typography helpers ── */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .eyebrow.dim { color: var(--dim); }
+  .display {
+    font-family: var(--display);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+  .h2 { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 6vw, 64px); line-height: 1.1; }
+  .h3 { font-family: var(--display); font-weight: 800; font-size: clamp(22px, 3.4vw, 40px); line-height: 1.15; text-transform: uppercase; }
+  .lead { color: var(--dim); font-size: clamp(15px, 1.6vw, 17px); }
+  .kicker { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
+  .body-sm { color: var(--dim); font-size: 13px; }
+
+  .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+  section { position: relative; }
+  .center { text-align: center; }
+  .dot { width: 7px; height: 7px; background: var(--accent); transform: rotate(45deg); flex: none; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: var(--body); font-weight: 800; font-size: 13px;
+    letter-spacing: .08em; text-transform: uppercase;
+    padding: 14px 22px; border-radius: var(--radius-sm);
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-2); }
+  .btn-ghost { background: var(--surface2); color: var(--white); border-color: var(--line2); }
+  .btn-ghost:hover { border-color: var(--accent); }
+  .btn-block { width: 100%; }
+
+  /* ── Header / top eyebrow row ── */
+  header.top { padding-top: clamp(56px, 9vw, 104px); }
+
+  /* ── HERO ── */
+  .hero-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 48px);
+    align-items: center; padding-block: clamp(40px, 6vw, 60px) clamp(56px, 8vw, 96px);
+  }
+  .hero-badge { display: inline-flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+  .hero h1 { font-family: var(--display); font-weight: 800; font-size: clamp(64px, 12vw, 104px); line-height: 1; margin-bottom: 4px; }
+  .hero-logo { width: min(340px, 78vw); margin: 10px 0 28px; }
+  .hero-logo svg { width: 100%; height: auto; }
+  .hero-tag { font-size: clamp(16px, 2vw, 20px); color: var(--white); max-width: 46ch; margin-bottom: 28px; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-media {
+    aspect-ratio: 1 / 1; width: 100%; border-radius: var(--radius);
+    overflow: hidden; background: var(--surface2); border: 1px solid var(--line);
+  }
+  .hero-media video { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── Marquee ── */
+  .marquee {
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    background: var(--bg); overflow: hidden; padding-block: 16px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track { display: inline-flex; align-items: center; gap: 40px; white-space: nowrap; animation: scroll 32s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-item { display: inline-flex; align-items: center; gap: 40px; font-family: var(--mono); font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: #8a8a8a; }
+  .marquee-item .dot { width: 6px; height: 6px; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* ── Generic section spacing ── */
+  .band { padding-block: clamp(64px, 10vw, 120px); }
+  .band-tight { padding-block: clamp(48px, 7vw, 80px); }
+  .section-head { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; margin-bottom: clamp(36px, 6vw, 56px); }
+  .section-head .lead { max-width: 60ch; }
+
+  /* ── Product cards ── */
+  .cards-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+  .prod-card {
+    position: relative; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: clamp(28px, 3.5vw, 36px);
+  }
+  .prod-card .tag { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
+  .prod-card h3 { margin: 20px 0 16px; }
+  .prod-card p { color: var(--dim); font-size: 15px; max-width: 44ch; }
+  .stats { display: flex; flex-wrap: wrap; gap: clamp(28px, 5vw, 48px); margin-top: 36px; }
+  .stat .num { font-family: var(--body); font-weight: 800; font-size: clamp(28px, 4vw, 36px); letter-spacing: -.03em; }
+  .stat .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+  .prod-card .art { position: absolute; right: -30px; bottom: -70px; width: 190px; opacity: .9; pointer-events: none; }
+
+  /* ── Commission tiers ── */
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .tier {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 40px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  .tier .pct { font-family: var(--display); font-weight: 800; font-size: clamp(64px, 8vw, 104px); line-height: 1; color: var(--accent); letter-spacing: -.04em; }
+  .tier .bar { width: 100%; height: 14px; border-radius: 8px; background: var(--surface2); overflow: hidden; }
+  .tier .bar > span { display: block; height: 100%; border-radius: 8px; background: var(--accent); }
+  .tier .note { color: var(--white); font-size: 13px; }
+  .foot-note { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 28px; }
+
+  /* ── Benefits grid ── */
+  .benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .benefit { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 28px; }
+  .benefit .big { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
+  .benefit h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 26px; margin: 14px 0 10px; }
+  .benefit p { color: var(--dim); font-size: 13px; }
+
+  /* ── Steps ── */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 36px; }
+  .step .no { font-family: var(--body); font-weight: 800; font-size: 80px; letter-spacing: -.04em; color: var(--muted); line-height: 1; }
+  .step h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 28px; margin: 22px 0 12px; }
+  .step p { color: var(--dim); font-size: 13px; }
+
+  /* ── Media kit ── */
+  .kit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .kit-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+  .kit-card .thumb { height: 180px; background: var(--surface2); border-bottom: 1px solid var(--line); position: relative; }
+  .kit-card .thumb::after { content: ""; position: absolute; inset: 0; background:
+    repeating-linear-gradient(45deg, transparent 0 14px, rgba(143,252,128,.05) 14px 15px); }
+  .kit-card .body { padding: 28px; }
+  .kit-card h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 24px; margin-bottom: 12px; }
+  .kit-card p { color: var(--dim); font-size: 13px; margin-bottom: 20px; }
+  .kit-card .avail { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
+
+  /* ── Testimonials ── */
+  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .quote { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 32px; display: flex; flex-direction: column; }
+  .quote .mark { font-family: var(--body); font-weight: 900; font-size: 56px; line-height: .5; color: var(--accent); height: 34px; }
+  .quote p { color: var(--dim); font-size: 15px; margin-bottom: 28px; flex: 1; }
+  .quote .who { display: flex; align-items: center; gap: 12px; }
+  .quote .who .av { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--line2); flex: none; }
+  .quote .who .name { font-size: 13px; font-weight: 500; }
+  .quote .who .role { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+
+  /* ── FAQ ── */
+  .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .faq details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 24px 28px; }
+  .faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(18px, 2vw, 22px); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; color: var(--accent); font-family: var(--mono); font-size: 22px; transition: transform .2s ease; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { color: var(--dim); font-size: 13px; margin-top: 14px; }
+
+  /* ── Apply ── */
+  .apply-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 48px); align-items: start; }
+  .apply-info h2 .green { color: var(--accent); }
+  .apply-info .display-xl { font-family: var(--display); font-weight: 800; font-size: clamp(48px, 8vw, 104px); line-height: .95; }
+  .apply-info .display-xl .green { color: var(--accent); }
+  .contact { display: flex; flex-direction: column; gap: 18px; margin-top: 40px; }
+  .contact .row { display: flex; align-items: baseline; gap: 12px; }
+  .contact .k { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 800; width: 80px; flex: none; }
+  .contact .v { font-size: 13px; }
+
+  form.apply { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: clamp(24px, 3vw, 32px); }
+  .field { margin-bottom: 18px; }
+  .field.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  label { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+  input, select, textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--white); font-family: var(--body); font-size: 13px; padding: 12px 14px;
+  }
+  textarea { resize: vertical; min-height: 96px; }
+  input::placeholder, textarea::placeholder { color: var(--dim); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--dim) 50%), linear-gradient(135deg, var(--dim) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px; background-size: 5px 5px; background-repeat: no-repeat; }
+  form.apply .btn { margin-top: 6px; }
+  .legal { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); margin-top: 16px; text-align: center; }
+
+  /* ── Footer ── */
+  footer.site { border-top: 1px solid var(--line); padding-block: clamp(40px, 6vw, 56px); }
+  .foot-grid { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+  .foot-grid .big { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 5vw, 56px); color: var(--muted); line-height: 1; }
+  .foot-right { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; text-align: right; max-width: 420px; }
+  .foot-right p { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 15px; letter-spacing: .02em; }
+  .foot-right .mark { width: 120px; }
+
+  /* ── Floating nav ── */
+  .navpill { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 50; padding-inline: 12px; width: max-content; max-width: calc(100vw - 24px); }
+  .navpill-inner {
+    display: flex; align-items: center; gap: clamp(18px, 3vw, 36px);
+    background: rgba(26,26,26,.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--line2); border-radius: 12px; padding: 14px 18px;
+  }
+  .navpill .mark { width: 40px; flex: none; }
+  .navpill a.link { font-family: var(--mono); font-size: 12px; letter-spacing: .05em; color: #bdbdbd; transition: color .2s ease; }
+  .navpill a.link:hover { color: var(--white); }
+  .navpill .btn { padding: 8px 16px; }
+  @media (max-width: 720px) { .navpill a.link { display: none; } }
+
+  /* ── Responsive breakpoints ── */
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-media { max-width: 480px; order: -1; }
+    .cards-2 { grid-template-columns: 1fr; }
+    .tiers { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
+    .benefits { grid-template-columns: 1fr 1fr; }
+    .steps { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
+    .kit { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
+    .quotes { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
+    .faq { grid-template-columns: 1fr; }
+    .apply-grid { grid-template-columns: 1fr; }
+    .foot-grid { flex-direction: column; align-items: flex-start; }
+    .foot-right { align-items: flex-start; text-align: left; }
+  }
+  @media (max-width: 560px) {
+    .benefits { grid-template-columns: 1fr; }
+    .field.row2 { grid-template-columns: 1fr; }
+    .stats { gap: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+    html { scroll-behavior: auto; }
+    .btn:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ══ HERO ══ -->
+  <header class="top" id="top">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero">
+          <span class="hero-badge"><span class="dot"></span><span class="eyebrow">Launching September 2026</span></span>
+          <h1>ALL.</h1>
+          <div class="hero-logo" aria-label="Maxxed">
+            <!-- Maxxed wordmark -->
+            <svg viewBox="0 0 120 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Maxxed">
+              <path d="M66.0935 12.5644L120 0L119.83 44.612H56.6084L58.1294 37.2963L0 48V4.40405H67.5579L66.0935 12.5644Z" fill="#8FFC80"/>
+              <path d="M18.2275 27.0434L18.1676 27.0529L15.9192 14.3234L7.95508 15.4919V37.5375L13.1637 36.7723V20.3468L13.2235 20.3373L16.19 36.3278L20.202 35.7372L23.1684 18.8767L23.2283 18.8671V35.2926L28.44 34.5274V12.4818L20.4728 13.6534L18.2275 27.0434Z" fill="#050505"/>
+              <path d="M43.2027 28.7453V20.5945C43.2027 19.5022 43.0484 18.6354 42.7398 17.9908C42.4312 17.3462 41.9903 16.8668 41.4235 16.5492C40.8535 16.2317 40.1764 16.0539 39.386 16.0158C38.5956 15.9777 37.7327 16.0285 36.7943 16.165C36.1739 16.2571 35.5063 16.4222 34.7883 16.6604C34.0703 16.9017 33.3995 17.2668 32.7823 17.759C32.1619 18.2512 31.6455 18.8926 31.2235 19.6864C30.8047 20.4802 30.5937 21.4835 30.5937 22.6965L35.2638 22.0106C35.2827 21.1247 35.415 20.5119 35.6543 20.1785C35.8936 19.8451 36.2715 19.6387 36.7911 19.5625C37.7107 19.4292 38.1673 19.8737 38.1673 20.9025C38.1673 21.4169 38.0476 21.8296 37.8083 22.144C37.569 22.4583 37.1596 22.7282 36.5801 22.9568L34.4545 23.7951C33.5948 24.1285 32.8768 24.4841 32.2974 24.8683C31.7179 25.2525 31.2582 25.6812 30.9212 26.1511C30.5811 26.6242 30.3386 27.1577 30.1875 27.7578C30.0394 28.3579 29.9639 29.0469 29.9639 29.8281C29.9639 30.5488 30.0426 31.1966 30.2032 31.7681C30.3638 32.3428 30.622 32.8191 30.981 33.197C31.34 33.5748 31.8061 33.832 32.3729 33.9654C32.9429 34.0987 33.6357 34.1051 34.4545 33.9844C35.2922 33.8606 36.0354 33.5653 36.6841 33.1017C37.3328 32.635 37.8083 32.0094 38.1075 31.2252L38.1673 31.2156C38.2082 31.5586 38.246 31.8824 38.287 32.1873C38.3279 32.4889 38.3972 32.7778 38.4948 33.0509L43.7034 32.2857C43.483 31.8856 43.3444 31.3934 43.2846 30.806C43.2248 30.2186 43.1933 29.5328 43.1933 28.7517L43.2027 28.7453ZM38.1736 27.0465C38.1736 27.9737 38.0445 28.6818 37.7831 29.174C37.5249 29.6661 37.0935 29.9551 36.4951 30.0408C36.0952 30.1011 35.7771 29.9805 35.5378 29.6883C35.2985 29.393 35.1788 28.9707 35.1788 28.4151C35.1788 27.8594 35.2575 27.399 35.4181 27.037C35.5787 26.675 35.8684 26.3575 36.2873 26.0908C36.6872 25.8463 37.0525 25.6748 37.38 25.5764C37.7107 25.478 37.9532 25.3033 38.1138 25.0525L38.1736 25.043V27.0497V27.0465Z" fill="#050505"/>
+              <path d="M83.2536 17.9273L77.8623 18.7179L76.0044 23.4681L74.3889 19.2291L68.9976 20.0198V20.0261L54.8014 22.1122L54.7636 22.0456L58.8386 13.3581L53.4473 14.1488L51.5893 18.8989L49.9738 14.66L44.5825 15.4538L48.6858 22.9378L44.4912 32.1682L49.7943 31.3903L51.7688 26.0654L53.6583 30.8219L54.6534 30.6758V30.679L72.8741 28.0023L68.9063 36.7374L74.2094 35.9594L76.1839 30.6346L78.0702 35.3911L83.4615 34.6004L79.1787 26.6147L83.2536 17.9273Z" fill="#050505"/>
+              <path d="M95.1572 17.4891C94.6093 16.943 93.9291 16.5937 93.1198 16.4445C92.3104 16.2952 91.3688 16.3016 90.2887 16.4603C89.07 16.6382 88.0276 16.9525 87.1585 17.4002C86.2893 17.8479 85.5745 18.4607 85.0171 19.2419C84.4565 20.023 84.0472 20.9882 83.7889 22.1377C83.5307 23.2871 83.3984 24.6652 83.3984 26.2718C83.3984 27.8785 83.5118 29.1867 83.7417 30.2663C83.9716 31.3427 84.3558 32.1873 84.8943 32.7969C85.4328 33.4066 86.1413 33.7971 87.0199 33.9654C87.8985 34.1337 88.985 34.1242 90.2856 33.9337C92.5214 33.6066 94.1275 32.8509 95.1068 31.6665C96.0862 30.4822 96.5932 28.8596 96.6341 26.7957L91.7845 27.507C91.7845 28.6374 91.6491 29.4248 91.3814 29.8662C91.1106 30.3075 90.739 30.5616 90.2572 30.6346C89.8762 30.6917 89.5392 30.5901 89.24 30.3361C88.9409 30.0821 88.7897 29.501 88.7897 28.5961V26.4052L96.7853 25.2303V23.5316C96.7853 22.0075 96.6499 20.7564 96.3822 19.7785C96.1114 18.8005 95.702 18.0353 95.1541 17.4891H95.1572ZM91.7593 22.9442L89.5203 23.2744C89.1361 23.3316 88.7929 23.0299 88.7929 22.6394C88.7929 21.7535 88.8968 21.0898 89.1078 20.6485C89.3188 20.2071 89.703 19.9436 90.2604 19.861C90.8398 19.7753 91.2334 19.9245 91.4444 20.3056C91.6554 20.6866 91.7593 21.3185 91.7593 22.2043V22.9442Z" fill="#050505"/>
+              <path d="M106.223 9.21126V16.4349L106.163 16.4444C105.883 15.6221 105.439 15.0854 104.831 14.8346C104.22 14.5838 103.537 14.5139 102.781 14.625C102.041 14.733 101.364 14.9775 100.744 15.3553C100.123 15.7332 99.6004 16.2857 99.1722 17.0065C98.7407 17.7272 98.4069 18.6417 98.1676 19.7467C97.9283 20.8517 97.8086 22.198 97.8086 23.7824C97.8086 26.891 98.1676 29.1231 98.8856 30.479C99.6036 31.8348 100.863 32.3809 102.658 32.1174C103.616 31.9777 104.384 31.657 104.963 31.1616C105.543 30.6663 106.003 29.9297 106.34 28.9517L106.399 28.9422V31.2283L111.611 30.4631V8.41745L106.22 9.20808L106.223 9.21126ZM106.163 25.1509C106.122 25.7542 106.047 26.2432 105.94 26.6211C105.829 26.9989 105.675 27.272 105.477 27.4466C105.278 27.6213 105.026 27.7292 104.727 27.7737C104.409 27.8213 104.148 27.7864 103.949 27.6721C103.751 27.5578 103.594 27.3291 103.486 26.983C103.376 26.6401 103.301 26.1702 103.263 25.5796C103.222 24.989 103.203 24.2492 103.203 23.3664C103.203 22.4837 103.222 21.7058 103.263 21.1025C103.304 20.4992 103.376 20.0102 103.486 19.6324C103.597 19.2577 103.751 18.9815 103.949 18.8068C104.148 18.6354 104.409 18.5242 104.727 18.4766C105.026 18.4321 105.275 18.4671 105.477 18.5814C105.675 18.6957 105.833 18.9275 105.94 19.2704C106.05 19.6133 106.125 20.0833 106.163 20.6738C106.204 21.2644 106.223 22.0138 106.223 22.9187C106.223 23.8237 106.204 24.5476 106.163 25.1509Z" fill="#050505"/>
+            </svg>
+          </div>
+          <p class="hero-tag">Maxxed Partners is the official affiliate program for Maxxed.io, built around crypto, performance, and long-term partnerships.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#apply">Become a partner</a>
+            <a class="btn btn-ghost" href="#commission">View commission</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <video src="https://framerusercontent.com/assets/wOOj199fLA0yW7AnvAvatTyZI8.mp4" autoplay loop muted playsinline preload="metadata"></video>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ MARQUEE ══ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item">
+        <span class="dot"></span>Up to 50% RevShare<span class="dot"></span>No negative carryover<span class="dot"></span>Monthly payouts<span class="dot"></span>Casino &amp; sport, one deal<span class="dot"></span>Real-time dashboard<span class="dot"></span>Dedicated manager<span class="dot"></span>Crypto payouts
+      </span>
+      <span class="marquee-item">
+        <span class="dot"></span>Up to 50% RevShare<span class="dot"></span>No negative carryover<span class="dot"></span>Monthly payouts<span class="dot"></span>Casino &amp; sport, one deal<span class="dot"></span>Real-time dashboard<span class="dot"></span>Dedicated manager<span class="dot"></span>Crypto payouts
+      </span>
+    </div>
+  </div>
+
+  <!-- ══ PRODUCT ══ -->
+  <section class="band" id="products">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The product, one deal</span>
+        <h2 class="h2">What your players get</h2>
+      </div>
+      <div class="cards-2">
+        <article class="prod-card">
+          <span class="tag">Casino</span>
+          <h3 class="h3">Slots, live &amp; originals</h3>
+          <p>A full crypto casino — top-tier slots, live dealer tables, game shows and Maxxed Originals players won't find anywhere else. Instant deposits, crypto payouts.</p>
+          <div class="stats">
+            <div class="stat"><div class="num">5,000+</div><div class="lbl">Games</div></div>
+            <div class="stat"><div class="num">80+</div><div class="lbl">Providers</div></div>
+            <div class="stat"><div class="num">10+</div><div class="lbl">Originals</div></div>
+          </div>
+        </article>
+        <article class="prod-card">
+          <span class="tag">Sport</span>
+          <h3 class="h3">Pre-match, live &amp; cash-out</h3>
+          <p>A complete sportsbook covering every major league and event. Sharp odds, deep markets, live betting and cash-out — built for punters who take it seriously.</p>
+          <div class="stats">
+            <div class="stat"><div class="num">35+</div><div class="lbl">Sports</div></div>
+            <div class="stat"><div class="num">1,000+</div><div class="lbl">Markets</div></div>
+            <div class="stat"><div class="num">50K+</div><div class="lbl">Events/mo</div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ COMMISSION ══ -->
+  <section class="band" id="commission">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Commission structure</span>
+        <h2 class="h2">Scales with your volume</h2>
+        <p class="lead">Your rate is set by the net revenue your players generate each month. More volume, bigger share — no caps, no negative carryover.</p>
+      </div>
+      <div class="tiers">
+        <div class="tier"><div class="pct">30%</div><div class="bar"><span style="width:33%"></span></div><div class="note">up to €10,000 / mo net revenue</div></div>
+        <div class="tier"><div class="pct">40%</div><div class="bar"><span style="width:66%"></span></div><div class="note">up to €25,000 / mo net revenue</div></div>
+        <div class="tier"><div class="pct">50%</div><div class="bar"><span style="width:100%"></span></div><div class="note">up to €40,000 / mo net revenue</div></div>
+      </div>
+      <p class="foot-note">* Achieved in net-deposit activity. CPA and hybrid deals available on request.</p>
+    </div>
+  </section>
+
+  <!-- ══ WHY PARTNER ══ -->
+  <section class="band" id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Why partner with Maxxed</span>
+        <h2 class="h2">What you get as a partner</h2>
+      </div>
+      <div class="benefits">
+        <div class="benefit"><span class="big">Up to 50%</span><h3>RevShare that scales</h3><p>Rate grows with your players' revenue. No hidden caps.</p></div>
+        <div class="benefit"><span class="big">Zero</span><h3>Negative carryover</h3><p>A bad month never rolls into the next. Every month starts clean.</p></div>
+        <div class="benefit"><span class="big">Monthly</span><h3>Crypto payouts</h3><p>Paid every month, straight to your wallet. No fiat delays.</p></div>
+        <div class="benefit"><span class="big">2-in-1</span><h3>Casino + sport</h3><p>One link, both products. Earn on every player, whatever they play.</p></div>
+        <div class="benefit"><span class="big">Live</span><h3>Real-time dashboard</h3><p>Clicks, signups, deposits and revenue — tracked as it happens.</p></div>
+        <div class="benefit"><span class="big">1:1</span><h3>Dedicated manager</h3><p>A real person who knows your account and answers fast.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <section class="band" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">How it works</span>
+        <h2 class="h2">Live in 3 steps</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="no">01</div><h3>Sign up</h3><p>Apply in minutes. We review and approve within 24 hours — no minimum traffic to start.</p></div>
+        <div class="step"><div class="no">02</div><h3>Promote</h3><p>Grab your tracking links and creatives from the dashboard and share them with your audience.</p></div>
+        <div class="step"><div class="no">03</div><h3>Get paid</h3><p>Track every player in real time and collect your RevShare in crypto, every month.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ MEDIA KIT ══ -->
+  <section class="band" id="mediakit">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Affiliate media kit</span>
+        <h2 class="h2">Everything you need to promote</h2>
+        <p class="lead">On-brand creatives, ready to run. Available in your dashboard the moment you're approved.</p>
+      </div>
+      <div class="kit">
+        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Banners &amp; display</h3><p>All standard IAB sizes, static and animated. Casino, sport and event-based.</p><span class="avail">Available at launch →</span></div></div>
+        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Logos &amp; brand pack</h3><p>Logos, wordmarks and color guidance in SVG and PNG. Light and dark.</p><span class="avail">Available at launch →</span></div></div>
+        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Social templates</h3><p>Story, post and Telegram formats — editable, ready to drop your first link into.</p><span class="avail">Available at launch →</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TESTIMONIALS ══ -->
+  <section class="band" id="partners-say">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What partners say</span>
+        <h2 class="h2">Proven, not promised</h2>
+        <p class="lead">Placeholder testimonials — swap for real quotes before launch.</p>
+      </div>
+      <div class="quotes">
+        <div class="quote"><div class="mark">"</div><p>The 50% tier is the real deal — no negative carryover means a slow month never eats into the next. First affiliate program I trust with sportsbook traffic.</p><div class="who"><span class="av"></span><div><div class="name">Media buyer</div><div class="role">LATAM · Sport</div></div></div></div>
+        <div class="quote"><div class="mark">"</div><p>One link for casino and sport, and a manager who actually replies. My community converts and the dashboard shows every deposit in real time.</p><div class="who"><span class="av"></span><div><div class="name">Telegram admin</div><div class="role">Crypto community</div></div></div></div>
+        <div class="quote"><div class="mark">"</div><p>Payouts land on time, in crypto, every month. The creatives are on-brand out of the box so I spend my time driving traffic, not making banners.</p><div class="who"><span class="av"></span><div><div class="name">Streamer</div><div class="role">Casino content</div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FAQ ══ -->
+  <section class="band" id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="h2">Good to know</h2>
+      </div>
+      <div class="faq">
+        <details open><summary>How is my commission calculated?</summary><p>On net revenue from the players you refer, across casino and sport. Your tier — 30, 40 or 50% — is set by your monthly net revenue.</p></details>
+        <details><summary>When and how do I get paid?</summary><p>Monthly, in crypto, straight to your wallet. No negative carryover — a down month never rolls forward.</p></details>
+        <details><summary>Is there a minimum traffic requirement?</summary><p>No minimum to join. Bigger volume moves you up the tiers faster — CPA and hybrid deals available on request.</p></details>
+        <details><summary>Do I promote casino and sport separately?</summary><p>No — one link covers both. You earn on every player you refer, whatever they choose to play.</p></details>
+        <details><summary>How fast is approval?</summary><p>We review applications and get back to you within 24 hours. Once approved, links and creatives are ready in your dashboard.</p></details>
+        <details><summary>Which regions can I send traffic from?</summary><p>Most markets are open. A short list of restricted territories applies — your manager will confirm on approval.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ APPLY ══ -->
+  <section class="band" id="apply">
+    <div class="wrap">
+      <div class="apply-grid">
+        <div class="apply-info">
+          <span class="eyebrow" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:20px;"><span class="dot"></span>Become a partner</span>
+          <div class="display-xl">Apply in<br><span class="green">2 minutes</span></div>
+          <p class="lead" style="margin-top:24px;max-width:44ch;">Tell us about your project. We'll review and get back within 24 hours with your rate and links.</p>
+          <div class="contact">
+            <div class="row"><span class="k">Email</span><span class="v">affiliates@maxxedpartners.com</span></div>
+            <div class="row"><span class="k">Telegram</span><span class="v">@Maxxed_affiliates</span></div>
+          </div>
+        </div>
+
+        <form class="apply" onsubmit="event.preventDefault(); this.reset(); alert('Thanks — your application has been noted. Wire this form to your CRM before launch.');">
+          <div class="field row2">
+            <div><label for="name">Name</label><input id="name" name="name" type="text" placeholder="Your name" required /></div>
+            <div><label for="email">Email</label><input id="email" name="email" type="email" placeholder="you@domain.com" required /></div>
+          </div>
+          <div class="field row2">
+            <div><label for="source">Traffic source</label>
+              <select id="source" name="source">
+                <option>SEO / Website</option><option>Telegram</option><option>YouTube / Streaming</option>
+                <option>Paid ads</option><option>Social</option><option>Other</option>
+              </select>
+            </div>
+            <div><label for="volume">Monthly volume</label>
+              <select id="volume" name="volume">
+                <option>Just starting</option><option>€0–10k net/mo</option><option>€10–25k net/mo</option>
+                <option>€25–40k net/mo</option><option>€40k+ net/mo</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label for="tg">Telegram (optional)</label><input id="tg" name="telegram" type="text" placeholder="@handle or https://" /></div>
+          <div class="field"><label for="about">Tell us about your traffic</label><textarea id="about" name="about" placeholder="Markets, audience, channels…"></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit">Send application</button>
+          <p class="legal">By applying you agree to the partner terms. 18+. Please gamble responsibly.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="big">Every win feels Maxxed</div>
+        <div class="foot-right">
+          <p>The official affiliate program for Maxxed.io. 18+ only. Please gamble responsibly. Program terms apply.</p>
+          <div class="mark" aria-hidden="true">
+            <svg viewBox="0 0 178 148" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#fc)">
+                <path d="M103.476 29.9821L177.671 19.4199L177.032 132.241L68.3197 147.78L73.9509 120.887L0 132.53V14.3366L108.895 0L103.476 29.9821Z" fill="#8FFC80"/>
+                <path d="M43.7255 35.4915L49.7219 51.0761L56.6011 33.6195L76.5841 30.6974L61.4865 62.6428L77.3603 91.9857L57.3772 94.8926L50.3916 77.4208L43.071 96.9777L23.4229 99.8389L38.9618 65.915L23.7577 38.3984L43.7255 35.4915Z" fill="black"/>
+                <path d="M50.3154 64.5301L61.0755 94.3752L118.772 85.9589L109.747 55.8702L59.2796 63.2212L50.3154 64.5301Z" fill="black"/>
+                <path d="M122.745 53.9222L128.741 69.5068L135.62 52.0502L155.588 49.1433L140.506 81.0735L156.379 110.416L136.396 113.323L129.395 95.8515L122.075 115.408L102.427 118.285L117.966 84.3457L102.762 56.8443L122.745 53.9222Z" fill="black"/>
+              </g>
+              <defs><clipPath id="fc"><rect width="177.671" height="147.78" fill="white"/></clipPath></defs>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ FLOATING NAV ══ -->
+  <nav class="navpill" aria-label="Primary">
+    <div class="navpill-inner">
+      <a href="#top" class="mark" aria-label="Maxxed — top">
+        <svg viewBox="0 0 178 148" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#nc)">
+            <path d="M103.476 29.9821L177.671 19.4199L177.032 132.241L68.3197 147.78L73.9509 120.887L0 132.53V14.3366L108.895 0L103.476 29.9821Z" fill="#8FFC80"/>
+            <path d="M43.7255 35.4915L49.7219 51.0761L56.6011 33.6195L76.5841 30.6974L61.4865 62.6428L77.3603 91.9857L57.3772 94.8926L50.3916 77.4208L43.071 96.9777L23.4229 99.8389L38.9618 65.915L23.7577 38.3984L43.7255 35.4915Z" fill="black"/>
+            <path d="M50.3154 64.5301L61.0755 94.3752L118.772 85.9589L109.747 55.8702L59.2796 63.2212L50.3154 64.5301Z" fill="black"/>
+            <path d="M122.745 53.9222L128.741 69.5068L135.62 52.0502L155.588 49.1433L140.506 81.0735L156.379 110.416L136.396 113.323L129.395 95.8515L122.075 115.408L102.427 118.285L117.966 84.3457L102.762 56.8443L122.745 53.9222Z" fill="black"/>
+          </g>
+          <defs><clipPath id="nc"><rect width="177.671" height="147.78" fill="white"/></clipPath></defs>
+        </svg>
+      </a>
+      <a class="link" href="#products">Products</a>
+      <a class="link" href="#commission">Commission</a>
+      <a class="link" href="#mediakit">Media kit</a>
+      <a class="link" href="#faq">FAQ</a>
+      <a class="btn btn-primary" href="#apply">Apply</a>
+    </div>
+  </nav>
+
+</body>
+</html>
