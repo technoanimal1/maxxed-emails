@@ -106,12 +106,12 @@
 
   /* ── HERO ── */
   .hero-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 48px);
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 80px);
     align-items: center; padding-block: clamp(40px, 6vw, 60px) clamp(56px, 8vw, 96px);
   }
   .hero-badge { display: inline-flex; align-items: center; gap: 14px; margin-bottom: 26px; }
-  .hero h1 { font-family: var(--display); font-weight: 800; font-size: clamp(64px, 12vw, 104px); line-height: 1; margin-bottom: 4px; }
-  .hero-logo { width: min(340px, 78vw); margin: 10px 0 28px; }
+  .hero h1 { font-family: var(--display); font-weight: 800; font-size: clamp(56px, 10vw, 88px); line-height: 1; margin-bottom: 2px; }
+  .hero-logo { width: min(300px, 68vw); margin: 6px 0 24px; }
   .hero-logo svg, .hero-logo img { width: 100%; height: auto; }
   .hero-tag { font-size: clamp(16px, 2vw, 20px); color: var(--white); max-width: 46ch; margin-bottom: 28px; }
   .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -222,29 +222,21 @@
   .contact .k { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 800; width: 80px; flex: none; }
   .contact .v { font-size: 13px; }
 
-  form.apply { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: clamp(24px, 3vw, 32px); }
-  .field { margin-bottom: 18px; }
-  .field.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  label { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
-  input, select, textarea {
-    width: 100%; background: var(--surface2); border: 1px solid var(--line); border-radius: 4px;
-    color: var(--white); font-family: var(--body); font-size: 13px; padding: 12px 14px;
-  }
-  textarea { resize: vertical; min-height: 96px; }
-  input::placeholder, textarea::placeholder { color: var(--dim); }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
-  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--dim) 50%), linear-gradient(135deg, var(--dim) 50%, transparent 50%);
-    background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px; background-size: 5px 5px; background-repeat: no-repeat; }
-  form.apply .btn { margin-top: 6px; }
-  .legal { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); margin-top: 16px; text-align: center; }
+  .apply-cta { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 640px; margin-inline: auto; }
+  .apply-cta .lead { margin-inline: auto; }
+  .btn-lg { margin-top: 32px; padding: 18px 40px; font-size: 14px; }
+  .contact-center { align-items: center; margin-top: 40px; }
+  .contact-center .row { justify-content: center; }
+  .legal { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); margin-top: 28px; text-align: center; }
 
   /* ── Footer ── */
   footer.site { border-top: 1px solid var(--line); padding-block: clamp(40px, 6vw, 56px); }
-  .foot-grid { display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
-  .foot-grid .big { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 5vw, 56px); color: var(--muted); line-height: 1; }
-  .foot-right { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; text-align: right; max-width: 420px; }
-  .foot-right p { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 15px; letter-spacing: .02em; }
-  .foot-right .mark { width: 120px; }
+  .foot-top { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .foot-mark { display: inline-block; width: 96px; flex: none; }
+  .foot-nav { display: flex; flex-wrap: wrap; gap: clamp(18px, 3vw, 34px); }
+  .foot-nav a { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); transition: color .2s ease; }
+  .foot-nav a:hover { color: var(--white); }
+  .foot-legal { margin-top: 28px; font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
 
   /* ── Floating nav ── */
   .navpill { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 50; padding-inline: 12px; width: max-content; max-width: calc(100vw - 24px); }
@@ -293,13 +285,11 @@
     <div class="wrap">
       <div class="hero-grid">
         <div class="hero">
-          <span class="hero-badge"><span class="dot"></span><span class="eyebrow">Launching September 2026</span></span>
           <h1>ALL.</h1>
           <div class="hero-logo" aria-label="Maxxed"><img src="assets/logo.svg" alt="Maxxed" width="120" height="48" /></div>
           <p class="hero-tag">Maxxed Partners is the official affiliate program for Maxxed.io, built around crypto, performance, and long-term partnerships.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#apply">Become a partner</a>
-            <a class="btn btn-ghost" href="#commission">View commission</a>
           </div>
         </div>
         <div class="hero-media">
@@ -325,14 +315,12 @@
   <section class="band" id="products">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">The product, one deal</span>
         <h2 class="h2">What your players get</h2>
       </div>
       <div class="cards-2">
         <article class="prod-card">
           <span class="tag">Casino</span>
           <h3 class="h3">Slots, live &amp; originals</h3>
-          <p>A full crypto casino — top-tier slots, live dealer tables, game shows and Maxxed Originals players won't find anywhere else. Instant deposits, crypto payouts.</p>
           <div class="stats">
             <div class="stat"><div class="num">5,000+</div><div class="lbl">Games</div></div>
             <div class="stat"><div class="num">80+</div><div class="lbl">Providers</div></div>
@@ -342,7 +330,6 @@
         <article class="prod-card">
           <span class="tag">Sport</span>
           <h3 class="h3">Pre-match, live &amp; cash-out</h3>
-          <p>A complete sportsbook covering every major league and event. Sharp odds, deep markets, live betting and cash-out — built for punters who take it seriously.</p>
           <div class="stats">
             <div class="stat"><div class="num">35+</div><div class="lbl">Sports</div></div>
             <div class="stat"><div class="num">1,000+</div><div class="lbl">Markets</div></div>
@@ -358,15 +345,14 @@
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Commission structure</span>
-        <h2 class="h2">Scales with your volume</h2>
-        <p class="lead">Your rate is set by the net revenue your players generate each month. More volume, bigger share — no caps, no negative carryover.</p>
+        <h2 class="h2">Your rate scales with revenue</h2>
       </div>
       <div class="tiers">
         <div class="tier"><div class="pct">30%</div><div class="bar"><span style="width:33%"></span></div><div class="note">up to €10,000 / mo net revenue</div></div>
         <div class="tier"><div class="pct">40%</div><div class="bar"><span style="width:66%"></span></div><div class="note">up to €25,000 / mo net revenue</div></div>
         <div class="tier"><div class="pct">50%</div><div class="bar"><span style="width:100%"></span></div><div class="note">up to €40,000 / mo net revenue</div></div>
       </div>
-      <p class="foot-note">* Achieved in net-deposit activity. CPA and hybrid deals available on request.</p>
+      <p class="foot-note">* CPA and hybrid deals available on request.</p>
     </div>
   </section>
 
@@ -375,30 +361,14 @@
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Why partner with Maxxed</span>
-        <h2 class="h2">What you get as a partner</h2>
       </div>
       <div class="benefits">
-        <div class="benefit"><span class="big">Up to 50%</span><h3>RevShare that scales</h3><p>Rate grows with your players' revenue. No hidden caps.</p></div>
+        <div class="benefit"><span class="big">Up to 50%</span><h3>RevShare that scales</h3><p>Rate grows with your players' revenue.</p></div>
         <div class="benefit"><span class="big">Zero</span><h3>Negative carryover</h3><p>A bad month never rolls into the next. Every month starts clean.</p></div>
         <div class="benefit"><span class="big">Monthly</span><h3>Crypto payouts</h3><p>Paid every month, straight to your wallet. No fiat delays.</p></div>
         <div class="benefit"><span class="big">2-in-1</span><h3>Casino + sport</h3><p>One link, both products. Earn on every player, whatever they play.</p></div>
         <div class="benefit"><span class="big">Live</span><h3>Real-time dashboard</h3><p>Clicks, signups, deposits and revenue — tracked as it happens.</p></div>
         <div class="benefit"><span class="big">1:1</span><h3>Dedicated manager</h3><p>A real person who knows your account and answers fast.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ HOW IT WORKS ══ -->
-  <section class="band" id="how">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">How it works</span>
-        <h2 class="h2">Live in 3 steps</h2>
-      </div>
-      <div class="steps">
-        <div class="step"><div class="no">01</div><h3>Sign up</h3><p>Apply in minutes. We review and approve within 24 hours — no minimum traffic to start.</p></div>
-        <div class="step"><div class="no">02</div><h3>Promote</h3><p>Grab your tracking links and creatives from the dashboard and share them with your audience.</p></div>
-        <div class="step"><div class="no">03</div><h3>Get paid</h3><p>Track every player in real time and collect your RevShare in crypto, every month.</p></div>
       </div>
     </div>
   </section>
@@ -409,12 +379,11 @@
       <div class="section-head">
         <span class="eyebrow">Affiliate media kit</span>
         <h2 class="h2">Everything you need to promote</h2>
-        <p class="lead">On-brand creatives, ready to run. Available in your dashboard the moment you're approved.</p>
       </div>
       <div class="kit">
-        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Banners &amp; display</h3><p>All standard IAB sizes, static and animated. Casino, sport and event-based.</p><span class="avail">Available at launch →</span></div></div>
-        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Logos &amp; brand pack</h3><p>Logos, wordmarks and color guidance in SVG and PNG. Light and dark.</p><span class="avail">Available at launch →</span></div></div>
-        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Social templates</h3><p>Story, post and Telegram formats — editable, ready to drop your first link into.</p><span class="avail">Available at launch →</span></div></div>
+        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Banners &amp; display</h3><p>All standard IAB sizes, static and animated. Casino, sport and event-based.</p></div></div>
+        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Logos &amp; brand pack</h3><p>Logos, wordmarks and color guidance in SVG and PNG. Light and dark.</p></div></div>
+        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Social templates</h3><p>Story, post and Telegram formats — editable, ready to drop your first link into.</p></div></div>
       </div>
     </div>
   </section>
@@ -425,9 +394,8 @@
       <div class="section-head">
         <span class="eyebrow">What partners say</span>
         <h2 class="h2">Proven, not promised</h2>
-        <p class="lead">Placeholder testimonials — swap for real quotes before launch.</p>
       </div>
-      <div class="quotes">
+      <div class="quotes" id="reviews">
         <div class="quote"><div class="mark">"</div><p>The 50% tier is the real deal — no negative carryover means a slow month never eats into the next. First affiliate program I trust with sportsbook traffic.</p><div class="who"><span class="av"></span><div><div class="name">Media buyer</div><div class="role">LATAM · Sport</div></div></div></div>
         <div class="quote"><div class="mark">"</div><p>One link for casino and sport, and a manager who actually replies. My community converts and the dashboard shows every deposit in real time.</p><div class="who"><span class="av"></span><div><div class="name">Telegram admin</div><div class="role">Crypto community</div></div></div></div>
         <div class="quote"><div class="mark">"</div><p>Payouts land on time, in crypto, every month. The creatives are on-brand out of the box so I spend my time driving traffic, not making banners.</p><div class="who"><span class="av"></span><div><div class="name">Streamer</div><div class="role">Casino content</div></div></div></div>
@@ -443,12 +411,12 @@
         <h2 class="h2">Good to know</h2>
       </div>
       <div class="faq">
-        <details open><summary>How is my commission calculated?</summary><p>On net revenue from the players you refer, across casino and sport. Your tier — 30, 40 or 50% — is set by your monthly net revenue.</p></details>
-        <details><summary>When and how do I get paid?</summary><p>Monthly, in crypto, straight to your wallet. No negative carryover — a down month never rolls forward.</p></details>
-        <details><summary>Is there a minimum traffic requirement?</summary><p>No minimum to join. Bigger volume moves you up the tiers faster — CPA and hybrid deals available on request.</p></details>
-        <details><summary>Do I promote casino and sport separately?</summary><p>No — one link covers both. You earn on every player you refer, whatever they choose to play.</p></details>
-        <details><summary>How fast is approval?</summary><p>We review applications and get back to you within 24 hours. Once approved, links and creatives are ready in your dashboard.</p></details>
-        <details><summary>Which regions can I send traffic from?</summary><p>Most markets are open. A short list of restricted territories applies — your manager will confirm on approval.</p></details>
+        <details open><summary>How can I become your partner?</summary><p>Sign up and log in to your affiliate account, choose the promotional materials, and generate your unique tracking link. Share the promo on your traffic sources — that's it!</p></details>
+        <details><summary>How fast is approval?</summary><p>We review applications within 24 hours.</p></details>
+        <details><summary>How is my commission calculated?</summary><p>Your commission is calculated on a Revenue Share model. Formula: Commission = (Total Bets − Player Wins − Bonuses − Admin Fees) × Your Deal Percentage.</p></details>
+        <details><summary>When and how do I get paid?</summary><p>Monthly, in crypto, straight to your wallet.</p></details>
+        <details><summary>How long is the cookie duration?</summary><p>The cookie duration is 30 days from the last click.</p></details>
+        <details><summary>Is there a minimum traffic requirement?</summary><p>No minimum to join.</p></details>
       </div>
     </div>
   </section>
@@ -456,41 +424,16 @@
   <!-- ══ APPLY ══ -->
   <section class="band" id="apply">
     <div class="wrap">
-      <div class="apply-grid">
-        <div class="apply-info">
-          <span class="eyebrow" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:20px;"><span class="dot"></span>Become a partner</span>
-          <div class="display-xl">Apply in<br><span class="green">2 minutes</span></div>
-          <p class="lead" style="margin-top:24px;max-width:44ch;">Tell us about your project. We'll review and get back within 24 hours with your rate and links.</p>
-          <div class="contact">
-            <div class="row"><span class="k">Email</span><span class="v">affiliates@maxxedpartners.com</span></div>
-            <div class="row"><span class="k">Telegram</span><span class="v">@Maxxed_affiliates</span></div>
-          </div>
+      <div class="apply-cta">
+        <span class="eyebrow" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:20px;"><span class="dot"></span>Become a partner</span>
+        <div class="display-xl">Apply in<br><span class="green">2 minutes</span></div>
+        <p class="lead" style="margin-top:24px;max-width:46ch;">Tell us about your traffic. We'll review and get back to you within 24 hours.</p>
+        <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener">Become a partner</a>
+        <div class="contact contact-center">
+          <div class="row"><span class="k">Email</span><span class="v">affiliates@maxxedpartners.com</span></div>
+          <div class="row"><span class="k">Telegram</span><span class="v">@Maxxed_affiliates</span></div>
         </div>
-
-        <form class="apply" onsubmit="event.preventDefault(); this.reset(); alert('Thanks — your application has been noted. Wire this form to your CRM before launch.');">
-          <div class="field row2">
-            <div><label for="name">Name</label><input id="name" name="name" type="text" placeholder="Your name" required /></div>
-            <div><label for="email">Email</label><input id="email" name="email" type="email" placeholder="you@domain.com" required /></div>
-          </div>
-          <div class="field row2">
-            <div><label for="source">Traffic source</label>
-              <select id="source" name="source">
-                <option>SEO / Website</option><option>Telegram</option><option>YouTube / Streaming</option>
-                <option>Paid ads</option><option>Social</option><option>Other</option>
-              </select>
-            </div>
-            <div><label for="volume">Monthly volume</label>
-              <select id="volume" name="volume">
-                <option>Just starting</option><option>€0–10k net/mo</option><option>€10–25k net/mo</option>
-                <option>€25–40k net/mo</option><option>€40k+ net/mo</option>
-              </select>
-            </div>
-          </div>
-          <div class="field"><label for="tg">Telegram (optional)</label><input id="tg" name="telegram" type="text" placeholder="@handle or https://" /></div>
-          <div class="field"><label for="about">Tell us about your traffic</label><textarea id="about" name="about" placeholder="Markets, audience, channels…"></textarea></div>
-          <button class="btn btn-primary btn-block" type="submit">Send application</button>
-          <p class="legal">By applying you agree to the partner terms. 18+. Please gamble responsibly.</p>
-        </form>
+        <p class="legal">By applying you agree to the partner terms. 18+. Please gamble responsibly.</p>
       </div>
     </div>
   </section>
@@ -498,13 +441,17 @@
   <!-- ══ FOOTER ══ -->
   <footer class="site">
     <div class="wrap">
-      <div class="foot-grid">
-        <div class="big">Every win feels Maxxed</div>
-        <div class="foot-right">
-          <p>The official affiliate program for Maxxed.io. 18+ only. Please gamble responsibly. Program terms apply.</p>
-          <div class="mark" aria-hidden="true"><img src="assets/mark.svg" alt="" width="178" height="148" /></div>
-        </div>
+      <div class="foot-top">
+        <a href="#top" class="foot-mark" aria-label="Maxxed"><img src="assets/mark.svg" alt="Maxxed" width="96" height="80" /></a>
+        <nav class="foot-nav" aria-label="Footer">
+          <a href="#products">Product</a>
+          <a href="#commission">Commission</a>
+          <a href="#mediakit">Media kit</a>
+          <a href="#faq">FAQ</a>
+          <a href="#" id="termsLink">T&amp;C</a>
+        </nav>
       </div>
+      <p class="foot-legal">The official affiliate program for Maxxed.io. 18+ only. Please gamble responsibly. Program terms apply.</p>
     </div>
   </footer>
 
@@ -519,6 +466,97 @@
       <a class="btn btn-primary" href="#apply">Apply</a>
     </div>
   </nav>
+
+  <script>
+  (function () {
+    /* ═══════════════════════════════════════════════════════════
+       EDIT THESE THREE LINKS — nothing else needs to change.
+       ═══════════════════════════════════════════════════════════ */
+
+    /* 1) Where the "Become a partner" button goes (your registration page). */
+    var REGISTRATION_URL = "";   /* e.g. "https://maxxed.io/affiliates/register" */
+
+    /* 2) Reviews are pulled live from a Google Sheet — your client just edits the sheet.
+          In Google Sheets: File → Share → Publish to web → pick the sheet +
+          "Comma-separated values (.csv)" → Publish → paste that link here. */
+    var REVIEWS_CSV_URL  = "";
+    /* Sheet must have these column headers in row 1 (exactly):
+          quote | name | role | published
+       Put TRUE (or yes / 1 / x) in "published" for a review to appear. */
+
+    /* 3) Optional: your Terms & Conditions page (footer T&C link). */
+    var TERMS_URL        = "";
+    /* ═══════════════════════════════════════════════════════════ */
+
+    if (REGISTRATION_URL) {
+      var cta = document.getElementById('registerCta');
+      if (cta) cta.setAttribute('href', REGISTRATION_URL);
+    }
+    if (TERMS_URL) {
+      var tc = document.getElementById('termsLink');
+      if (tc) tc.setAttribute('href', TERMS_URL);
+    }
+
+    if (REVIEWS_CSV_URL) {
+      fetch(REVIEWS_CSV_URL, { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+        .then(function (csv) { renderReviews(parseCSV(csv)); })
+        .catch(function () { /* keep the built-in sample reviews */ });
+    }
+
+    function renderReviews(rows) {
+      if (!rows || rows.length < 2) return;
+      var wrap = document.getElementById('reviews');
+      if (!wrap) return;
+      var head = rows[0].map(function (h) { return String(h).trim().toLowerCase(); });
+      var qi = head.indexOf('quote'), ni = head.indexOf('name'),
+          ri = head.indexOf('role'), pi = head.indexOf('published');
+      if (qi < 0) return;
+      var live = rows.slice(1).filter(function (c) {
+        if (!c[qi] || !String(c[qi]).trim()) return false;
+        if (pi < 0) return true;
+        var v = String(c[pi] || '').trim().toLowerCase();
+        return v === 'true' || v === 'yes' || v === '1' || v === 'y' || v === 'x';
+      });
+      if (!live.length) return; /* nothing published yet → keep samples */
+      wrap.textContent = '';
+      live.forEach(function (c) {
+        wrap.appendChild(card(c[qi], ni >= 0 ? c[ni] : '', ri >= 0 ? c[ri] : ''));
+      });
+    }
+
+    function card(quote, name, role) {
+      var el = document.createElement('div'); el.className = 'quote';
+      var m = document.createElement('div'); m.className = 'mark'; m.textContent = '"'; el.appendChild(m);
+      var p = document.createElement('p'); p.textContent = String(quote).trim(); el.appendChild(p);
+      var who = document.createElement('div'); who.className = 'who';
+      who.appendChild(Object.assign(document.createElement('span'), { className: 'av' }));
+      var meta = document.createElement('div');
+      var nm = document.createElement('div'); nm.className = 'name'; nm.textContent = String(name || '').trim(); meta.appendChild(nm);
+      var rl = document.createElement('div'); rl.className = 'role'; rl.textContent = String(role || '').trim(); meta.appendChild(rl);
+      who.appendChild(meta); el.appendChild(who);
+      return el;
+    }
+
+    function parseCSV(text) {
+      var rows = [], row = [], field = '', i = 0, q = false, ch;
+      text = String(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      while (i < text.length) {
+        ch = text[i];
+        if (q) {
+          if (ch === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else q = false; }
+          else field += ch;
+        } else if (ch === '"') { q = true; }
+        else if (ch === ',') { row.push(field); field = ''; }
+        else if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+        else field += ch;
+        i++;
+      }
+      if (field.length || row.length) { row.push(field); rows.push(row); }
+      return rows;
+    }
+  })();
+  </script>
 
 </body>
 </html>

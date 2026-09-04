@@ -38,8 +38,30 @@ assets/mark.svg    compact Maxxed mark (nav + footer)
 vercel.json        clean URLs + cache headers
 ```
 
+## Editing reviews (no code — for the client)
+
+Reviews load live from a Google Sheet, so the client never touches the site.
+
+1. Make a Google Sheet with these headers in row 1 (exactly):
+   `quote | name | role | published`
+2. Add one review per row. Put `TRUE` (or `yes` / `1` / `x`) in **published** to show it.
+3. In Sheets: **File → Share → Publish to web** → pick the sheet + **Comma-separated
+   values (.csv)** → **Publish** → copy the link.
+4. Paste that link into `REVIEWS_CSV_URL` in the `<script>` at the bottom of `index.html`,
+   then redeploy once. After that, edits to the sheet appear on the site automatically
+   (Google caches the CSV for a few minutes).
+
+Until `REVIEWS_CSV_URL` is set, the site shows three built-in sample reviews.
+
+## Two links to fill in (bottom of `index.html`)
+
+```
+REGISTRATION_URL = ""   // where "Become a partner" goes (your real registration page)
+REVIEWS_CSV_URL  = ""   // published Google Sheet CSV (see above)
+TERMS_URL        = ""   // optional: footer T&C link
+```
+
 ## Before launch
 
-- Wire the apply form to a real endpoint / CRM (currently a client-side stub).
-- Swap the placeholder testimonials for real quotes.
+- Set `REGISTRATION_URL`, `REVIEWS_CSV_URL`, and `TERMS_URL`.
 - Replace the hero video URL (currently the Framer CDN asset) with your own if desired.
