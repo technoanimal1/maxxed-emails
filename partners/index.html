@@ -153,7 +153,8 @@
   .stats { display: flex; flex-wrap: wrap; gap: clamp(28px, 5vw, 48px); margin-top: 36px; }
   .stat .num { font-family: var(--body); font-weight: 800; font-size: clamp(28px, 4vw, 36px); letter-spacing: -.03em; }
   .stat .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
-  .prod-card .art { position: absolute; right: -30px; bottom: -70px; width: 190px; opacity: .9; pointer-events: none; }
+  .prod-card .art { position: absolute; right: -8px; bottom: -8px; width: clamp(140px, 24%, 200px); height: auto; opacity: 1; pointer-events: none; z-index: 0; }
+  .prod-card > .tag, .prod-card > h3, .prod-card > .stats { position: relative; z-index: 1; }
 
   /* ── Commission tiers ── */
   .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -286,10 +287,10 @@
       <div class="hero-grid">
         <div class="hero">
           <h1>ALL.</h1>
-          <div class="hero-logo" aria-label="Maxxed"><img src="assets/logo.svg" alt="Maxxed" width="120" height="48" /></div>
-          <p class="hero-tag">Maxxed Partners is the official affiliate program for Maxxed.io, built around crypto, performance, and long-term partnerships.</p>
+          <div class="hero-logo" aria-label="Maxxed"><img id="heroLogo" src="assets/logo.svg" alt="Maxxed" width="120" height="48" /></div>
+          <p class="hero-tag" data-cms="hero_tagline">Maxxed Partners is the official affiliate program for Maxxed.io, built around crypto, performance, and long-term partnerships.</p>
           <div class="hero-cta">
-            <a class="btn btn-primary" href="#apply">Become a partner</a>
+            <a class="btn btn-primary" href="#apply" data-cms="cta_label">Become a partner</a>
           </div>
         </div>
         <div class="hero-media">
@@ -315,25 +316,27 @@
   <section class="band" id="products">
     <div class="wrap">
       <div class="section-head">
-        <h2 class="h2">What your players get</h2>
+        <h2 class="h2" data-cms="product_h2">What your players get</h2>
       </div>
       <div class="cards-2">
         <article class="prod-card">
+          <img class="art" data-cms-src="casino_art" alt="" aria-hidden="true" />
           <span class="tag">Casino</span>
-          <h3 class="h3">Slots, live &amp; originals</h3>
+          <h3 class="h3" data-cms="casino_h3">Slots, live &amp; originals</h3>
           <div class="stats">
-            <div class="stat"><div class="num">5,000+</div><div class="lbl">Games</div></div>
-            <div class="stat"><div class="num">80+</div><div class="lbl">Providers</div></div>
-            <div class="stat"><div class="num">10+</div><div class="lbl">Originals</div></div>
+            <div class="stat"><div class="num" data-cms="casino_stat1_num">5,000+</div><div class="lbl" data-cms="casino_stat1_lbl">Games</div></div>
+            <div class="stat"><div class="num" data-cms="casino_stat2_num">80+</div><div class="lbl" data-cms="casino_stat2_lbl">Providers</div></div>
+            <div class="stat"><div class="num" data-cms="casino_stat3_num">10+</div><div class="lbl" data-cms="casino_stat3_lbl">Originals</div></div>
           </div>
         </article>
         <article class="prod-card">
+          <img class="art" data-cms-src="sport_art" alt="" aria-hidden="true" />
           <span class="tag">Sport</span>
-          <h3 class="h3">Pre-match, live &amp; cash-out</h3>
+          <h3 class="h3" data-cms="sport_h3">Pre-match, live &amp; cash-out</h3>
           <div class="stats">
-            <div class="stat"><div class="num">35+</div><div class="lbl">Sports</div></div>
-            <div class="stat"><div class="num">1,000+</div><div class="lbl">Markets</div></div>
-            <div class="stat"><div class="num">50K+</div><div class="lbl">Events/mo</div></div>
+            <div class="stat"><div class="num" data-cms="sport_stat1_num">35+</div><div class="lbl" data-cms="sport_stat1_lbl">Sports</div></div>
+            <div class="stat"><div class="num" data-cms="sport_stat2_num">1,000+</div><div class="lbl" data-cms="sport_stat2_lbl">Markets</div></div>
+            <div class="stat"><div class="num" data-cms="sport_stat3_num">50K+</div><div class="lbl" data-cms="sport_stat3_lbl">Events/mo</div></div>
           </div>
         </article>
       </div>
@@ -345,14 +348,14 @@
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Commission structure</span>
-        <h2 class="h2">Your rate scales with revenue</h2>
+        <h2 class="h2" data-cms="commission_h2">Your rate scales with revenue</h2>
       </div>
       <div class="tiers">
-        <div class="tier"><div class="pct">30%</div><div class="bar"><span style="width:33%"></span></div><div class="note">up to €10,000 / mo net revenue</div></div>
-        <div class="tier"><div class="pct">40%</div><div class="bar"><span style="width:66%"></span></div><div class="note">up to €25,000 / mo net revenue</div></div>
-        <div class="tier"><div class="pct">50%</div><div class="bar"><span style="width:100%"></span></div><div class="note">up to €40,000 / mo net revenue</div></div>
+        <div class="tier"><div class="pct" data-cms="tier1_pct">30%</div><div class="bar"><span style="width:33%"></span></div><div class="note" data-cms="tier1_note">up to €10,000 / mo net revenue</div></div>
+        <div class="tier"><div class="pct" data-cms="tier2_pct">40%</div><div class="bar"><span style="width:66%"></span></div><div class="note" data-cms="tier2_note">up to €25,000 / mo net revenue</div></div>
+        <div class="tier"><div class="pct" data-cms="tier3_pct">50%</div><div class="bar"><span style="width:100%"></span></div><div class="note" data-cms="tier3_note">up to €40,000 / mo net revenue</div></div>
       </div>
-      <p class="foot-note">* CPA and hybrid deals available on request.</p>
+      <p class="foot-note" data-cms="commission_footnote">* CPA and hybrid deals available on request.</p>
     </div>
   </section>
 
@@ -378,7 +381,7 @@
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Affiliate media kit</span>
-        <h2 class="h2">Everything you need to promote</h2>
+        <h2 class="h2" data-cms="mediakit_h2">Everything you need to promote</h2>
       </div>
       <div class="kit">
         <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Banners &amp; display</h3><p>All standard IAB sizes, static and animated. Casino, sport and event-based.</p></div></div>
@@ -393,7 +396,7 @@
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">What partners say</span>
-        <h2 class="h2">Proven, not promised</h2>
+        <h2 class="h2" data-cms="reviews_h2">Proven, not promised</h2>
       </div>
       <div class="quotes" id="reviews">
         <div class="quote"><div class="mark">"</div><p>The 50% tier is the real deal — no negative carryover means a slow month never eats into the next. First affiliate program I trust with sportsbook traffic.</p><div class="who"><span class="av"></span><div><div class="name">Media buyer</div><div class="role">LATAM · Sport</div></div></div></div>
@@ -408,9 +411,9 @@
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">FAQ</span>
-        <h2 class="h2">Good to know</h2>
+        <h2 class="h2" data-cms="faq_h2">Good to know</h2>
       </div>
-      <div class="faq">
+      <div class="faq" id="faqlist">
         <details open><summary>How can I become your partner?</summary><p>Sign up and log in to your affiliate account, choose the promotional materials, and generate your unique tracking link. Share the promo on your traffic sources — that's it!</p></details>
         <details><summary>How fast is approval?</summary><p>We review applications within 24 hours.</p></details>
         <details><summary>How is my commission calculated?</summary><p>Your commission is calculated on a Revenue Share model. Formula: Commission = (Total Bets − Player Wins − Bonuses − Admin Fees) × Your Deal Percentage.</p></details>
@@ -427,11 +430,11 @@
       <div class="apply-cta">
         <span class="eyebrow" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:20px;"><span class="dot"></span>Become a partner</span>
         <div class="display-xl">Apply in<br><span class="green">2 minutes</span></div>
-        <p class="lead" style="margin-top:24px;max-width:46ch;">Tell us about your traffic. We'll review and get back to you within 24 hours.</p>
+        <p class="lead" style="margin-top:24px;max-width:46ch;" data-cms="apply_line">Tell us about your traffic. We'll review and get back to you within 24 hours.</p>
         <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener">Become a partner</a>
         <div class="contact contact-center">
-          <div class="row"><span class="k">Email</span><span class="v">affiliates@maxxedpartners.com</span></div>
-          <div class="row"><span class="k">Telegram</span><span class="v">@Maxxed_affiliates</span></div>
+          <div class="row"><span class="k">Email</span><span class="v" data-cms="contact_email">affiliates@maxxedpartners.com</span></div>
+          <div class="row"><span class="k">Telegram</span><span class="v" data-cms="contact_telegram">@Maxxed_affiliates</span></div>
         </div>
         <p class="legal">By applying you agree to the partner terms. 18+. Please gamble responsibly.</p>
       </div>
@@ -451,7 +454,7 @@
           <a href="#" id="termsLink">T&amp;C</a>
         </nav>
       </div>
-      <p class="foot-legal">The official affiliate program for Maxxed.io. 18+ only. Please gamble responsibly. Program terms apply.</p>
+      <p class="foot-legal" data-cms="footer_legal">The official affiliate program for Maxxed.io. 18+ only. Please gamble responsibly. Program terms apply.</p>
     </div>
   </footer>
 
@@ -468,92 +471,73 @@
   </nav>
 
   <script>
+  /* Maxxed Partners CMS — content is read live from Supabase (project "maxxed").
+     Your client edits it in the Supabase dashboard: Table Editor (copy / reviews /
+     faqs) and Storage (assets bucket for logos). No redeploy needed. */
   (function () {
-    /* ═══════════════════════════════════════════════════════════
-       EDIT THESE THREE LINKS — nothing else needs to change.
-       ═══════════════════════════════════════════════════════════ */
+    var SUPABASE_URL = 'https://qzrskdcfdtrhdvywwfzk.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF6cnNrZGNmZHRyaGR2eXd3ZnprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTE1MzUsImV4cCI6MjEwNDUyNzUzNX0.VR4oMDKZglkaKuOFuXd-rr_Y6uHn7pmf4ga6I-KEFAs';
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
 
-    /* 1) Where the "Become a partner" button goes (your registration page). */
-    var REGISTRATION_URL = "";   /* e.g. "https://maxxed.io/affiliates/register" */
-
-    /* 2) Reviews are pulled live from a Google Sheet — your client just edits the sheet.
-          In Google Sheets: File → Share → Publish to web → pick the sheet +
-          "Comma-separated values (.csv)" → Publish → paste that link here. */
-    var REVIEWS_CSV_URL  = "";
-    /* Sheet must have these column headers in row 1 (exactly):
-          quote | name | role | published
-       Put TRUE (or yes / 1 / x) in "published" for a review to appear. */
-
-    /* 3) Optional: your Terms & Conditions page (footer T&C link). */
-    var TERMS_URL        = "";
-    /* ═══════════════════════════════════════════════════════════ */
-
-    if (REGISTRATION_URL) {
-      var cta = document.getElementById('registerCta');
-      if (cta) cta.setAttribute('href', REGISTRATION_URL);
-    }
-    if (TERMS_URL) {
-      var tc = document.getElementById('termsLink');
-      if (tc) tc.setAttribute('href', TERMS_URL);
+    var H = { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY };
+    function api(path) {
+      return fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: H, cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); });
     }
 
-    if (REVIEWS_CSV_URL) {
-      fetch(REVIEWS_CSV_URL, { cache: 'no-store' })
-        .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
-        .then(function (csv) { renderReviews(parseCSV(csv)); })
-        .catch(function () { /* keep the built-in sample reviews */ });
+    api('copy?select=key,value').then(function (rows) {
+      var map = {}; rows.forEach(function (r) { map[r.key] = r.value; }); applyCopy(map);
+    }).catch(function () {});
+
+    api('reviews?select=quote,name,role&order=sort.asc').then(function (rows) {
+      if (rows && rows.length) renderReviews(rows);
+    }).catch(function () {});
+
+    api('faqs?select=question,answer&order=sort.asc').then(function (rows) {
+      if (rows && rows.length) renderFaqs(rows);
+    }).catch(function () {});
+
+    function applyCopy(map) {
+      Object.keys(map).forEach(function (key) {
+        var val = map[key]; if (val == null) return; val = String(val);
+        if (key === 'registration_url') { if (val) setHref('registerCta', val); return; }
+        if (key === 'terms_url') { if (val) setHref('termsLink', val); return; }
+        if (key === 'hero_logo') { if (val) { var l = document.getElementById('heroLogo'); if (l) l.src = val; } return; }
+        if (key === 'footer_mark') {
+          if (val) document.querySelectorAll('.foot-mark img, .navpill .mark img').forEach(function (im) { im.src = val; });
+          return;
+        }
+        if (!val.trim()) return;
+        document.querySelectorAll('[data-cms="' + key + '"]').forEach(function (el) { el.textContent = val; });
+      });
+      document.querySelectorAll('[data-cms-src]').forEach(function (im) {
+        var k = im.getAttribute('data-cms-src'); if (map[k]) im.setAttribute('src', map[k]);
+      });
     }
+    function setHref(id, url) { var el = document.getElementById(id); if (el) el.setAttribute('href', url); }
 
     function renderReviews(rows) {
-      if (!rows || rows.length < 2) return;
-      var wrap = document.getElementById('reviews');
-      if (!wrap) return;
-      var head = rows[0].map(function (h) { return String(h).trim().toLowerCase(); });
-      var qi = head.indexOf('quote'), ni = head.indexOf('name'),
-          ri = head.indexOf('role'), pi = head.indexOf('published');
-      if (qi < 0) return;
-      var live = rows.slice(1).filter(function (c) {
-        if (!c[qi] || !String(c[qi]).trim()) return false;
-        if (pi < 0) return true;
-        var v = String(c[pi] || '').trim().toLowerCase();
-        return v === 'true' || v === 'yes' || v === '1' || v === 'y' || v === 'x';
-      });
-      if (!live.length) return; /* nothing published yet → keep samples */
-      wrap.textContent = '';
-      live.forEach(function (c) {
-        wrap.appendChild(card(c[qi], ni >= 0 ? c[ni] : '', ri >= 0 ? c[ri] : ''));
+      var wrap = document.getElementById('reviews'); if (!wrap) return; wrap.textContent = '';
+      rows.forEach(function (r) {
+        var el = document.createElement('div'); el.className = 'quote';
+        var m = document.createElement('div'); m.className = 'mark'; m.textContent = '"'; el.appendChild(m);
+        var p = document.createElement('p'); p.textContent = (r.quote || '').trim(); el.appendChild(p);
+        var who = document.createElement('div'); who.className = 'who';
+        who.appendChild(Object.assign(document.createElement('span'), { className: 'av' }));
+        var meta = document.createElement('div');
+        var nm = document.createElement('div'); nm.className = 'name'; nm.textContent = (r.name || '').trim(); meta.appendChild(nm);
+        var rl = document.createElement('div'); rl.className = 'role'; rl.textContent = (r.role || '').trim(); meta.appendChild(rl);
+        who.appendChild(meta); el.appendChild(who); wrap.appendChild(el);
       });
     }
-
-    function card(quote, name, role) {
-      var el = document.createElement('div'); el.className = 'quote';
-      var m = document.createElement('div'); m.className = 'mark'; m.textContent = '"'; el.appendChild(m);
-      var p = document.createElement('p'); p.textContent = String(quote).trim(); el.appendChild(p);
-      var who = document.createElement('div'); who.className = 'who';
-      who.appendChild(Object.assign(document.createElement('span'), { className: 'av' }));
-      var meta = document.createElement('div');
-      var nm = document.createElement('div'); nm.className = 'name'; nm.textContent = String(name || '').trim(); meta.appendChild(nm);
-      var rl = document.createElement('div'); rl.className = 'role'; rl.textContent = String(role || '').trim(); meta.appendChild(rl);
-      who.appendChild(meta); el.appendChild(who);
-      return el;
-    }
-
-    function parseCSV(text) {
-      var rows = [], row = [], field = '', i = 0, q = false, ch;
-      text = String(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-      while (i < text.length) {
-        ch = text[i];
-        if (q) {
-          if (ch === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else q = false; }
-          else field += ch;
-        } else if (ch === '"') { q = true; }
-        else if (ch === ',') { row.push(field); field = ''; }
-        else if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
-        else field += ch;
-        i++;
-      }
-      if (field.length || row.length) { row.push(field); rows.push(row); }
-      return rows;
+    function renderFaqs(rows) {
+      var wrap = document.getElementById('faqlist'); if (!wrap) return; wrap.textContent = '';
+      rows.forEach(function (r, i) {
+        var d = document.createElement('details'); if (i === 0) d.open = true;
+        var s = document.createElement('summary'); s.textContent = (r.question || '').trim(); d.appendChild(s);
+        var p = document.createElement('p'); p.textContent = (r.answer || '').trim(); d.appendChild(p);
+        wrap.appendChild(d);
+      });
     }
   })();
   </script>
