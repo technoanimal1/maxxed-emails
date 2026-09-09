@@ -124,14 +124,14 @@
   /* ── Marquee ── */
   .marquee {
     border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    background: var(--bg); overflow: hidden; padding-block: 16px;
+    background: var(--bg); overflow: hidden; padding-block: clamp(14px, 2vw, 24px);
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   }
   .marquee-track { display: inline-flex; align-items: center; gap: 40px; white-space: nowrap; animation: scroll 32s linear infinite; }
   .marquee:hover .marquee-track { animation-play-state: paused; }
-  .marquee-item { display: inline-flex; align-items: center; gap: 40px; font-family: var(--mono); font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: #8a8a8a; }
-  .marquee-item .dot { width: 6px; height: 6px; }
+  .marquee-item { display: inline-flex; align-items: center; gap: clamp(24px, 4vw, 44px); font-family: var(--display); font-weight: 800; font-size: clamp(28px, 5vw, 54px); letter-spacing: 0; text-transform: uppercase; color: var(--white); }
+  .marquee-item .dot { width: clamp(12px, 1.6vw, 18px); height: clamp(12px, 1.6vw, 18px); }
   @keyframes scroll { to { transform: translateX(-50%); } }
 
   /* ── Generic section spacing ── */
@@ -204,14 +204,15 @@
   .quote .who .role { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
 
   /* ── FAQ ── */
-  .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .faq details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 24px 28px; }
+  .faq { display: block; max-width: 900px; margin-inline: auto; }
+  .faq details { background: transparent; border: 0; border-bottom: 1px solid var(--line2); border-radius: 0; padding: 26px 4px; }
+  .faq details:first-child { border-top: 1px solid var(--line2); }
   .faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(18px, 2vw, 22px); }
+    font-family: var(--body); font-weight: 600; color: var(--white); font-size: clamp(16px, 2vw, 21px); letter-spacing: -.01em; }
   .faq summary::-webkit-details-marker { display: none; }
-  .faq summary::after { content: "+"; color: var(--accent); font-family: var(--mono); font-size: 22px; transition: transform .2s ease; }
+  .faq summary::after { content: "+"; color: var(--accent); font-family: var(--mono); font-size: 22px; transition: transform .2s ease; flex: none; }
   .faq details[open] summary::after { transform: rotate(45deg); }
-  .faq details p { color: var(--dim); font-size: 13px; margin-top: 14px; }
+  .faq details p { color: var(--dim); font-size: 15px; line-height: 1.7; margin-top: 16px; max-width: 72ch; }
 
   /* ── Apply ── */
   .apply-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 48px); align-items: start; }
@@ -304,10 +305,10 @@
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track">
       <span class="marquee-item">
-        <span class="dot"></span>Up to 50% RevShare<span class="dot"></span>No negative carryover<span class="dot"></span>Monthly payouts<span class="dot"></span>Casino &amp; sport, one deal<span class="dot"></span>Real-time dashboard<span class="dot"></span>Dedicated manager<span class="dot"></span>Crypto payouts
+        <span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners
       </span>
       <span class="marquee-item">
-        <span class="dot"></span>Up to 50% RevShare<span class="dot"></span>No negative carryover<span class="dot"></span>Monthly payouts<span class="dot"></span>Casino &amp; sport, one deal<span class="dot"></span>Real-time dashboard<span class="dot"></span>Dedicated manager<span class="dot"></span>Crypto payouts
+        <span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners
       </span>
     </div>
   </div>
@@ -363,7 +364,7 @@
   <section class="band" id="why">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Why partner with Maxxed</span>
+        <h2 class="h2" data-cms="why_h2">Why partner with Maxxed</h2>
       </div>
       <div class="benefits">
         <div class="benefit"><span class="big">Up to 50%</span><h3>RevShare that scales</h3><p>Rate grows with your players' revenue.</p></div>
