@@ -1,0 +1,2222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Maxxed Partners — Affiliate Program</title>
+<meta name="description" content="Maxxed Partners is the official affiliate program for Maxxed.io — up to 50% RevShare, no negative carryover, monthly crypto payouts. Casino & sport, one deal." />
+<meta name="theme-color" content="#050505" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Maxxed Partners — Affiliate Program" />
+<meta property="og:description" content="Up to 50% RevShare. No negative carryover. Monthly crypto payouts. Casino & sport, one deal." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Anton&display=swap" rel="stylesheet" />
+<style>
+  /* ─── Maxxed Partners — responsive rebuild of the Framer landing ─── */
+  @font-face {
+    font-family: "PP Right Grotesk Compact Dark";
+    src: url("https://framerusercontent.com/assets/MCsGYC4nzIhUPFZcPpY9pBD50.woff2") format("woff2");
+    font-display: swap; font-style: normal; font-weight: 800;
+  }
+
+  :root {
+    --bg:      #050505;
+    --surface: #0e0e0e;
+    --surface2:#171717;
+    --line:    #1c1c1c;
+    --line2:   #262626;
+    --band-alt:#101010;
+    --accent:  #8ffc80;
+    --accent-2:#63ee4f;
+    --accent-ink:#050505;
+    --white:   #ffffff;
+    --dim:     #8a8a8a;
+    --muted:   #555555;
+
+    --display: "PP Right Grotesk Compact Dark", "Anton", "Inter", system-ui, sans-serif;
+    --body:    "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --maxw: 1240px;
+    --gutter: clamp(20px, 5vw, 48px);
+    --radius: 18px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  section[id], header[id] { scroll-margin-top: calc(var(--header-h, 0px) + 12px); }
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--white);
+    line-height: 1.6;
+    /* clip, not hidden: `hidden` makes body a scroll container and breaks
+       position:sticky for the card stack. */
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, svg, video { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+
+  /* ── Typography helpers ── */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .eyebrow.dim { color: var(--dim); }
+  .display {
+    font-family: var(--display);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+  .h2 { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 6vw, 64px); line-height: 1.1; text-transform: uppercase; letter-spacing: -.02em; }
+  .h3 { font-family: var(--display); font-weight: 800; font-size: clamp(22px, 3.4vw, 40px); line-height: 1.15; text-transform: uppercase; }
+  .lead { color: var(--dim); font-size: clamp(15px, 1.6vw, 17px); }
+  .kicker { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
+  .body-sm { color: var(--dim); font-size: 13px; }
+
+  .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+  section { position: relative; }
+  .center { text-align: center; }
+  .dot { width: 7px; height: 7px; background: var(--accent); transform: rotate(45deg); flex: none; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: var(--body); font-weight: 800; font-size: 13px;
+    letter-spacing: .08em; text-transform: uppercase;
+    padding: 14px 22px; border-radius: var(--radius-sm);
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-2); }
+  .btn-ghost { background: var(--surface2); color: var(--white); border-color: var(--line2); }
+  .btn-ghost:hover { border-color: var(--accent); }
+  .btn-block { width: 100%; }
+
+  /* ── Header / top eyebrow row ── */
+  header.top { padding-top: clamp(56px, 9vw, 104px); }
+
+  /* ── HERO ── */
+  .hero-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 80px);
+    align-items: center; padding-block: clamp(40px, 6vw, 60px) clamp(56px, 8vw, 96px);
+  }
+  .hero-badge { display: inline-flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+  .hero h1 { font-family: var(--display); font-weight: 800; font-size: clamp(56px, 10vw, 88px); line-height: 1; margin-bottom: 2px; }
+  .hero-logo { width: min(300px, 68vw); margin: 6px 0 24px; }
+  .hero-logo svg, .hero-logo img { width: 100%; height: auto; }
+  .hero-tag { font-size: clamp(16px, 2vw, 20px); color: var(--white); max-width: 46ch; margin-bottom: 28px; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-media {
+    aspect-ratio: 1 / 1; width: 100%; border-radius: var(--radius);
+    overflow: hidden; background: var(--surface2); border: 1px solid var(--line);
+  }
+  .hero-media video { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── Marquee ── */
+  .marquee {
+    /* sticky header: stays in flow, so no spacer is needed under it */
+    position: sticky; top: 0; z-index: 90;
+    /* sits at the very top of the page now, so no top border */
+    border-bottom: 1px solid var(--line);
+    background: var(--bg); overflow: hidden; padding-block: clamp(14px, 2vw, 24px);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track { display: inline-flex; align-items: center; gap: 40px; white-space: nowrap; animation: scroll 32s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-item { display: inline-flex; align-items: center; gap: clamp(24px, 4vw, 44px); font-family: var(--display); font-weight: 800; font-size: clamp(28px, 5vw, 54px); letter-spacing: 0; text-transform: uppercase; color: var(--white); }
+  .marquee-item .dot { width: clamp(12px, 1.6vw, 18px); height: clamp(12px, 1.6vw, 18px); }
+  /* Explicit width: the white SVG has no intrinsic size, so width:auto would
+     collapse to 0 and the text would overlap the mark. */
+  .marquee-item .marquee-mark { height: clamp(24px, 3.4vw, 44px); width: clamp(32px, 4.4vw, 58px); object-fit: contain; flex: none; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* ── Generic section spacing ── */
+  .band { padding-block: clamp(64px, 10vw, 120px); }
+  /* every other section sits on a lighter band for separation */
+  .band-alt { background: var(--band-alt); border-block: 1px solid var(--line); }
+  .band-tight { padding-block: clamp(48px, 7vw, 80px); }
+  .section-head { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; margin-bottom: clamp(36px, 6vw, 56px); }
+  .section-head .lead { max-width: 60ch; }
+
+  /* ── Product cards ── */
+  .cards-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+  .prod-card {
+    position: relative; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: clamp(28px, 3.5vw, 36px);
+  }
+  .prod-card .tag { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
+  .prod-card h3 { margin: 20px 0 16px; }
+  .prod-card p { color: var(--dim); font-size: 15px; max-width: 44ch; }
+  .stats { display: flex; flex-wrap: wrap; gap: clamp(28px, 5vw, 48px); margin-top: 36px; }
+  .stat .num { font-family: var(--body); font-weight: 800; font-size: clamp(28px, 4vw, 36px); letter-spacing: -.03em; }
+  .stat .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+  .prod-card .art { position: absolute; right: -8px; bottom: -8px; width: clamp(140px, 24%, 200px); height: auto; opacity: 1; pointer-events: none; z-index: 0; }
+  .prod-card > .tag, .prod-card > h3, .prod-card > .stats { position: relative; z-index: 1; }
+
+  /* ── Commission tiers ── */
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .tier {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 40px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .tier {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 40px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  .tier .ring-wrap { position: relative; width: clamp(150px, 42vw, 188px); aspect-ratio: 1 / 1; display: grid; place-items: center; }
+  .tier .ring { width: 100%; height: 100%; overflow: visible; }
+  .tier .ring .track { stroke: var(--line2); }
+  .tier .ring .fill { stroke: var(--accent); filter: drop-shadow(0 0 5px rgba(143,252,128,.45)); }
+  .tier .ring .reveal { transition: stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1); }
+  .tier .pct { position: absolute; font-family: var(--display); font-weight: 800; font-size: clamp(34px, 5.5vw, 52px); line-height: 1; color: var(--accent); letter-spacing: -.03em; }
+  @media (prefers-reduced-motion: reduce) { .tier .ring .reveal { transition: none; } }
+  .tier .note { color: var(--white); font-size: 13px; }
+  /* ── Commission line graph ── */
+  .lgraph {
+    --graph-bg: #0b0b0b;
+    --graph-grid: #2a2a2a;
+    --graph-text: var(--dim);
+    --graph-line-default: #4a4a4a;
+    --graph-series-color: var(--graph-line-default);
+    display: flex; flex-direction: column; gap: 1em;
+    width: 100%; margin-top: clamp(28px, 4vw, 52px); padding: 1em;
+    background: var(--surface); border: 1px solid var(--line2); border-radius: 1.25em;
+  }
+  .lgraph__top { display: flex; justify-content: space-between; align-items: center; gap: 1em;
+    padding: .5em 1em .25em .75em; flex-wrap: wrap; }
+  .lgraph__title-h { margin: 0; font-family: var(--display); font-weight: 800; text-transform: uppercase;
+    letter-spacing: -.01em; font-size: 1.125em; line-height: 1.2; color: var(--white); }
+  .lgraph__legend { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 1.5em; }
+  .lgraph__legend-item { display: flex; align-items: center; gap: .4375em; font-family: var(--mono);
+    font-size: .75em; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+  .lgraph__legend-dot { flex: none; width: 1.5em; height: .3125em; border-radius: 50em; background: var(--graph-series-color); }
+  .lgraph__box { background: var(--graph-bg); border-radius: .5em; overflow: hidden; }
+  .lgraph__scroll { border-radius: inherit; overflow-x: auto; }
+  .lgraph__visual { position: relative; width: 100%; min-width: 34em; aspect-ratio: 2; border-radius: inherit; }
+  .lgraph__visual:focus-visible { outline: .125em solid var(--accent); outline-offset: -.125em; }
+  .lgraph__tooltip {
+    position: absolute; top: 50%; left: 50%; z-index: 2; display: flex; flex-flow: column; gap: .25em;
+    min-width: 10em; padding: 1em; border-radius: .875em; white-space: nowrap; pointer-events: none; opacity: 0;
+    color: var(--white); background: #17171a; border: 1px solid var(--line2);
+    transform: translate(-50%, -100%) translateY(-1em); transition: opacity .3s ease;
+  }
+  .lgraph__tooltip[data-graph-tooltip-status="active"] { opacity: 1; }
+  .lgraph__tooltip[data-graph-tooltip-move="true"] {
+    transition: left .8s cubic-bezier(.32,.72,0,1), top .8s cubic-bezier(.32,.72,0,1), opacity .3s ease; }
+  .lgraph__tooltip-label { margin: -.125em 0 .25em; font-size: 1em; font-weight: 500; }
+  .lgraph__tooltip-row { display: flex; justify-content: space-between; align-items: center; gap: 1.5em; font-size: .8125em; }
+  .lgraph__tooltip-series { display: flex; align-items: center; gap: .45em; color: #ffffff80; white-space: nowrap; }
+  .lgraph__tooltip-series-dot { flex: none; width: .5em; height: .5em; border-radius: 50%; background: var(--graph-series-color); }
+  .lgraph__tooltip-value { font-weight: 500; }
+  .lgraph__grid-line { stroke: var(--graph-grid); stroke-width: 2px; stroke-dasharray: 2 10;
+    stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .lgraph__grid-line.is--baseline { stroke-dasharray: none; }
+  .lgraph__axis-label { fill: var(--graph-text); font-family: var(--mono); font-size: .875em; }
+  .lgraph__line { fill: none; stroke: var(--graph-series-color); stroke-width: 6px;
+    stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .lgraph__marker { fill: var(--graph-bg); stroke: var(--accent); stroke-width: 4px; vector-effect: non-scaling-stroke; }
+  .lgraph__hover[data-graph-hover-status="not-active"] { opacity: 0; }
+  .lgraph__hover-line { stroke: var(--graph-grid); stroke-width: 2px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .lgraph__hover-dot { fill: var(--graph-series-color); stroke: var(--bg); stroke-width: 4px; vector-effect: non-scaling-stroke; }
+  .lgraph__data { display: none; }
+
+  .foot-note { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 28px; }
+
+  /* ── Benefits grid ── */
+  /* ── Sticky card stack (scroll-driven, no JS) ── */
+  .card-stack {
+    --stack-row: 84svh;
+    /* clear the sticky header, otherwise pinned cards slide under it */
+    --stack-top: calc(var(--header-h, 0px) + 2svh);
+    --stack-card-height: calc(var(--stack-row) - var(--stack-top) - 7svh);
+    view-timeline-name: --card-stack;
+    grid-auto-rows: var(--stack-row);
+    width: 100%; max-width: var(--maxw); margin-inline: auto;
+    display: grid; position: relative;
+  }
+  .card-stack__item {
+    transform-origin: 50% 100%;
+    top: var(--stack-top);
+    height: var(--stack-card-height);
+    border-radius: var(--radius);
+    padding: clamp(28px, 4vw, 56px);
+    position: sticky; overflow: hidden;
+    background: var(--surface2); color: var(--white);
+    border: 1px solid var(--line2);
+  }
+  /* Alternating lime / dark keeps the stack on-brand as it tips away */
+  .card-stack__item.is--1, .card-stack__item.is--3, .card-stack__item.is--5 {
+    background: var(--accent); color: var(--accent-ink); border-color: var(--accent);
+  }
+  .card-stack__item-inner { display: flex; flex-flow: column; justify-content: space-between; align-items: stretch; height: 100%; gap: clamp(24px, 4vw, 56px); }
+  .card-stack__item-top { display: grid; grid-template-columns: 1fr 1fr; grid-auto-columns: 1fr; place-items: end start; gap: clamp(16px, 2vw, 32px); }
+  .card-stack__item-h { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: -.02em; max-width: 7em; font-size: clamp(28px, 4.4vw, 56px); line-height: .95; margin: 0; }
+  .card-stack__item-p { margin: 0; font-size: clamp(14px, 1.4vw, 16px); line-height: 1.4; opacity: .78; }
+  .card-stack__item-bottom { position: relative; flex: 1; width: 100%; border-radius: 1.25em; display: flex;
+    align-items: center; justify-content: space-between; gap: clamp(16px, 3vw, 48px);
+    padding-inline: clamp(20px, 3.5vw, 56px); padding-block: clamp(10px, 1.6vw, 22px);
+    background: rgba(0,0,0,.10); overflow: hidden; }
+  /* figure on the left, object on the right */
+  /* line-height 1 clips tall display glyphs once the block hides overflow,
+     so give the figure headroom and let it shrink rather than spill */
+  .card-stack__big { order: 1; text-align: left; padding-block: .08em; line-height: 1.08;
+    min-width: 0; flex: 0 1 auto; }
+  .card-stack__art {
+    order: 2; flex: none; height: 128%; width: auto; max-width: 36%; object-fit: contain;
+    pointer-events: none; user-select: none;
+    animation: art-wiggle 4.6s ease-in-out infinite;
+  }
+  @keyframes art-wiggle { 0%, 100% { rotate: -5deg; } 50% { rotate: 5deg; } }
+  @media (prefers-reduced-motion: reduce) { .card-stack__art { animation: none; } }
+  .card-stack__item:not(.is--1):not(.is--3):not(.is--5) .card-stack__item-bottom { background: rgba(255,255,255,.04); }
+  .card-stack__big { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(34px, 6vw, 84px); line-height: 1; letter-spacing: -.04em; text-align: center; padding: 0 .2em; }
+
+  .card-stack__item:nth-child(1) { --stack-i: 1; }
+  .card-stack__item:nth-child(2) { --stack-i: 2; }
+  .card-stack__item:nth-child(3) { --stack-i: 3; }
+  .card-stack__item:nth-child(4) { --stack-i: 4; }
+  .card-stack__item:nth-child(5) { --stack-i: 5; }
+  .card-stack__item:nth-child(6) { --stack-i: 6; }
+  @supports (width: calc(sibling-index() * 1px)) {
+    .card-stack__item { --stack-i: sibling-index(); }
+  }
+  @supports (animation-timeline: view()) {
+    .card-stack__item {
+      animation: card-stack-away linear forwards;
+      animation-timeline: --card-stack;
+      animation-range:
+        exit-crossing calc(var(--stack-i, 1) * var(--stack-row) - 100svh)
+        exit-crossing calc(var(--stack-i, 1) * var(--stack-row) - var(--stack-top));
+    }
+    .card-stack__item:last-of-type { animation: none; }
+  }
+  @keyframes card-stack-away {
+    to { transform: perspective(60em) rotateX(25deg) scale(0.85); filter: brightness(0.45); }
+  }
+  @media (prefers-reduced-motion: reduce) { .card-stack__item { animation: none; } }
+  @media (max-width: 767px) {
+    .card-stack__item-top { grid-template-columns: 1fr; }
+    .card-stack__item-h { max-width: none; }
+  }
+
+  /* ── Steps ── */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 36px; }
+  .step .no { font-family: var(--body); font-weight: 800; font-size: 80px; letter-spacing: -.04em; color: var(--muted); line-height: 1; }
+  .step h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 28px; margin: 22px 0 12px; }
+  .step p { color: var(--dim); font-size: 13px; }
+
+  /* ── Media kit ── */
+  .kit { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .kit > .kit-card:nth-child(1) { grid-column: span 2; }
+  .kit > .kit-card:nth-child(2), .kit > .kit-card:nth-child(3) { grid-column: span 1; }
+  .kit-card { transition: transform .25s ease, border-color .25s ease; }
+  .kit-card:hover { transform: translateY(-4px); border-color: var(--line2); }
+  .kit-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+  .kit-card .thumb { height: 180px; background: var(--surface2); border-bottom: 1px solid var(--line); position: relative; }
+  .kit-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* the diagonal texture is a placeholder for empty thumbs only */
+  .kit-card .thumb:has(img)::after { content: none; }
+  .kit-card .thumb::after { content: ""; position: absolute; inset: 0; background:
+    repeating-linear-gradient(45deg, transparent 0 14px, rgba(143,252,128,.05) 14px 15px); }
+  .kit-card .body { padding: 28px; }
+  .kit-card h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 24px; margin-bottom: 12px; }
+  .kit-card p { color: var(--dim); font-size: 13px; margin-bottom: 20px; }
+  .kit-card .avail { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
+
+  /* ── Testimonials ── */
+  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
+  .quotes > .quote:nth-child(2) { margin-top: clamp(16px, 3vw, 40px); }
+  .quotes > .quote:nth-child(3) { margin-top: clamp(32px, 6vw, 80px); }
+  .quote { transition: transform .25s ease, border-color .25s ease; }
+  .quote:hover { transform: translateY(-4px); border-color: var(--line2); }
+  .quote { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 32px; display: flex; flex-direction: column; }
+  .quote .mark { font-family: var(--body); font-weight: 900; font-size: 56px; line-height: .5; color: var(--accent); height: 34px; }
+  .quote p { color: var(--dim); font-size: 15px; margin-bottom: 28px; flex: 1; }
+  .quote .who { display: flex; align-items: center; gap: 12px; }
+  .quote .who .av { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--line2); flex: none; }
+  .quote .who .name { font-size: 13px; font-weight: 500; }
+  .quote .who .role { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+
+  /* ── Testimonial loop slider ── */
+  .cslider { position: relative; }
+  .cslider-row { width: 100%; margin-top: 2em; margin-bottom: 2.5em; padding-block: 1em; display: flex; position: relative; overflow: clip; }
+  .cslider-list { display: flex; flex-flow: row; justify-content: flex-start; align-items: center; width: 100%; }
+  .cslider-slide { flex: none; padding: .75em; position: relative; transition: opacity .25s cubic-bezier(.77,0,.175,1); cursor: grab; }
+  .cslider-slide:active { cursor: grabbing; }
+  .cslider-row:has(.cslider-slide.active) .cslider-slide:not(.active) { opacity: .45; }
+  .cslider-slide__inner {
+    position: relative; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;
+    width: 22em; max-width: 80vw; gap: 2em; padding: 1.5em;
+    border: 1px solid var(--line2); background: var(--surface); border-radius: var(--radius-sm);
+  }
+  /* lime corner brackets on the active slide */
+  .cslider-slide::after {
+    --size: 1em; --width: 1px; --gap: .125em; --color: var(--accent);
+    content: ''; position: absolute; inset: calc(var(--gap) * -1); z-index: 1; opacity: 0;
+    padding: calc(var(--gap) + var(--width));
+    outline: var(--width) solid var(--color); outline-offset: calc(var(--gap)/-1);
+    mask: conic-gradient(at var(--size) var(--size), #0000 75%, #000 0) 0 0/calc(100% - var(--size)) calc(100% - var(--size)),
+          linear-gradient(#000 0 0) content-box;
+    transition: all .4s cubic-bezier(.65,.05,0,1); pointer-events: none;
+  }
+  .cslider-slide.active::after { outline-offset: calc(-1 * var(--width)); opacity: 1; }
+  .cslider-quote { margin: 0; color: var(--dim); font-size: 15px; line-height: 1.6; }
+  .cslider-meta { display: flex; align-items: center; gap: .75em; }
+  .cslider-av { width: 2.5em; height: 2.5em; border-radius: 100em; overflow: hidden; flex: none;
+    background: var(--surface2); border: 1px solid var(--line2); display: grid; place-items: center;
+    font-family: var(--mono); font-size: 11px; color: var(--accent); }
+  .cslider-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cslider-name { font-size: 13px; font-weight: 500; color: var(--white); }
+  .cslider-role { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
+  .cslider-content { display: flex; justify-content: center; align-items: center; margin-inline: auto; }
+  .cslider-bullets { display: flex; flex-flow: wrap; justify-content: center; align-items: center; gap: .75em; margin: 0; padding: 0; list-style: none; }
+  .cslider-bullet { position: relative; display: flex; width: 2em; height: 2em; padding: 0; border: none; border-radius: 100em;
+    background: transparent; font: inherit; cursor: pointer; }
+  .cslider-bullet:focus { outline: none; }
+  .cslider-bullet::after { content: ''; position: absolute; inset: 2px; border-radius: 100em; z-index: -1;
+    border: 1px solid var(--accent); transition: all .5s cubic-bezier(.65,.05,0,1); }
+  .cslider-bullet:hover::after, .cslider-bullet.active::after, .cslider-bullet:focus::after { inset: -5px; }
+  .cslider-bullet .cslider-av { width: 100%; height: 100%; font-size: 10px; }
+  .cslider-buttons { display: flex; justify-content: center; align-items: center; gap: 1em; margin-top: 2em; }
+  .cslider-btn { display: flex; justify-content: center; align-items: center; width: 3em; height: 3em; padding: 0;
+    color: var(--white); background: var(--surface2); border: 1px solid var(--line2); border-radius: .25em;
+    font: inherit; cursor: pointer; transition: border-color .2s, background .2s; }
+  .cslider-btn:hover { background: var(--surface); border-color: var(--accent); }
+  .cslider-btn.is--prev { transform: rotate(180deg); }
+  .cslider-btn svg { width: 1.25em; height: auto; }
+  @media (max-width: 479px) { .cslider-slide__inner { width: 78vw; } }
+
+  /* ── FAQ ── */
+  .faq { display: block; max-width: 900px; margin-inline: auto; }
+  .faq details { background: transparent; border: 0; border-bottom: 1px solid var(--line2); border-radius: 0; padding: 26px 4px; }
+  .faq details:first-child { border-top: 1px solid var(--line2); }
+  .faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    font-family: var(--body); font-weight: 600; color: var(--white); font-size: clamp(16px, 2vw, 21px); letter-spacing: -.01em; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; color: var(--accent); font-family: var(--mono); font-size: 22px; transition: transform .2s ease; flex: none; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { color: var(--dim); font-size: 15px; line-height: 1.7; margin-top: 16px; max-width: 72ch; }
+
+  /* ── Apply ── */
+  .apply-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 48px); align-items: start; }
+  .apply-info h2 .green { color: var(--accent); }
+  /* unscoped: the markup lives in .apply-cta, so .apply-info never matched */
+  .display-xl { font-family: var(--display); font-weight: 800; font-size: clamp(48px, 8vw, 104px); line-height: .95; text-transform: uppercase; letter-spacing: -.02em; }
+  .display-xl .green { color: var(--accent); }
+
+  /* ── Highlight-marker heading reveal ──
+     Headings are hidden only while the effect is pending; a failsafe removes
+     that class if GSAP/SplitText never load, so text can never stay invisible. */
+  .marker-pending .h2, .marker-pending .display-xl, .marker-pending .hero h1,
+  .marker-pending .card-stack__item-h, .marker-pending .card-stack__big { visibility: hidden; }
+  [data-highlight-marker-reveal] .highlight-marker-line { width: auto; display: inline-block !important; margin: -0.055em 0px; }
+  .card-stack__item-h .highlight-marker-line { display: table !important; }
+  .highlight-marker-bar { position: absolute; inset: -0.055em 0px; z-index: 1; pointer-events: none; }
+  .contact { display: flex; flex-direction: column; gap: 18px; margin-top: 40px; }
+  .contact .row { display: flex; align-items: baseline; gap: 12px; }
+  .contact .k { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 800; width: 80px; flex: none; }
+  .contact .v { font-size: 13px; }
+
+  .apply-cta { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 640px; margin-inline: auto; }
+  .apply-cta .lead { margin-inline: auto; }
+  .btn-lg { margin-top: 32px; padding: 18px 40px; font-size: 14px; }
+  /* ── Big copy / open contact buttons ── */
+  .contact-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: clamp(32px, 5vw, 48px); }
+  .chip {
+    display: flex; align-items: center; gap: .75em; cursor: pointer;
+    font: inherit; color: var(--accent-ink); text-align: left;
+    background: #fff; border: 1px solid #fff; border-radius: .625em;
+    padding: .75em 1.25em .75em .75em;
+    transition: border-color .2s ease, background .2s ease, transform .15s ease;
+  }
+  .chip:hover { background: #f1f1f1; border-color: #f1f1f1; transform: translateY(-2px); }
+  .chip-ic {
+    display: grid; place-items: center; flex: none; width: 2.5em; height: 2.5em;
+    padding: .5em; border-radius: .375em; background: var(--accent); color: var(--accent-ink);
+    transition: background .2s ease;
+  }
+  .chip-ic svg { width: 100%; height: auto; display: block; }
+  /* three stacked labels; the wrap is one line tall and slides between them */
+  .chip-text { display: flex; flex-flow: column; align-items: flex-start; justify-content: flex-start;
+    height: 1.2em; font-size: clamp(15px, 2.1vw, 26px); line-height: 1.2; overflow: hidden; }
+  .chip-text span { white-space: nowrap; font-size: 1em; transition: transform .45s cubic-bezier(.65, 0, 0, 1); }
+  @media (hover: hover) {
+    .chip:hover .chip-text span { transform: translate(0, -100%); }
+    .chip:hover .chip-ic { background: var(--accent-2); }
+  }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .chip:focus-visible .chip-text span { transform: translate(0, -100%); }
+  .chip:focus-visible .chip-ic { background: var(--accent-2); }
+  [data-copy-button="copied"] .chip-ic { background: var(--accent-2) !important; }
+  [data-copy-button="copied"] .chip-text span { transform: translate(0, -200%) !important; }
+  @media (max-width: 479px) { .chip-text { font-size: 15px; } }
+  .contact-center { align-items: center; margin-top: 40px; }
+  .contact-center .row { justify-content: center; }
+  .legal { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); margin-top: 28px; text-align: center; }
+
+  /* ── Footer ── */
+  footer.site { border-top: 1px solid var(--line); padding-block: clamp(40px, 6vw, 56px); }
+  .foot-top { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .foot-mark { display: inline-block; width: 96px; flex: none; }
+  .foot-nav { display: flex; flex-wrap: wrap; gap: clamp(18px, 3vw, 34px); }
+  .foot-nav a { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); transition: color .2s ease; }
+  .foot-nav a:hover { color: var(--white); }
+  .foot-legal { margin-top: 28px; font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+
+  /* ── Floating nav ── */
+  .navpill { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 50; padding-inline: 12px; width: max-content; max-width: calc(100vw - 24px); }
+  .navpill-inner {
+    display: flex; align-items: center; gap: clamp(18px, 3vw, 36px);
+    background: rgba(26,26,26,.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--line2); border-radius: 12px; padding: 14px 18px;
+  }
+  .navpill .mark { width: 40px; flex: none; }
+  .navpill a.link { font-family: var(--mono); font-size: 12px; letter-spacing: .05em; color: #bdbdbd; transition: color .2s ease; }
+  .navpill a.link:hover { color: var(--white); }
+  .navpill .btn { padding: 8px 16px; }
+  @media (max-width: 720px) { .navpill a.link { display: none; } }
+
+  /* ── Responsive breakpoints ── */
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-media { max-width: 480px; order: -1; }
+    .cards-2 { grid-template-columns: 1fr; }
+    .tiers { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
+    .steps { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
+    .kit { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
+    .kit > .kit-card:nth-child(n) { grid-column: span 1; }
+    .quotes { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
+    .quotes > .quote:nth-child(n) { margin-top: 0; }
+    .faq { grid-template-columns: 1fr; }
+    .apply-grid { grid-template-columns: 1fr; }
+    .foot-grid { flex-direction: column; align-items: flex-start; }
+    .foot-right { align-items: flex-start; text-align: left; }
+  }
+  @media (max-width: 560px) {
+    .field.row2 { grid-template-columns: 1fr; }
+    .stats { gap: 24px; }
+  }
+
+  /* ── Scroll storytelling: reveal-on-scroll + progress bar ──
+     .js-anim is set synchronously on <html> so there is no flash of hidden
+     content when JS is off — without it everything renders normally. */
+  .js-anim .section-head .eyebrow,
+  .js-anim .section-head .lead,
+  .js-anim .prod-card,
+  .js-anim .tier,
+  .js-anim .kit-card,
+  .js-anim .quote,
+  .js-anim .faq details,
+  .js-anim .apply-cta > *:not(.display-xl),
+  .js-anim .hero > *:not(h1) {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
+    transition-delay: var(--d, 0ms);
+  }
+  .js-anim .hero-media { opacity: 0; transform: scale(.95); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
+  .js-anim .is-in { opacity: 1 !important; transform: none !important; }
+  .scroll-bar { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform: scaleX(0); transform-origin: 0 50%; background: var(--accent); z-index: 100; pointer-events: none; will-change: transform; }
+
+  /* ── Number odometer ── */
+  [data-odometer-element] { display: inline-flex; align-items: center; font-variant-numeric: tabular-nums; }
+  [data-odometer-part="mask"], [data-odometer-part="static"] { display: inline-block; overflow: clip; padding: 0.05em; margin: -0.05em; }
+  [data-odometer-part="roller"] { display: block; white-space: pre; text-align: center; will-change: transform; }
+
+  /* ── Scramble-text cursor ── */
+  .cursor { position: fixed; top: 0; left: 0; z-index: 200; pointer-events: none; will-change: transform; }
+  .cursor-dot { position: absolute; top: -4px; left: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .cursor-scramble {
+    position: absolute; top: 12px; left: 14px; opacity: 0;
+    font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--accent-ink); background: var(--accent);
+    padding: 6px 10px; border-radius: 6px; white-space: nowrap;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    [data-cursor] .cursor-scramble {
+      transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1), opacity 0.2s ease 0.1s;
+      transform: translateX(0%) scale(1) rotate(0.001deg);
+    }
+    [data-cursor="active"] .cursor-scramble {
+      transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1), opacity 0.2s ease 0s;
+      opacity: 1; transform: translateX(0%) scale(1) rotate(0.001deg);
+    }
+    [data-cursor="active-edge"] .cursor-scramble {
+      transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1), opacity 0.2s ease 0s;
+      opacity: 1; transform: translateX(-100%) scale(1) rotate(0.001deg);
+    }
+  }
+  @media (hover: none) and (pointer: coarse) { .cursor { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .cursor { display: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .js-anim .section-head, .js-anim .prod-card,
+    .js-anim .kit-card, .js-anim .quote, .js-anim .faq details, .js-anim .apply-cta > *,
+    .js-anim .hero > *, .js-anim .hero-media { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .scroll-bar { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+    html { scroll-behavior: auto; }
+    .btn:hover { transform: none; }
+  }
+</style>
+<script>
+  /* Set synchronously so reveal styles apply before first paint (no flash).
+     Skipped when the visitor prefers reduced motion. */
+  if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    document.documentElement.className += ' js-anim marker-pending';
+    /* Failsafe: if GSAP/SplitText never initialise the marker reveal, drop the
+       class so headings become visible instead of staying hidden forever. */
+    setTimeout(function () {
+      document.documentElement.className =
+        document.documentElement.className.replace(/\bmarker-pending\b/, '');
+    }, 2000);
+  }
+</script>
+</head>
+<body>
+  <div class="scroll-bar" id="scrollBar" aria-hidden="true"></div>
+
+  <!-- ══ MARQUEE ══ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item">
+        <img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners
+      </span>
+      <span class="marquee-item">
+        <img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners
+      </span>
+    </div>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <header class="top" id="top">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero">
+          <h1>ALL.</h1>
+          <div class="hero-logo" aria-label="Maxxed"><img id="heroLogo" src="assets/logo.svg" alt="Maxxed" width="120" height="48" /></div>
+          <p class="hero-tag" data-cms="hero_tagline">Maxxed Partners is the official affiliate program for Maxxed.io, built around crypto, performance, and long-term partnerships.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#apply" data-cms="cta_label">Become a partner</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <video src="https://framerusercontent.com/assets/wOOj199fLA0yW7AnvAvatTyZI8.mp4" autoplay loop muted playsinline preload="metadata"></video>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ══ PRODUCT ══ -->
+  <section class="band" id="products">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2" data-cms="product_h2">What your players get</h2>
+      </div>
+      <div class="cards-2">
+        <article class="prod-card">
+          <img class="art" data-cms-src="casino_art" alt="" aria-hidden="true" />
+          <span class="tag">Casino</span>
+          <h3 class="h3" data-cms="casino_h3">Slots, live &amp; originals</h3>
+          <div class="stats">
+            <div class="stat"><div class="num" data-cms="casino_stat1_num">5,000+</div><div class="lbl" data-cms="casino_stat1_lbl">Games</div></div>
+            <div class="stat"><div class="num" data-cms="casino_stat2_num">80+</div><div class="lbl" data-cms="casino_stat2_lbl">Providers</div></div>
+            <div class="stat"><div class="num" data-cms="casino_stat3_num">10+</div><div class="lbl" data-cms="casino_stat3_lbl">Originals</div></div>
+          </div>
+        </article>
+        <article class="prod-card">
+          <img class="art" data-cms-src="sport_art" alt="" aria-hidden="true" />
+          <span class="tag">Sport</span>
+          <h3 class="h3" data-cms="sport_h3">Pre-match, live &amp; cash-out</h3>
+          <div class="stats">
+            <div class="stat"><div class="num" data-cms="sport_stat1_num">35+</div><div class="lbl" data-cms="sport_stat1_lbl">Sports</div></div>
+            <div class="stat"><div class="num" data-cms="sport_stat2_num">1,000+</div><div class="lbl" data-cms="sport_stat2_lbl">Markets</div></div>
+            <div class="stat"><div class="num" data-cms="sport_stat3_num">50K+</div><div class="lbl" data-cms="sport_stat3_lbl">Events/mo</div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ COMMISSION ══ -->
+  <section class="band band-alt" id="commission">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Commission structure</span>
+        <h2 class="h2" data-cms="commission_h2">Your rate scales with revenue</h2>
+      </div>
+      <div class="tiers">
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk1"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk1)"/>
+            </svg>
+            <div class="pct" data-cms="tier1_pct">30%</div>
+          </div>
+          <div class="note" data-cms="tier1_note">up to €10,000 / mo net revenue</div>
+        </div>
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk2"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk2)"/>
+            </svg>
+            <div class="pct" data-cms="tier2_pct">40%</div>
+          </div>
+          <div class="note" data-cms="tier2_note">up to €25,000 / mo net revenue</div>
+        </div>
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk3"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk3)"/>
+            </svg>
+            <div class="pct" data-cms="tier3_pct">50%</div>
+          </div>
+          <div class="note" data-cms="tier3_note">up to €40,000 / mo net revenue</div>
+        </div>
+      </div>
+            <div class="lgraph" data-line-graph-svg-init data-graph-steps="6"
+           data-graph-curve="exact" data-graph-suffix="%" data-graph-min="0" data-graph-max="60"
+           aria-label="Commission rate against monthly net revenue">
+        <div class="lgraph__top">
+          <div><h3 class="lgraph__title-h">Revshare by monthly net revenue</h3></div>
+          <div data-graph-legend class="lgraph__legend" aria-hidden="true"></div>
+        </div>
+        <div class="lgraph__box">
+          <div class="lgraph__scroll">
+            <div data-graph-visual class="lgraph__visual"></div>
+          </div>
+          <div class="lgraph__data">
+            <div data-graph-series="primary" data-graph-series-color="#8FFC80"
+                 data-graph-series-label="Your rate" data-graph-series-legend="Revshare"></div>
+            <div data-graph-label="€0" data-graph-primary="30" data-graph-tier="1"></div>
+            <div data-graph-label="€10K" data-graph-primary="30" data-graph-tier="1" data-graph-marker></div>
+            <div data-graph-label="€25K" data-graph-primary="40" data-graph-tier="2" data-graph-marker></div>
+            <div data-graph-label="€40K+" data-graph-primary="50" data-graph-tier="3" data-graph-marker></div>
+            <!-- hidden carriers so the Supabase copy rows still have a home -->
+            <span data-cms="tier1_pct" hidden>30%</span>
+            <span data-cms="tier2_pct" hidden>40%</span>
+            <span data-cms="tier3_pct" hidden>50%</span>
+            <span data-cms="tier1_revenue" hidden>€10K</span>
+            <span data-cms="tier2_revenue" hidden>€25K</span>
+            <span data-cms="tier3_revenue" hidden>€40K+</span>
+          </div>
+        </div>
+      </div>
+      <p class="foot-note" data-cms="commission_footnote">* CPA and hybrid deals available on request.</p>
+    </div>
+  </section>
+
+  <!-- ══ WHY PARTNER ══ -->
+  <section class="band" id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2" data-cms="why_h2">Why partner with Maxxed</h2>
+      </div>
+      <div class="card-stack">
+        <article class="card-stack__item is--1">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">RevShare that scales</h3>
+              <p class="card-stack__item-p">Rate grows with your players' revenue.</p>
+            </div>
+            <div class="card-stack__item-bottom"><img class="card-stack__art" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/uJ3NUJnoeeCB-Percent%201.png" alt="" aria-hidden="true" loading="lazy" /><span class="card-stack__big">Up to 50%</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--2">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Negative carryover</h3>
+              <p class="card-stack__item-p">A bad month never rolls into the next. Every month starts clean.</p>
+            </div>
+            <div class="card-stack__item-bottom"><img class="card-stack__art" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/aca8484b-7fd5-41c2-98ed-6f2420f23a30.png" alt="" aria-hidden="true" loading="lazy" /><span class="card-stack__big">Zero</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--3">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Crypto payouts</h3>
+              <p class="card-stack__item-p">Paid every month, straight to your wallet. No fiat delays.</p>
+            </div>
+            <div class="card-stack__item-bottom"><img class="card-stack__art" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/Fds6aJ0u8GNg-Calendar%201.png" alt="" aria-hidden="true" loading="lazy" /><span class="card-stack__big">Monthly</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--4">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Casino + sport</h3>
+              <p class="card-stack__item-p">One link, both products. Earn on every player, whatever they play.</p>
+            </div>
+            <div class="card-stack__item-bottom"><img class="card-stack__art" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/Z2suMHBZHbqj-Basketball%201.png" alt="" aria-hidden="true" loading="lazy" /><span class="card-stack__big">2-in-1</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--5">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Real-time dashboard</h3>
+              <p class="card-stack__item-p">Clicks, signups, deposits and revenue — tracked as it happens.</p>
+            </div>
+            <div class="card-stack__item-bottom"><img class="card-stack__art" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/ZiUbFzm7pzFa-Compass%202.png" alt="" aria-hidden="true" loading="lazy" /><span class="card-stack__big">Live</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--6">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Dedicated manager</h3>
+              <p class="card-stack__item-p">A real person who knows your account and answers fast.</p>
+            </div>
+            <div class="card-stack__item-bottom"><img class="card-stack__art" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/FpQEKyVvGTiC-Chat%202.png" alt="" aria-hidden="true" loading="lazy" /><span class="card-stack__big">1:1</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ MEDIA KIT ══ -->
+  <section class="band band-alt" id="mediakit">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Affiliate media kit</span>
+        <h2 class="h2" data-cms="mediakit_h2">Everything you need to promote</h2>
+      </div>
+      <div class="kit">
+        <div class="kit-card"><div class="thumb"><img src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20uploads/banners.png" alt="" loading="lazy" /></div><div class="body"><h3>Banners &amp; display</h3><p>All standard IAB sizes, static and animated. Casino, sport and event-based.</p></div></div>
+        <div class="kit-card"><div class="thumb"><img src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20uploads/logos%20and%20brandback.png" alt="" loading="lazy" /></div><div class="body"><h3>Logos &amp; brand pack</h3><p>Logos, wordmarks and color guidance in SVG and PNG. Light and dark.</p></div></div>
+        <div class="kit-card"><div class="thumb"><img src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20uploads/social%20templates.png" alt="" loading="lazy" /></div><div class="body"><h3>Social templates</h3><p>Story, post and Telegram formats — editable, ready to drop your first link into.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TESTIMONIALS ══ -->
+  <section class="band" id="partners-say">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What partners say</span>
+        <h2 class="h2" data-cms="reviews_h2">Proven, not promised</h2>
+        </div>
+      </div>
+      <div class="cslider" id="reviews" data-cslider="wrapper" data-slider-autoplay="true" data-slider-autoplay-duration="4" aria-label="Testimonials">
+        <div class="cslider-content">
+          <ul class="cslider-bullets" role="tablist" data-cslider="bullets">
+          <li><button class="cslider-bullet" data-cslider="bullet" role="tab" aria-selected="false" aria-label="Testimonial 1"><span class="cslider-av">MB</span></button></li>
+          <li><button class="cslider-bullet" data-cslider="bullet" role="tab" aria-selected="false" aria-label="Testimonial 2"><span class="cslider-av">TA</span></button></li>
+          <li><button class="cslider-bullet" data-cslider="bullet" role="tab" aria-selected="false" aria-label="Testimonial 3"><span class="cslider-av">S</span></button></li>
+          </ul>
+        </div>
+        <div class="cslider-row">
+          <div class="cslider-list" data-cslider="list" role="group" aria-label="slides">
+          <div class="cslider-slide" data-cslider="slide">
+            <div class="cslider-slide__inner">
+              <p class="cslider-quote">The 50% tier is the real deal — no negative carryover means a slow month never eats into the next. First affiliate program I trust with sportsbook traffic.</p>
+              <div class="cslider-meta">
+                <span class="cslider-av">MB</span>
+                <span><span class="cslider-name">Media buyer</span><br><span class="cslider-role">LATAM · Sport</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="cslider-slide" data-cslider="slide">
+            <div class="cslider-slide__inner">
+              <p class="cslider-quote">One link for casino and sport, and a manager who actually replies. My community converts and the dashboard shows every deposit in real time.</p>
+              <div class="cslider-meta">
+                <span class="cslider-av">TA</span>
+                <span><span class="cslider-name">Telegram admin</span><br><span class="cslider-role">Crypto community</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="cslider-slide" data-cslider="slide">
+            <div class="cslider-slide__inner">
+              <p class="cslider-quote">Payouts land on time, in crypto, every month. The creatives are on-brand out of the box so I spend my time driving traffic, not making banners.</p>
+              <div class="cslider-meta">
+                <span class="cslider-av">S</span>
+                <span><span class="cslider-name">Streamer</span><br><span class="cslider-role">Casino content</span></span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+        <div class="cslider-content">
+          <div class="cslider-buttons">
+            <button class="cslider-btn is--prev" data-cslider="prev-button" aria-label="Previous testimonial"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M14 19L21 12L14 5" stroke="currentColor" stroke-miterlimit="10"/><path d="M21 12H2" stroke="currentColor" stroke-miterlimit="10"/></svg></button>
+            <button class="cslider-btn" data-cslider="next-button" aria-label="Next testimonial"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M14 19L21 12L14 5" stroke="currentColor" stroke-miterlimit="10"/><path d="M21 12H2" stroke="currentColor" stroke-miterlimit="10"/></svg></button>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <!-- ══ FAQ ══ -->
+  <section class="band band-alt" id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="h2" data-cms="faq_h2">Good to know</h2>
+      </div>
+      <div class="faq" id="faqlist">
+        <details open><summary>How can I become your partner?</summary><p>Sign up and log in to your affiliate account, choose the promotional materials, and generate your unique tracking link. Share the promo on your traffic sources — that's it!</p></details>
+        <details><summary>How fast is approval?</summary><p>We review applications within 24 hours.</p></details>
+        <details><summary>How is my commission calculated?</summary><p>Your commission is calculated on a Revenue Share model. Formula: Commission = (Total Bets − Player Wins − Bonuses − Admin Fees) × Your Deal Percentage.</p></details>
+        <details><summary>When and how do I get paid?</summary><p>Monthly, in crypto, straight to your wallet.</p></details>
+        <details><summary>How long is the cookie duration?</summary><p>The cookie duration is 30 days from the last click.</p></details>
+        <details><summary>Is there a minimum traffic requirement?</summary><p>No minimum to join.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ APPLY ══ -->
+  <section class="band" id="apply">
+    <div class="wrap">
+      <div class="apply-cta">
+        <span class="eyebrow" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:20px;"><span class="dot"></span>Become a partner</span>
+        <div class="display-xl">Apply in<br><span class="green">2 minutes</span></div>
+        <p class="lead" style="margin-top:24px;max-width:46ch;" data-cms="apply_line">Tell us about your traffic. We'll review and get back to you within 24 hours.</p>
+        <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener">Become a partner</a>
+        <div class="contact-chips">
+          <button type="button" class="chip" id="emailChip" data-copy-button data-copy-email
+                  aria-label="Copy email to clipboard">
+            <span class="chip-ic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 5.5 8.5-5.5"/></svg></span>
+            <span class="chip-text">
+              <span data-copy-email-element data-cms="contact_email">affiliates@maxxedpartners.com</span>
+              <span>Click to copy email</span>
+              <span>Copied to clipboard!</span>
+            </span>
+          </button>
+          <a class="chip" id="tgChip" href="https://t.me/Maxxed_affiliates" target="_blank" rel="noopener">
+            <span class="chip-ic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.48a1.2 1.2 0 0 0-1.2-.2L2.9 11.36c-.86.34-.83 1.58.04 1.87l4.6 1.53 1.7 5.34c.2.62 1 .8 1.45.3l2.5-2.65 4.63 3.4c.53.4 1.3.1 1.45-.55l3.05-14.4a1.2 1.2 0 0 0-.43-1.14ZM9.2 14.1l8.2-5.03c.18-.11.37.13.22.28l-6.63 6.2a.9.9 0 0 0-.28.55l-.24 2-1.13-3.5a.5.5 0 0 1 .19-.5Z"/></svg></span>
+            <span class="chip-text">
+              <span data-cms="contact_telegram">@Maxxed_affiliates</span>
+              <span>Open in Telegram</span>
+              <span>Open in Telegram</span>
+            </span>
+          </a>
+        </div>
+        <p class="legal">By applying you agree to the partner terms. 18+. Please gamble responsibly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="site">
+    <div class="wrap">
+      <div class="foot-top">
+        <a href="#top" class="foot-mark" aria-label="Maxxed"><img src="assets/mark.svg" alt="Maxxed" width="96" height="80" /></a>
+        <nav class="foot-nav" aria-label="Footer">
+          <a href="#products">Product</a>
+          <a href="#commission">Commission</a>
+          <a href="#mediakit">Media kit</a>
+          <a href="#faq">FAQ</a>
+          <a href="#" id="termsLink">T&amp;C</a>
+        </nav>
+      </div>
+      <p class="foot-legal" data-cms="footer_legal">The official affiliate program for Maxxed.io. 18+ only. Please gamble responsibly. Program terms apply.</p>
+    </div>
+  </footer>
+
+  <!-- ══ FLOATING NAV ══ -->
+  <nav class="navpill" aria-label="Primary">
+    <div class="navpill-inner">
+      <a href="#top" class="mark" aria-label="Maxxed — top"><img src="assets/mark.svg" alt="Maxxed" width="40" height="33" /></a>
+      <a class="link" href="#products">Products</a>
+      <a class="link" href="#commission">Commission</a>
+      <a class="link" href="#mediakit">Media kit</a>
+      <a class="link" href="#faq">FAQ</a>
+      <a class="btn btn-primary" href="#apply">Apply</a>
+    </div>
+  </nav>
+
+  <script>
+  /* Maxxed Partners CMS — content is read live from Supabase (project "maxxed").
+     Your client edits it in the Supabase dashboard: Table Editor (copy / reviews /
+     faqs) and Storage (assets bucket for logos). No redeploy needed. */
+  (function () {
+    var SUPABASE_URL = 'https://qzrskdcfdtrhdvywwfzk.supabase.co';
+    var SUPABASE_ANON_KEY = 'sb_publishable_LlrpYAOKRQJmswXgeQouWw_qzTbhQrm';
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+
+    var H = { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY };
+    function api(path) {
+      return fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: H, cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); });
+    }
+
+    api('copy?select=key,value').then(function (rows) {
+      var map = {}; rows.forEach(function (r) { map[r.key] = r.value; }); applyCopy(map);
+    }).catch(function () {}).then(function () {
+      /* Copy is final now (or failed). Signal the odometer so it builds its
+         rollers from the real numbers instead of racing this write. */
+      document.dispatchEvent(new CustomEvent('cms:ready'));
+    });
+
+    /* Empty table => the section is removed from the page, so the client can
+       turn Reviews / FAQ off from Supabase alone. A failed request keeps the
+       built-in content instead, so a network blip never blanks the page. */
+    api('reviews?select=quote,name,role,avatar&order=sort.asc').then(function (rows) {
+      if (rows && rows.length) renderReviews(rows); else hideSection('partners-say');
+    }).catch(function () {}).then(function () {
+      /* slides are final; the loop can measure them now */
+      document.dispatchEvent(new CustomEvent('reviews:ready'));
+    });
+
+    api('faqs?select=question,answer&order=sort.asc').then(function (rows) {
+      if (rows && rows.length) renderFaqs(rows); else hideSection('faq');
+    }).catch(function () {});
+
+    function hideSection(id) {
+      var s = document.getElementById(id);
+      if (s) s.hidden = true;
+      /* drop any nav link that would jump to a section that is no longer there */
+      document.querySelectorAll('a[href="#' + id + '"]').forEach(function (a) { a.hidden = true; });
+    }
+
+    function applyCopy(map) {
+      Object.keys(map).forEach(function (key) {
+        var val = map[key]; if (val == null) return; val = String(val);
+        if (key === 'registration_url') { if (val) setHref('registerCta', val); return; }
+        if (key === 'terms_url') { if (val) setHref('termsLink', val); return; }
+        if (key === 'contact_email' && val.trim()) {
+          var ec = document.getElementById('emailChip');
+          if (ec) ec.setAttribute('data-copy-email', val.trim());
+        }
+        if (key === 'contact_telegram' && val.trim()) { setHref('tgChip', 'https://t.me/' + val.trim().replace(/^@/, '')); }
+        if (key === 'hero_logo') { if (val) { var l = document.getElementById('heroLogo'); if (l) l.src = val; } return; }
+        if (key === 'footer_mark') {
+          if (val) document.querySelectorAll('.foot-mark img, .navpill .mark img').forEach(function (im) { im.src = val; });
+          return;
+        }
+        if (!val.trim()) return;
+        document.querySelectorAll('[data-cms="' + key + '"]').forEach(function (el) { el.textContent = val; });
+      });
+      document.querySelectorAll('[data-cms-src]').forEach(function (im) {
+        var k = im.getAttribute('data-cms-src'); if (map[k]) im.setAttribute('src', map[k]);
+      });
+    }
+    function setHref(id, url) { var el = document.getElementById(id); if (el) el.setAttribute('href', url); }
+
+    function avatarEl(url, name) {
+      var el = document.createElement('span'); el.className = 'cslider-av';
+      if (url) {
+        var img = document.createElement('img'); img.src = url; img.alt = ''; img.loading = 'lazy';
+        el.appendChild(img);
+      } else {
+        el.textContent = (name || '').split(/\s+/).map(function (w) { return w.charAt(0); })
+          .join('').slice(0, 2).toUpperCase();
+      }
+      return el;
+    }
+
+    function renderReviews(rows) {
+      var wrap = document.getElementById('reviews'); if (!wrap) return;
+      var list = wrap.querySelector('[data-cslider="list"]');
+      var bullets = wrap.querySelector('[data-cslider="bullets"]');
+      if (!list || !bullets) return;
+      list.textContent = ''; bullets.textContent = '';
+
+      rows.forEach(function (r, i) {
+        var quote = (r.quote || '').trim(), name = (r.name || '').trim();
+        var role = (r.role || '').trim(), av = (r.avatar || '').trim();
+
+        var slide = document.createElement('div');
+        slide.className = 'cslider-slide'; slide.setAttribute('data-cslider', 'slide');
+        var inner = document.createElement('div'); inner.className = 'cslider-slide__inner';
+        var p = document.createElement('p'); p.className = 'cslider-quote'; p.textContent = quote;
+        inner.appendChild(p);
+        var meta = document.createElement('div'); meta.className = 'cslider-meta';
+        meta.appendChild(avatarEl(av, name));
+        var who = document.createElement('span');
+        var nm = document.createElement('span'); nm.className = 'cslider-name'; nm.textContent = name;
+        who.appendChild(nm); who.appendChild(document.createElement('br'));
+        var rl = document.createElement('span'); rl.className = 'cslider-role'; rl.textContent = role;
+        who.appendChild(rl);
+        meta.appendChild(who); inner.appendChild(meta); slide.appendChild(inner);
+        list.appendChild(slide);
+
+        var li = document.createElement('li');
+        var btn = document.createElement('button');
+        btn.className = 'cslider-bullet'; btn.type = 'button';
+        btn.setAttribute('data-cslider', 'bullet'); btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-selected', 'false');
+        btn.setAttribute('aria-label', 'Testimonial ' + (i + 1));
+        btn.appendChild(avatarEl(av, name));
+        li.appendChild(btn); bullets.appendChild(li);
+      });
+    }
+
+    function renderFaqs(rows) {
+      var wrap = document.getElementById('faqlist'); if (!wrap) return; wrap.textContent = '';
+      rows.forEach(function (r, i) {
+        var d = document.createElement('details'); if (i === 0) d.open = true;
+        var s = document.createElement('summary'); s.textContent = (r.question || '').trim(); d.appendChild(s);
+        var p = document.createElement('p'); p.textContent = (r.answer || '').trim(); d.appendChild(p);
+        wrap.appendChild(d);
+      });
+      if (window.__revealScan) window.__revealScan();
+    }
+  })();
+  </script>
+
+
+  <script>
+  /* Scroll storytelling: staggered reveal-on-scroll + top progress bar. */
+  (function () {
+    var root = document.documentElement;
+    if (root.className.indexOf('js-anim') === -1) return;
+
+    var SEL = '.section-head .eyebrow, .section-head .lead, .prod-card, .tier, .kit-card, .faq details, .apply-cta > *:not(.display-xl), .hero > *:not(h1), .hero-media';
+    var items = [].slice.call(document.querySelectorAll(SEL));
+
+    /* Stagger siblings so grids cascade instead of popping in together. */
+    var seen = new Map();
+    items.forEach(function (el) {
+      var p = el.parentNode;
+      var i = seen.get(p) || 0;
+      seen.set(p, i + 1);
+      el.style.setProperty('--d', Math.min(i * 90, 450) + 'ms');
+    });
+
+    function show(el) { el.classList.add('is-in'); }
+
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(show);
+      window.__revealScan = function () { [].slice.call(document.querySelectorAll(SEL)).forEach(show); };
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+
+    /* Reviews/FAQ replace their DOM once Supabase answers, so those fresh nodes
+       were never observed and stayed at opacity 0. Let renderers re-scan. */
+    window.__revealScan = function () {
+      var fresh = [].slice.call(document.querySelectorAll(SEL)).filter(function (el) {
+        return !el.classList.contains('is-in');
+      });
+      var s2 = new Map();
+      fresh.forEach(function (el) {
+        var pa = el.parentNode; var i = s2.get(pa) || 0; s2.set(pa, i + 1);
+        el.style.setProperty('--d', Math.min(i * 90, 450) + 'ms');
+        io.observe(el);
+      });
+      requestAnimationFrame(function () {
+        fresh.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.9) { show(el); io.unobserve(el); }
+        });
+      });
+    };
+
+    /* Anything already in view on load (the hero) reveals immediately. */
+    requestAnimationFrame(function () {
+      items.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.9) { show(el); io.unobserve(el); }
+      });
+    });
+
+    /* Top progress bar */
+    var bar = document.getElementById('scrollBar');
+    if (bar) {
+      var ticking = false;
+      var update = function () {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        var p = h > 0 ? Math.min(window.scrollY / h, 1) : 0;
+        bar.style.transform = 'scaleX(' + p + ')';
+        ticking = false;
+      };
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      update();
+    }
+  })();
+  </script>
+
+  <div class="cursor" data-cursor aria-hidden="true">
+    <span class="cursor-dot"></span>
+    <span class="cursor-scramble"><span data-cursor-text-target></span></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrambleTextPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/Draggable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/CustomEase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/InertiaPlugin.min.js"></script>
+  <script>
+  /* Scramble-text cursor. Uses GSAP + ScrambleTextPlugin when they load, and
+     falls back to a self-contained tween/scramble if the CDN is unavailable. */
+  function initScrambleTextCursor() {
+    var cursor = document.querySelector('[data-cursor]');
+    var textTarget = document.querySelector('[data-cursor-text-target]');
+    if (!cursor || !textTarget) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var CHARS = 'XYZxy#&@0$€£';
+    var mouseX = 0, mouseY = 0, hasMouseMoved = false, activeHoverItem = null;
+
+    /* Label the things worth hovering, so the markup stays clean. */
+    function tag(sel, text) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (el.hasAttribute('data-cursor-hover')) return;
+        el.setAttribute('data-cursor-hover', '');
+        el.setAttribute('data-cursor-text', typeof text === 'function' ? text(el) : text);
+      });
+    }
+    var txt = function (sel, fallback) {
+      return function (el) { var n = el.querySelector(sel); return n ? n.textContent.trim() : fallback; };
+    };
+    tag('.prod-card', txt('.tag', 'Explore'));
+    tag('.tier', txt('.pct', 'Revshare'));
+    tag('.lgraph', 'Graph');
+    tag('.card-stack__item', txt('.card-stack__big', 'Why us'));
+    tag('.kit-card', 'Assets');
+    tag('.quote', 'Partner');
+    tag('.faq details', 'Open');
+    tag('.contact-chips .chip', txt('.chip-k', 'Contact'));
+    tag('.hero-media', 'Maxxed');
+    tag('.btn', 'Apply');
+
+    var hasGsap = !!window.gsap;
+    var hasScramble = false;
+    if (hasGsap && window.ScrambleTextPlugin) {
+      try { gsap.registerPlugin(window.ScrambleTextPlugin); hasScramble = true; } catch (e) {}
+    }
+
+    var xTo, yTo;
+    if (hasGsap) {
+      xTo = gsap.quickTo(cursor, 'x', { duration: 0.4, ease: 'power3.out' });
+      yTo = gsap.quickTo(cursor, 'y', { duration: 0.4, ease: 'power3.out' });
+    } else {
+      var cx = 0, cy = 0;
+      (function loop() {
+        cx += (mouseX - cx) * 0.18; cy += (mouseY - cy) * 0.18;
+        cursor.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0)';
+        requestAnimationFrame(loop);
+      })();
+      xTo = yTo = function () {};
+    }
+
+    var timer = null;
+    function setText(text) {
+      if (hasScramble) {
+        gsap.to(textTarget, { duration: 0.6, overwrite: 'auto', scrambleText: { text: text, chars: CHARS, speed: 1.2 } });
+        return;
+      }
+      clearInterval(timer);
+      if (!text) { textTarget.textContent = ''; return; }
+      var frame = 0, total = 14;
+      timer = setInterval(function () {
+        frame++;
+        var settled = Math.floor(text.length * (frame / total)), out = '';
+        for (var i = 0; i < text.length; i++) {
+          out += i < settled ? text.charAt(i) : CHARS.charAt(Math.floor(Math.random() * CHARS.length));
+        }
+        textTarget.textContent = out;
+        if (frame >= total) { clearInterval(timer); textTarget.textContent = text; }
+      }, 28);
+    }
+
+    function updateCursor() {
+      var under = document.elementFromPoint(mouseX, mouseY);
+      var hoverItem = under && under.closest ? under.closest('[data-cursor-hover]') : null;
+      var isEdge = mouseX + 180 >= window.innerWidth;
+      cursor.setAttribute('data-cursor', hoverItem ? (isEdge ? 'active-edge' : 'active') : '');
+      if (hoverItem !== activeHoverItem) {
+        setText(hoverItem ? (hoverItem.getAttribute('data-cursor-text') || '') : '');
+        activeHoverItem = hoverItem;
+      }
+    }
+
+    window.addEventListener('mousemove', function (event) {
+      mouseX = event.clientX; mouseY = event.clientY; hasMouseMoved = true;
+      xTo(mouseX); yTo(mouseY);
+      requestAnimationFrame(updateCursor);
+    });
+    window.addEventListener('scroll', function () {
+      if (!hasMouseMoved) return;
+      requestAnimationFrame(updateCursor);
+    }, { passive: true });
+  }
+
+  /* Expose the sticky header's height so sticky cards and anchor jumps clear it. */
+  (function () {
+    var header = document.querySelector('.marquee');
+    if (!header) return;
+    var apply = function () {
+      document.documentElement.style.setProperty('--header-h', Math.round(header.offsetHeight) + 'px');
+    };
+    apply();
+    if (window.ResizeObserver) new ResizeObserver(apply).observe(header);
+    window.addEventListener('resize', apply);
+  })();
+
+  document.addEventListener('DOMContentLoaded', function () { initScrambleTextCursor(); });
+
+  /* Copy-to-clipboard email button: the label stack slides to confirm. */
+  function initCopyEmailClipboard() {
+    var button = document.getElementById('emailChip');
+    if (!button) return;
+    var reset = function () {
+      button.removeAttribute('data-copy-button');
+      button.setAttribute('aria-label', 'Copy email to clipboard');
+    };
+    var copy = function () {
+      var el = button.querySelector('[data-copy-email-element]');
+      var email = button.getAttribute('data-copy-email') || (el && el.textContent.trim());
+      if (!email || !navigator.clipboard) return;
+      navigator.clipboard.writeText(email).then(function () {
+        button.setAttribute('data-copy-button', 'copied');
+        button.setAttribute('aria-label', 'Email copied to clipboard!');
+      }).catch(function () {});
+    };
+    button.addEventListener('click', function (e) { e.preventDefault(); copy(); });
+    button.addEventListener('mouseleave', function () { reset(); button.blur(); });
+    button.addEventListener('blur', reset);
+  }
+  document.addEventListener('DOMContentLoaded', initCopyEmailClipboard);
+  </script>
+
+  <script>
+  /* Centered looping testimonial slider. Slides come from Supabase, so this
+     only runs once the reviews request has settled and the DOM is final. */
+  function initCenteredSlider() {
+    if (!window.gsap || !window.Draggable || !window.ScrollTrigger) return;
+    gsap.registerPlugin(ScrollTrigger, Draggable);
+    if (window.CustomEase) {
+      gsap.registerPlugin(CustomEase);
+      if (!CustomEase.get || !CustomEase.get('osmo-ease')) CustomEase.create('osmo-ease', '0.625, 0.05, 0, 1');
+    }
+    if (window.InertiaPlugin) gsap.registerPlugin(InertiaPlugin);
+    var EASE = window.CustomEase ? 'osmo-ease' : 'power3.inOut';
+
+    gsap.utils.toArray(document.querySelectorAll('[data-cslider="wrapper"]')).forEach(function (wrapper) {
+      if (wrapper.__sliderReady) return;
+      var slides = gsap.utils.toArray(wrapper.querySelectorAll('[data-cslider="slide"]'));
+      if (slides.length < 2) return;            /* nothing to loop */
+      wrapper.__sliderReady = true;
+
+      /* A handful of reviews cannot fill a wide row, so repeat the set until it
+         comfortably covers the viewport. Bullets still map to the originals. */
+      var uniqueCount = slides.length;
+      var list = wrapper.querySelector('[data-cslider="list"]');
+      var row = wrapper.querySelector('.cslider-row');
+      if (list && row) {
+        var need = Math.max(row.clientWidth, window.innerWidth) * 2;
+        var guard = 0;
+        while (list.scrollWidth < need && guard < 5) {
+          for (var c = 0; c < uniqueCount; c++) {
+            var clone = slides[c].cloneNode(true);
+            clone.classList.remove('active');
+            clone.removeAttribute('id');
+            list.appendChild(clone);
+          }
+          guard++;
+        }
+        slides = gsap.utils.toArray(wrapper.querySelectorAll('[data-cslider="slide"]'));
+      }
+
+      var bullets = gsap.utils.toArray(wrapper.querySelectorAll('[data-cslider="bullet"]'));
+      var prevBtn = wrapper.querySelector('[data-cslider="prev-button"]');
+      var nextBtn = wrapper.querySelector('[data-cslider="next-button"]');
+      var activeSlide, activeBullet, currentIndex = 0, autoplay;
+
+      var autoplayOn = wrapper.getAttribute('data-slider-autoplay') === 'true';
+      var autoplayDuration = autoplayOn ? (parseFloat(wrapper.getAttribute('data-slider-autoplay-duration')) || 0) : 0;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) autoplayDuration = 0;
+
+      slides.forEach(function (sl, i) { sl.setAttribute('id', 'slide-' + i); });
+      bullets.forEach(function (bt, i) {
+        bt.setAttribute('aria-controls', 'slide-' + i);
+        bt.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      });
+
+      var loop = horizontalLoop(slides, {
+        paused: true, draggable: true, center: true,
+        onChange: function (element, index) {
+          currentIndex = index;
+          if (activeSlide) activeSlide.classList.remove('active');
+          element.classList.add('active');
+          activeSlide = element;
+          if (bullets.length) {
+            var bi = index % uniqueCount;
+            if (activeBullet) activeBullet.classList.remove('active');
+            if (bullets[bi]) { bullets[bi].classList.add('active'); activeBullet = bullets[bi]; }
+            bullets.forEach(function (bt, i) { bt.setAttribute('aria-selected', i === bi ? 'true' : 'false'); });
+          }
+        }
+      });
+      loop.toIndex(0, { duration: 0.01 });
+
+      function startAutoplay() {
+        if (autoplayDuration > 0 && !autoplay) {
+          var repeat = function () {
+            loop.next({ ease: EASE, duration: 0.725 });
+            autoplay = gsap.delayedCall(autoplayDuration, repeat);
+          };
+          autoplay = gsap.delayedCall(autoplayDuration, repeat);
+        }
+      }
+      function stopAutoplay() { if (autoplay) { autoplay.kill(); autoplay = null; } }
+
+      ScrollTrigger.create({
+        trigger: wrapper, start: 'top bottom', end: 'bottom top',
+        onEnter: startAutoplay, onLeave: stopAutoplay,
+        onEnterBack: startAutoplay, onLeaveBack: stopAutoplay
+      });
+      wrapper.addEventListener('mouseenter', stopAutoplay);
+      wrapper.addEventListener('mouseleave', function () {
+        if (ScrollTrigger.isInViewport(wrapper)) startAutoplay();
+      });
+
+      slides.forEach(function (sl, i) {
+        sl.addEventListener('click', function () { loop.toIndex(i, { ease: EASE, duration: 0.725 }); });
+      });
+      bullets.forEach(function (bt, i) {
+        bt.addEventListener('click', function () { loop.toIndex(i, { ease: EASE, duration: 0.725 }); });
+      });
+      if (prevBtn) prevBtn.addEventListener('click', function () { loop.previous({ ease: EASE, duration: 0.725 }); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { loop.next({ ease: EASE, duration: 0.725 }); });
+    });
+  }
+
+  (function () {
+    var started = false;
+    function go() {
+      if (started) return; started = true;
+      initCenteredSlider();
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
+    document.addEventListener('reviews:ready', go);
+    setTimeout(go, 3000);   /* fallback if Supabase never answers */
+  })();
+
+  /* GSAP seamless-loop helper — https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop */
+  function horizontalLoop(items, config) {
+    let timeline;
+    items = gsap.utils.toArray(items);
+    config = config || {};
+    gsap.context(() => {
+      let onChange = config.onChange,
+        lastIndex = 0,
+        tl = gsap.timeline({repeat: config.repeat, onUpdate: onChange && function() {
+            let i = tl.closestIndex();
+            if (lastIndex !== i) { lastIndex = i; onChange(items[i], i); }
+          }, paused: config.paused, defaults: {ease: "none"}, onReverseComplete: () => tl.totalTime(tl.rawTime() + tl.duration() * 100)}),
+        length = items.length,
+        startX = items[0].offsetLeft,
+        times = [], widths = [], spaceBefore = [], xPercents = [],
+        curIndex = 0, indexIsDirty = false,
+        center = config.center,
+        pixelsPerSecond = (config.speed || 1) * 100,
+        snap = config.snap === false ? v => v : gsap.utils.snap(config.snap || 1),
+        timeOffset = 0,
+        container = center === true ? items[0].parentNode : gsap.utils.toArray(center)[0] || items[0].parentNode,
+        totalWidth,
+        getTotalWidth = () => items[length-1].offsetLeft + xPercents[length-1] / 100 * widths[length-1] - startX + spaceBefore[0] + items[length-1].offsetWidth * gsap.getProperty(items[length-1], "scaleX") + (parseFloat(config.paddingRight) || 0),
+        populateWidths = () => {
+          let b1 = container.getBoundingClientRect(), b2;
+          items.forEach((el, i) => {
+            widths[i] = parseFloat(gsap.getProperty(el, "width", "px"));
+            xPercents[i] = snap(parseFloat(gsap.getProperty(el, "x", "px")) / widths[i] * 100 + gsap.getProperty(el, "xPercent"));
+            b2 = el.getBoundingClientRect();
+            spaceBefore[i] = b2.left - (i ? b1.right : b1.left);
+            b1 = b2;
+          });
+          gsap.set(items, { xPercent: i => xPercents[i] });
+          totalWidth = getTotalWidth();
+        },
+        timeWrap,
+        populateOffsets = () => {
+          timeOffset = center ? tl.duration() * (container.offsetWidth / 2) / totalWidth : 0;
+          center && times.forEach((t, i) => {
+            times[i] = timeWrap(tl.labels["label" + i] + tl.duration() * widths[i] / 2 / totalWidth - timeOffset);
+          });
+        },
+        getClosest = (values, value, wrap) => {
+          let i = values.length, closest = 1e10, index = 0, d;
+          while (i--) {
+            d = Math.abs(values[i] - value);
+            if (d > wrap / 2) { d = wrap - d; }
+            if (d < closest) { closest = d; index = i; }
+          }
+          return index;
+        },
+        populateTimeline = () => {
+          let i, item, curX, distanceToStart, distanceToLoop;
+          tl.clear();
+          for (i = 0; i < length; i++) {
+            item = items[i];
+            curX = xPercents[i] / 100 * widths[i];
+            distanceToStart = item.offsetLeft + curX - startX + spaceBefore[0];
+            distanceToLoop = distanceToStart + widths[i] * gsap.getProperty(item, "scaleX");
+            tl.to(item, {xPercent: snap((curX - distanceToLoop) / widths[i] * 100), duration: distanceToLoop / pixelsPerSecond}, 0)
+              .fromTo(item, {xPercent: snap((curX - distanceToLoop + totalWidth) / widths[i] * 100)}, {xPercent: xPercents[i], duration: (curX - distanceToLoop + totalWidth - curX) / pixelsPerSecond, immediateRender: false}, distanceToLoop / pixelsPerSecond)
+              .add("label" + i, distanceToStart / pixelsPerSecond);
+            times[i] = distanceToStart / pixelsPerSecond;
+          }
+          timeWrap = gsap.utils.wrap(0, tl.duration());
+        },
+        refresh = (deep) => {
+          let progress = tl.progress();
+          tl.progress(0, true);
+          populateWidths();
+          deep && populateTimeline();
+          populateOffsets();
+          deep && tl.draggable ? tl.time(times[curIndex], true) : tl.progress(progress, true);
+        },
+        onResize = () => refresh(true),
+        proxy;
+      gsap.set(items, {x: 0});
+      populateWidths(); populateTimeline(); populateOffsets();
+      window.addEventListener("resize", onResize);
+      function toIndex(index, vars) {
+        vars = vars || {};
+        (Math.abs(index - curIndex) > length / 2) && (index += index > curIndex ? -length : length);
+        let newIndex = gsap.utils.wrap(0, length, index), time = times[newIndex];
+        if (time > tl.time() !== index > curIndex && index !== curIndex) {
+          time += tl.duration() * (index > curIndex ? 1 : -1);
+        }
+        if (time < 0 || time > tl.duration()) { vars.modifiers = {time: timeWrap}; }
+        curIndex = newIndex;
+        vars.overwrite = true;
+        gsap.killTweensOf(proxy);
+        return vars.duration === 0 ? tl.time(timeWrap(time)) : tl.tweenTo(time, vars);
+      }
+      tl.toIndex = (index, vars) => toIndex(index, vars);
+      tl.closestIndex = setCurrent => {
+        let index = getClosest(times, tl.time(), tl.duration());
+        if (setCurrent) { curIndex = index; indexIsDirty = false; }
+        return index;
+      };
+      tl.current = () => indexIsDirty ? tl.closestIndex(true) : curIndex;
+      tl.next = vars => toIndex(tl.current()+1, vars);
+      tl.previous = vars => toIndex(tl.current()-1, vars);
+      tl.times = times;
+      tl.progress(1, true).progress(0, true);
+      if (config.reversed) { tl.vars.onReverseComplete(); tl.reverse(); }
+      if (config.draggable && typeof(Draggable) === "function") {
+        proxy = document.createElement("div");
+        let wrap = gsap.utils.wrap(0, 1),
+          ratio, startProgress, draggable, lastSnap, initChangeX, wasPlaying,
+          align = () => tl.progress(wrap(startProgress + (draggable.startX - draggable.x) * ratio)),
+          syncIndex = () => tl.closestIndex(true);
+        draggable = Draggable.create(proxy, {
+          trigger: items[0].parentNode,
+          type: "x",
+          onPressInit() {
+            let x = this.x;
+            gsap.killTweensOf(tl);
+            wasPlaying = !tl.paused();
+            tl.pause();
+            startProgress = tl.progress();
+            refresh();
+            ratio = 1 / totalWidth;
+            initChangeX = (startProgress / -ratio) - x;
+            gsap.set(proxy, {x: startProgress / -ratio});
+          },
+          onDrag: align, onThrowUpdate: align,
+          overshootTolerance: 0, inertia: true,
+          snap(value) {
+            if (Math.abs(startProgress / -ratio - this.x) < 10) { return lastSnap + initChangeX; }
+            let time = -(value * ratio) * tl.duration(),
+              wrappedTime = timeWrap(time),
+              snapTime = times[getClosest(times, wrappedTime, tl.duration())],
+              dif = snapTime - wrappedTime;
+            Math.abs(dif) > tl.duration() / 2 && (dif += dif < 0 ? tl.duration() : -tl.duration());
+            lastSnap = (time + dif) / tl.duration() / -ratio;
+            return lastSnap;
+          },
+          onRelease() { syncIndex(); draggable.isThrowing && (indexIsDirty = true); },
+          onThrowComplete: () => { syncIndex(); wasPlaying && tl.play(); }
+        })[0];
+        tl.draggable = draggable;
+      }
+      tl.closestIndex(true);
+      lastIndex = curIndex;
+      onChange && onChange(items[curIndex], curIndex);
+      timeline = tl;
+      return () => window.removeEventListener("resize", onResize);
+    });
+    return timeline;
+  }
+  </script>
+
+
+  <script>
+  /* Rolling odometer for the product stats. Digits roll like a mechanical
+     counter when the card scrolls into view. */
+  function initNumberOdometer() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var initFlag = 'data-odometer-initialized';
+
+    var defaults = {
+      duration: 1, ease: 'power3.out', elementStagger: 0.1, digitStagger: 0.04,
+      revealDuration: 0.5, revealEase: 'power2.out', triggerStart: 'top 80%',
+      staggerOrder: 'left', digitCycles: 2
+    };
+
+    document.querySelectorAll('[data-odometer-group]').forEach(function (group) {
+      if (group.hasAttribute(initFlag)) return;
+      group.setAttribute(initFlag, '');
+
+      var elements = Array.prototype.slice.call(group.querySelectorAll('[data-odometer-element]'));
+      if (!elements.length || prefersReducedMotion) return;
+
+      var staggerOrder = group.getAttribute('data-odometer-stagger-order') || defaults.staggerOrder;
+      var triggerStart = group.getAttribute('data-odometer-trigger-start') || defaults.triggerStart;
+      var elementStagger = parseFloat(group.getAttribute('data-odometer-stagger')) || defaults.elementStagger;
+
+      var elementData = elements.map(function (el) {
+        var originalText = el.textContent.trim();
+        var duration = parseFloat(el.getAttribute('data-odometer-duration')) || defaults.duration;
+        var step = getLineHeightRatio(el);
+        var segments = markHiddenSegments(mapStartDigits(parseSegments(originalText), 0), 0);
+        var built = buildRollerDOM(el, segments, step, false);
+        return { el: el, rollers: built.rollers, duration: duration, step: step, originalText: originalText };
+      });
+
+      var ordered = applyStaggerOrder(elementData, staggerOrder);
+
+      var tl = gsap.timeline({
+        scrollTrigger: { trigger: group, start: triggerStart, once: true },
+        onComplete: function () {
+          elementData.forEach(function (d) { cleanupElement(d.el, d.originalText); });
+        }
+      });
+
+      ordered.forEach(function (data, orderIdx) {
+        var offset = orderIdx * elementStagger;
+        data.rollers.forEach(function (r, digitIdx) {
+          var reversedIdx = data.rollers.length - 1 - digitIdx;
+          tl.to(r.roller, {
+            y: -r.targetPos * data.step + 'em',
+            duration: data.duration, ease: defaults.ease, force3D: true
+          }, offset + reversedIdx * defaults.digitStagger);
+        });
+      });
+    });
+
+    function getLineHeightRatio(el) {
+      var cs = getComputedStyle(el);
+      if (cs.lineHeight === 'normal') return 1.2;
+      return parseFloat(cs.lineHeight) / parseFloat(cs.fontSize);
+    }
+    function parseSegments(text) {
+      return text.split('').map(function (char) {
+        return { type: /\d/.test(char) ? 'digit' : 'static', char: char };
+      });
+    }
+    function mapStartDigits(segments, startValue) {
+      var slots = segments.filter(function (s) { return s.type === 'digit'; }).length;
+      var padded = String(Math.floor(Math.abs(startValue))).padStart(slots, '0').slice(-slots);
+      var di = 0;
+      return segments.map(function (s) {
+        if (s.type !== 'digit') return s;
+        return { type: s.type, char: s.char, startDigit: parseInt(padded[di++], 10) };
+      });
+    }
+    function markHiddenSegments(segments) {
+      return segments.map(function (s) { return Object.assign({}, s, { hidden: false }); });
+    }
+    function buildRollerDOM(el, segments, step, grow) {
+      el.innerHTML = '';
+      el.style.height = '';
+      var rollers = [], revealEls = [];
+      var totalCells = 10 * defaults.digitCycles;
+      segments.forEach(function (seg) {
+        if (seg.type === 'static') {
+          var span = document.createElement('span');
+          span.setAttribute('data-odometer-part', 'static');
+          span.style.height = step + 'em';
+          span.style.lineHeight = step;
+          span.textContent = seg.char;
+          el.appendChild(span);
+          return;
+        }
+        var mask = document.createElement('span');
+        mask.setAttribute('data-odometer-part', 'mask');
+        mask.style.height = step + 'em';
+        mask.style.lineHeight = step;
+        var roller = document.createElement('span');
+        roller.setAttribute('data-odometer-part', 'roller');
+        roller.style.lineHeight = step;
+        var digits = [];
+        for (var d = 0; d < totalCells; d++) digits.push(d % 10);
+        roller.textContent = digits.join('\n');
+        mask.appendChild(roller);
+        el.appendChild(mask);
+        var startDigit = seg.startDigit || 0;
+        gsap.set(roller, { y: -startDigit * step + 'em' });
+        var endDigit = parseInt(seg.char, 10);
+        rollers.push({ roller: roller, targetPos: endDigit > startDigit ? endDigit : 10 + endDigit });
+      });
+      return { rollers: rollers, revealEls: revealEls };
+    }
+    function cleanupElement(el, originalText) {
+      el.style.overflow = ''; el.style.height = '';
+      var digits = originalText.split('').filter(function (c) { return /\d/.test(c); });
+      var di = 0;
+      el.querySelectorAll('[data-odometer-part="mask"]').forEach(function (mask) {
+        var roller = mask.querySelector('[data-odometer-part="roller"]');
+        if (roller) roller.remove();
+        mask.textContent = digits[di++] || '';
+        mask.style.opacity = ''; mask.style.overflow = '';
+      });
+      el.querySelectorAll('[data-odometer-part="static"]').forEach(function (s) { s.style.opacity = ''; });
+    }
+    function applyStaggerOrder(items, order) {
+      var arr = items.slice();
+      if (order === 'right') return arr.reverse();
+      if (order === 'random') {
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+      }
+      return arr;
+    }
+  }
+
+  /* Tag the stat numbers, then start only once the CMS has written its values
+     (or a short grace period passes) so the two never fight over the DOM. */
+  (function () {
+    document.querySelectorAll('.prod-card .stats').forEach(function (g) {
+      g.setAttribute('data-odometer-group', '');
+      g.querySelectorAll('.num').forEach(function (n) { n.setAttribute('data-odometer-element', ''); });
+    });
+    var started = false;
+    function start() {
+      if (started) return; started = true;
+      initNumberOdometer();
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
+    document.addEventListener('cms:ready', start);
+    setTimeout(start, 2500);
+  })();
+  </script>
+
+  <script>
+  /* Highlight-marker heading reveal: a lime bar wipes off each line of every
+     heading as it scrolls in. */
+  function initHighlightMarkerTextReveal() {
+    if (!window.gsap || !window.ScrollTrigger || !window.SplitText) return false;
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+
+    var defaults = {
+      direction: 'right', theme: 'maxxed', scrollStart: 'top 90%',
+      staggerStart: 'start', stagger: 100, barDuration: 0.6, barEase: 'power3.inOut'
+    };
+    var colorMap = { maxxed: '#8FFC80', white: '#FFFFFF', ink: '#050505' };
+    var directionMap = {
+      right: { prop: 'scaleX', origin: 'right center' },
+      left:  { prop: 'scaleX', origin: 'left center' },
+      up:    { prop: 'scaleY', origin: 'center top' },
+      down:  { prop: 'scaleY', origin: 'center bottom' }
+    };
+
+    function resolveColor(v) {
+      if (colorMap[v]) return colorMap[v];
+      if (v.indexOf('--') === 0) return getComputedStyle(document.body).getPropertyValue(v).trim() || v;
+      return v;
+    }
+    function createBar(color, origin) {
+      var bar = document.createElement('div');
+      bar.className = 'highlight-marker-bar';
+      bar.style.backgroundColor = color;
+      bar.style.transformOrigin = origin;
+      return bar;
+    }
+
+    /* Tag the headings here so the markup stays clean. */
+    document.querySelectorAll('.hero h1, h2, .h2, .display-xl, .card-stack__item-h, .card-stack__big').forEach(function (el) {
+      el.setAttribute('data-highlight-marker-reveal', '');
+    });
+
+    var elements = document.querySelectorAll('[data-highlight-marker-reveal]');
+    if (!elements.length) return true;
+
+    elements.forEach(function (el) {
+      var direction = el.getAttribute('data-marker-direction') || defaults.direction;
+      var theme = el.getAttribute('data-marker-theme') || defaults.theme;
+      var scrollStart = el.getAttribute('data-marker-scroll-start') || defaults.scrollStart;
+      var staggerStart = el.getAttribute('data-marker-stagger-start') || defaults.staggerStart;
+      var staggerOffset = (parseFloat(el.getAttribute('data-marker-stagger')) || defaults.stagger) / 1000;
+      var color = resolveColor(theme);
+      var dir = directionMap[direction] || directionMap.right;
+
+      el._marker = {};
+      el._marker.split = SplitText.create(el, {
+        type: 'lines',
+        linesClass: 'highlight-marker-line',
+        autoSplit: true,
+        onSplit: function (self) {
+          var inst = el._marker;
+          if (inst.timeline) inst.timeline.kill();
+          if (inst.scrollTrigger) inst.scrollTrigger.kill();
+          el.querySelectorAll('.highlight-marker-bar').forEach(function (b) { b.remove(); });
+
+          var lines = self.lines;
+          var tl = gsap.timeline({ paused: true });
+          lines.forEach(function (line, i) {
+            gsap.set(line, { position: 'relative', overflow: 'hidden' });
+            var bar = createBar(color, dir.origin);
+            line.appendChild(bar);
+            var idx = staggerStart === 'end' ? lines.length - 1 - i : i;
+            var vars = { duration: defaults.barDuration, ease: defaults.barEase };
+            vars[dir.prop] = 0;
+            tl.to(bar, vars, idx * staggerOffset);
+          });
+
+          gsap.set(el, { autoAlpha: 1 });
+          inst.timeline = tl;
+          inst.scrollTrigger = ScrollTrigger.create({
+            trigger: el, start: scrollStart, once: true,
+            onEnter: function () { tl.play(); }
+          });
+          /* A re-split (font load / resize) rebuilds this paused timeline with a
+             fresh once-trigger. If the heading is already past its start point
+             that trigger never fires, so reveal it here instead of stranding it. */
+          if (el.getBoundingClientRect().top < window.innerHeight * 0.9) tl.play();
+        }
+      });
+    });
+    return true;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var done = function () {
+      initHighlightMarkerTextReveal();
+      /* headings are now controlled by GSAP (or the effect is unavailable) */
+      document.documentElement.className =
+        document.documentElement.className.replace(/\bmarker-pending\b/, '');
+    };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(done).catch(done);
+    else done();
+  });
+  </script>
+
+  <script>
+  /* Interactive commission line graph (plain SVG, no GSAP). Values come from the
+     Supabase copy rows, so it runs after the CMS has written them. */
+  function initLineGraphSVG() {
+    const namespace = 'http://www.w3.org/2000/svg';
+    const numberFormat = new Intl.NumberFormat();
+    const width = 1000, height = 500, graphHeadroomPercent = 20, axisGap = 40;
+    const graphPadding = { top: 55, right: 45, bottom: 30, left: 35 };
+
+    const createElement = (tag, className, text = '') => {
+      const el = document.createElement(tag); el.className = className; el.textContent = text; return el;
+    };
+    const createSvgElement = (tag, attributes = {}) => {
+      const el = document.createElementNS(namespace, tag);
+      Object.entries(attributes).forEach(([k, v]) => el.setAttribute(k, v));
+      return el;
+    };
+
+    document.querySelectorAll('[data-line-graph-svg-init]').forEach((container) => {
+      container._lgObserver?.disconnect();
+      container._lgController?.abort();
+
+      const visual = container.querySelector('[data-graph-visual]');
+      const legend = container.querySelector('[data-graph-legend]');
+      const seriesElements = container.querySelectorAll('[data-graph-series]');
+      const pointElements = container.querySelectorAll('[data-graph-label]');
+      if (!visual || !seriesElements.length || pointElements.length < 2) return;
+
+      const viewport = visual.parentElement;
+      const series = Array.from(seriesElements, (element, index) => {
+        const label = element.getAttribute('data-graph-series-label') || `Series ${index + 1}`;
+        return {
+          key: element.getAttribute('data-graph-series'), label,
+          legendLabel: element.getAttribute('data-graph-series-legend') || label,
+          color: element.getAttribute('data-graph-series-color') || 'var(--graph-line-default)'
+        };
+      }).filter(({ key }) => key);
+      if (!series.length) return;
+
+      const points = Array.from(pointElements, (element) => ({
+        label: element.getAttribute('data-graph-label') || '',
+        marker: element.hasAttribute('data-graph-marker'),
+        values: Object.fromEntries(series.map(({ key }) => [key, parseFloat(element.getAttribute(`data-graph-${key}`))]))
+      }));
+
+      const requestedSteps = Math.max(1, parseInt(container.getAttribute('data-graph-steps'), 10) || 4);
+      const prefix = container.getAttribute('data-graph-prefix') || '';
+      const suffix = container.getAttribute('data-graph-suffix') || '';
+      const exact = container.getAttribute('data-graph-curve') === 'exact';
+      const values = points.flatMap((pt) => series.map(({ key }) => pt.values[key])).filter(Number.isFinite);
+      if (!values.length) values.push(0, 1);
+
+      const minAttribute = parseFloat(container.getAttribute('data-graph-min'));
+      const maxAttribute = parseFloat(container.getAttribute('data-graph-max'));
+      const min = Number.isFinite(minAttribute) ? minAttribute : Math.min(0, ...values);
+      const highestValue = Math.max(...values);
+      const range = Math.max(highestValue - min, Math.abs(highestValue || 1));
+      const targetMax = highestValue + range * (1 / (1 - graphHeadroomPercent / 100) - 1);
+      const rawMax = Number.isFinite(maxAttribute) ? maxAttribute : targetMax;
+      const roughStep = (rawMax - min) / requestedSteps;
+      const magnitude = 10 ** Math.floor(Math.log10(roughStep));
+      const step = Math.ceil(roughStep / magnitude) * magnitude;
+      const max = Number.isFinite(maxAttribute) ? maxAttribute : min + step * requestedSteps;
+      const gridValues = Array.from({ length: requestedSteps + 1 }, (_, i) => Number((min + step * i).toFixed(10)));
+
+      const setSeriesColor = (el, item) => el.style.setProperty('--graph-series-color', item.color);
+      const formatNumber = (value, compact = true) => {
+        const abs = Math.abs(value); let out;
+        if (compact && abs >= 1e9) out = `${parseFloat((value / 1e9).toFixed(1))}B`;
+        else if (compact && abs >= 1e6) out = `${parseFloat((value / 1e6).toFixed(1))}M`;
+        else if (compact && abs >= 1e3) out = `${parseFloat((value / 1e3).toFixed(1))}K`;
+        else out = numberFormat.format(value);
+        return `${prefix}${out}${suffix}`;
+      };
+
+      const svg = createSvgElement('svg', {
+        viewBox: `0 0 ${width} ${height}`, role: 'img',
+        'aria-label': container.getAttribute('aria-label') || 'Line graph'
+      });
+      visual.replaceChildren(svg);
+
+      const measureLabels = (texts) => {
+        const layer = createSvgElement('g', { visibility: 'hidden', 'aria-hidden': 'true' });
+        const labels = texts.map((t) => {
+          const l = createSvgElement('text', { class: 'lgraph__axis-label' });
+          l.textContent = t; layer.appendChild(l); return l;
+        });
+        svg.appendChild(layer);
+        const boxes = labels.map((l) => l.getBBox());
+        layer.remove();
+        return boxes;
+      };
+      const yBoxes = measureLabels(gridValues.map((v) => formatNumber(v)));
+      const xBoxes = measureLabels(points.map(({ label }) => label));
+
+      const plot = {
+        top: graphPadding.top, right: graphPadding.right,
+        bottom: Math.max(...xBoxes.map(({ height }) => height), 0) + axisGap + graphPadding.bottom,
+        left: Math.max(...yBoxes.map(({ width }) => width), 0) + axisGap + graphPadding.left
+      };
+      const plotWidth = width - plot.left - plot.right;
+      const plotHeight = height - plot.top - plot.bottom;
+      const getX = (i) => plot.left + (i / (points.length - 1)) * plotWidth;
+      const getY = (v) => plot.top + ((max - v) / (max - min)) * plotHeight;
+
+      const getSmoothPath = (coords) => {
+        if (coords.length === 1) return `M ${coords[0].x} ${coords[0].y} l 0 0`;
+        if (exact) {
+          const slopes = coords.slice(1).map((pt, i) => (pt.y - coords[i].y) / (pt.x - coords[i].x));
+          const tangents = coords.map((pt, i) => {
+            if (i === 0) return slopes[0];
+            if (i === coords.length - 1) return slopes[i - 1];
+            const a = slopes[i - 1], c = slopes[i];
+            return a * c <= 0 ? 0 : 2 * a * c / (a + c);
+          });
+          let path = `M ${coords[0].x} ${coords[0].y}`;
+          coords.slice(1).forEach((pt, i) => {
+            const prev = coords[i], d = (pt.x - prev.x) / 3;
+            path += ` C ${prev.x + d} ${prev.y + tangents[i] * d}, ${pt.x - d} ${pt.y - tangents[i + 1] * d}, ${pt.x} ${pt.y}`;
+          });
+          return path;
+        }
+        const first = coords[0], last = coords[coords.length - 1];
+        const controls = [first, first, first, ...coords.slice(1, -1), last, last, last];
+        let path = `M ${first.x} ${first.y}`;
+        const blend = (a, c, d, w) => ({
+          x: (a.x * w[0] + c.x * w[1] + d.x * w[2]) / 6,
+          y: (a.y * w[0] + c.y * w[1] + d.y * w[2]) / 6
+        });
+        for (let i = 0; i < controls.length - 3; i++) {
+          const [a, c, d, e] = controls.slice(i, i + 4);
+          const c1 = blend(a, c, d, [0, 4, 2]), c2 = blend(a, c, d, [0, 2, 4]), end = blend(c, d, e, [1, 4, 1]);
+          path += ` C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}`;
+        }
+        return path;
+      };
+
+      gridValues.forEach((value) => {
+        const y = getY(value);
+        svg.append(
+          createSvgElement('line', { x1: plot.left, x2: width - plot.right, y1: y, y2: y,
+            class: `lgraph__grid-line${value === 0 ? ' is--baseline' : ''}` }),
+          (() => {
+            const l = createSvgElement('text', { x: graphPadding.left, y, 'text-anchor': 'start',
+              'dominant-baseline': 'middle', 'data-graph-y-label': '', class: 'lgraph__axis-label' });
+            l.textContent = formatNumber(value); return l;
+          })()
+        );
+      });
+
+      points.forEach((point, index) => {
+        const l = createSvgElement('text', {
+          x: getX(index), y: height - graphPadding.bottom,
+          'text-anchor': index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle',
+          'dominant-baseline': 'text-after-edge', 'data-graph-x-label': '', class: 'lgraph__axis-label' });
+        l.textContent = point.label; svg.appendChild(l);
+      });
+
+      const hover = createSvgElement('g', { class: 'lgraph__hover', 'data-graph-hover-status': 'not-active' });
+      const hoverLine = createSvgElement('line', { y1: plot.top, y2: height - plot.bottom, class: 'lgraph__hover-line' });
+
+      [...series].reverse().forEach((item) => {
+        const segments = []; let segment = [];
+        points.forEach((point, index) => {
+          if (Number.isFinite(point.values[item.key])) segment.push({ x: getX(index), y: getY(point.values[item.key]), index });
+          else if (segment.length) { segments.push(segment); segment = []; }
+        });
+        if (segment.length) segments.push(segment);
+        item.paths = segments.map((coords) => {
+          const path = createSvgElement('path', { d: getSmoothPath(coords), class: 'lgraph__line', 'data-graph-series-path': item.key });
+          setSeriesColor(path, item); svg.appendChild(path);
+          return { path, coordinates: coords };
+        });
+        item.dot = createSvgElement('circle', { r: 7, class: 'lgraph__hover-dot', 'data-graph-hover-dot': item.key });
+        setSeriesColor(item.dot, item);
+      });
+      /* outline the commission tiers directly on the curve */
+      const primaryKey = series[0].key;
+      points.forEach((point, index) => {
+        if (!point.marker) return;
+        const value = point.values[primaryKey];
+        if (!Number.isFinite(value)) return;
+        svg.appendChild(createSvgElement('circle', {
+          cx: getX(index), cy: getY(value), r: 9, class: 'lgraph__marker'
+        }));
+      });
+
+      hover.append(hoverLine, ...[...series].reverse().map(({ dot }) => dot));
+      svg.appendChild(hover);
+
+      if (legend) {
+        legend.replaceChildren(...series.map((item) => {
+          const li = createElement('div', 'lgraph__legend-item');
+          const dot = createElement('div', 'lgraph__legend-dot');
+          const text = createElement('span', 'lgraph__legend-text', item.legendLabel);
+          setSeriesColor(dot, item); li.append(dot, text); return li;
+        }));
+      }
+
+      const tooltip = createElement('div', 'lgraph__tooltip');
+      const tooltipLabel = createElement('div', 'lgraph__tooltip-label');
+      tooltip.setAttribute('data-graph-tooltip-status', 'not-active');
+      tooltip.setAttribute('data-graph-tooltip-move', 'false');
+      tooltip.setAttribute('aria-hidden', 'true');
+      tooltip.setAttribute('aria-live', 'polite');
+      tooltip.appendChild(tooltipLabel);
+      series.forEach((item) => {
+        const row = createElement('div', 'lgraph__tooltip-row');
+        const wrapS = createElement('div', 'lgraph__tooltip-series');
+        const dot = createElement('div', 'lgraph__tooltip-series-dot');
+        const text = createElement('span', 'lgraph__tooltip-series-text', item.label);
+        const value = createElement('span', 'lgraph__tooltip-value');
+        setSeriesColor(dot, item); wrapS.append(dot, text); row.append(wrapS, value); tooltip.appendChild(row);
+        item.tooltipRow = row; item.tooltipValue = value;
+      });
+      visual.appendChild(tooltip);
+
+      const getPathPointAtX = (path, targetX) => {
+        let start = 0, end = path.getTotalLength();
+        for (let i = 0; i < 24; i++) {
+          const mid = (start + end) / 2;
+          if (path.getPointAtLength(mid).x < targetX) start = mid; else end = mid;
+        }
+        return path.getPointAtLength((start + end) / 2);
+      };
+      series.forEach((item) => {
+        item.positions = new Array(points.length).fill(null);
+        item.paths.forEach(({ path, coordinates }) => {
+          coordinates.forEach((point) => {
+            item.positions[point.index] = exact || coordinates.length === 1 ? point : getPathPointAtX(path, point.x);
+          });
+        });
+      });
+
+      let activeIndex = -1;
+      visual.tabIndex = 0;
+      visual.setAttribute('role', 'group');
+      visual.setAttribute('aria-label', 'Interactive graph. Use left and right arrows to explore values. Escape dismisses details.');
+
+      const setHoverStatus = (active) => {
+        const status = active ? 'active' : 'not-active';
+        hover.setAttribute('data-graph-hover-status', status);
+        tooltip.setAttribute('data-graph-tooltip-status', status);
+        tooltip.setAttribute('aria-hidden', String(!active));
+      };
+      const showPoint = (index, animateMove = true) => {
+        if (activeIndex === index) return;
+        tooltip.setAttribute('data-graph-tooltip-move', String(animateMove && activeIndex >= 0));
+        activeIndex = index;
+        const point = points[index];
+        const rect = svg.getBoundingClientRect();
+        const scaleX = rect.width / width, scaleY = rect.height / height;
+        const x = getX(index);
+        const curvePoints = series.map((item) => {
+          const cp = item.positions[index];
+          item.dot.style.display = cp ? '' : 'none';
+          item.tooltipRow.style.display = cp ? '' : 'none';
+          if (!cp) return null;
+          item.tooltipValue.textContent = formatNumber(point.values[item.key], false);
+          item.dot.setAttribute('cx', cp.x); item.dot.setAttribute('cy', cp.y);
+          return cp;
+        }).filter(Boolean);
+        hoverLine.setAttribute('x1', x); hoverLine.setAttribute('x2', x);
+        tooltipLabel.textContent = point.label;
+        setHoverStatus(true);
+        const tw = tooltip.offsetWidth, th = tooltip.offsetHeight, edge = 16;
+        const naturalLeft = x * scaleX;
+        const naturalTop = (curvePoints.length ? Math.min(...curvePoints.map(({ y }) => y)) : plot.top) * scaleY;
+        const minLeft = viewport.scrollLeft + tw / 2 + edge;
+        const maxLeft = viewport.scrollLeft + viewport.clientWidth - tw / 2 - edge;
+        tooltip.style.left = `${Math.max(minLeft, Math.min(maxLeft, naturalLeft))}px`;
+        tooltip.style.top = `${Math.max(th + edge * 2, naturalTop)}px`;
+      };
+      const hidePoint = () => { activeIndex = -1; tooltip.setAttribute('data-graph-tooltip-move', 'false'); setHoverStatus(false); };
+
+      const axisLabels = svg.querySelectorAll('[data-graph-x-label], [data-graph-y-label]');
+      const xLabels = svg.querySelectorAll('[data-graph-x-label]');
+      const updateLabels = () => {
+        const visibleWidth = visual.getBoundingClientRect().width;
+        if (!visibleWidth) return;
+        axisLabels.forEach((l) => { l.style.fontSize = `${14 * width / visibleWidth}px`; });
+        const labelStep = Math.max(1, Math.ceil((points.length * 42) / (plotWidth * visibleWidth / width)));
+        xLabels.forEach((l, i) => {
+          const isEdge = i === 0 || i === xLabels.length - 1;
+          l.style.display = (isEdge || (i % labelStep === 0 && xLabels.length - 1 - i >= labelStep)) ? '' : 'none';
+        });
+      };
+
+      const controller = new AbortController();
+      const signal = controller.signal;
+      const showPointer = (event) => {
+        const rect = svg.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width * width;
+        const progress = Math.max(0, Math.min(1, (x - plot.left) / plotWidth));
+        showPoint(Math.round(progress * (points.length - 1)));
+      };
+      visual.addEventListener('pointermove', (e) => { if (e.pointerType !== 'touch') showPointer(e); }, { signal });
+      visual.addEventListener('pointerleave', hidePoint, { signal });
+      visual.addEventListener('click', showPointer, { signal });
+      visual.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') return hidePoint();
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        let index = activeIndex < 0 ? 0 : activeIndex + (event.key === 'ArrowRight' ? 1 : -1);
+        if (event.key === 'Home') index = 0;
+        if (event.key === 'End') index = points.length - 1;
+        index = Math.max(0, Math.min(points.length - 1, index));
+        viewport.scrollLeft = getX(index) / width * visual.clientWidth - viewport.clientWidth / 2;
+        showPoint(index);
+      }, { signal });
+      visual.addEventListener('blur', hidePoint, { signal });
+      document.addEventListener('pointerdown', (e) => { if (!visual.contains(e.target)) hidePoint(); }, { signal });
+      viewport.addEventListener('scroll', () => {
+        if (activeIndex < 0) return;
+        const index = activeIndex; activeIndex = -1; showPoint(index, false);
+      }, { signal });
+
+      const observer = new ResizeObserver(updateLabels);
+      observer.observe(visual);
+      container._lgController = controller;
+      container._lgObserver = observer;
+      updateLabels();
+    });
+  }
+
+  /* Pull the tier percentages / axis labels the client edits in Supabase into
+     the graph's data attributes, then draw. */
+  (function () {
+    function syncFromCms() {
+      document.querySelectorAll('[data-graph-tier]').forEach(function (el) {
+        var t = el.getAttribute('data-graph-tier');
+        var scope = document.querySelector('.lgraph__data') || document;
+        var pctEl = scope.querySelector('[data-cms="tier' + t + '_pct"]')
+                 || document.querySelector('[data-cms="tier' + t + '_pct"]');
+        var revEl = scope.querySelector('[data-cms="tier' + t + '_revenue"]')
+                 || document.querySelector('[data-cms="tier' + t + '_revenue"]');
+        if (pctEl) {
+          var n = parseInt((pctEl.textContent || '').replace(/[^0-9]/g, ''), 10);
+          if (!isNaN(n)) el.setAttribute('data-graph-primary', n);
+        }
+        if (revEl && revEl.textContent.trim() && el.getAttribute('data-graph-label') !== '€0') {
+          el.setAttribute('data-graph-label', revEl.textContent.trim());
+        }
+      });
+    }
+    var started = false;
+    function go() {
+      if (started) return; started = true;
+      syncFromCms(); initLineGraphSVG();
+      /* drawing the graph changes page height, so triggers below it are stale */
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
+    document.addEventListener('cms:ready', go);
+    setTimeout(go, 2500);
+  })();
+  </script>
+
+  <script>
+  /* Commission rings — animate the green arc + count the number up when scrolled into view. */
+  (function () {
+    var wraps = [].slice.call(document.querySelectorAll('#commission .ring-wrap'));
+    if (!wraps.length) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function run(wrap) {
+      var pctEl = wrap.querySelector('.pct');
+      var reveal = wrap.querySelector('.reveal');
+      var raw = (pctEl.textContent || '').trim();
+      var target = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+      if (isNaN(target)) target = 0;
+      if (reveal) reveal.style.strokeDashoffset = String(100 - target);
+      if (reduce) { pctEl.textContent = raw; return; }
+      var start = null, dur = 1500;
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        pctEl.textContent = Math.round(eased * target) + '%';
+        if (p < 1) requestAnimationFrame(step); else pctEl.textContent = raw;
+      }
+      requestAnimationFrame(step);
+    }
+
+    if (!('IntersectionObserver' in window)) { wraps.forEach(run); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { run(e.target); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.4 });
+    wraps.forEach(function (w) { io.observe(w); });
+  })();
+  </script>
+
+</body>
+</html>

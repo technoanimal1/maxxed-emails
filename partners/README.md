@@ -65,3 +65,30 @@ TERMS_URL        = ""   // optional: footer T&C link
 
 - Set `REGISTRATION_URL`, `REVIEWS_CSV_URL`, and `TERMS_URL`.
 - Replace the hero video URL (currently the Framer CDN asset) with your own if desired.
+
+## Launch state
+
+The public page is the "Launching soon" holding page. The finished site is
+**not** hidden with CSS or JavaScript — it is a separate file, so none of its
+markup is served to the public page.
+
+| URL | File | Who |
+|---|---|---|
+| `/` | `index.html` | public — holding page |
+| `/preview` | `preview.html` | private — the finished site |
+
+`/preview` carries `noindex, nofollow` and is disallowed in `robots.txt`, so
+search engines skip it. It is unlisted, not password protected: anyone with
+the link can open it.
+
+### Going live
+
+Swap the two files and push:
+
+```sh
+git mv partners/index.html partners/soon.html
+git mv partners/preview.html partners/index.html
+# remove the noindex line from the new index.html, and the Disallow in robots.txt
+```
+
+Keep `soon.html` around if you ever want to put the holding page back up.
