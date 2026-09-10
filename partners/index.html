@@ -132,6 +132,7 @@
   .marquee:hover .marquee-track { animation-play-state: paused; }
   .marquee-item { display: inline-flex; align-items: center; gap: clamp(24px, 4vw, 44px); font-family: var(--display); font-weight: 800; font-size: clamp(28px, 5vw, 54px); letter-spacing: 0; text-transform: uppercase; color: var(--white); }
   .marquee-item .dot { width: clamp(12px, 1.6vw, 18px); height: clamp(12px, 1.6vw, 18px); }
+  .marquee-item .marquee-mark { height: clamp(24px, 3.4vw, 44px); width: auto; flex: none; }
   @keyframes scroll { to { transform: translateX(-50%); } }
 
   /* ── Generic section spacing ── */
@@ -162,9 +163,13 @@
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 40px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;
   }
-  .tier .pct { font-family: var(--display); font-weight: 800; font-size: clamp(64px, 8vw, 104px); line-height: 1; color: var(--accent); letter-spacing: -.04em; }
-  .tier .bar { width: 100%; height: 14px; border-radius: 8px; background: var(--surface2); overflow: hidden; }
-  .tier .bar > span { display: block; height: 100%; border-radius: 8px; background: var(--accent); }
+  .tier .ring-wrap { position: relative; width: clamp(150px, 42vw, 188px); aspect-ratio: 1 / 1; display: grid; place-items: center; }
+  .tier .ring { width: 100%; height: 100%; overflow: visible; }
+  .tier .ring .track { stroke: var(--line2); }
+  .tier .ring .fill { stroke: var(--accent); filter: drop-shadow(0 0 5px rgba(143,252,128,.45)); }
+  .tier .ring .reveal { transition: stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1); }
+  .tier .pct { position: absolute; font-family: var(--display); font-weight: 800; font-size: clamp(34px, 5.5vw, 52px); line-height: 1; color: var(--accent); letter-spacing: -.03em; }
+  @media (prefers-reduced-motion: reduce) { .tier .ring .reveal { transition: none; } }
   .tier .note { color: var(--white); font-size: 13px; }
   .foot-note { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 28px; }
 
@@ -305,10 +310,10 @@
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track">
       <span class="marquee-item">
-        <span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners
+        <img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners
       </span>
       <span class="marquee-item">
-        <span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners<span class="dot"></span>Maxxed Partners
+        <img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners
       </span>
     </div>
   </div>
@@ -352,9 +357,39 @@
         <h2 class="h2" data-cms="commission_h2">Your rate scales with revenue</h2>
       </div>
       <div class="tiers">
-        <div class="tier"><div class="pct" data-cms="tier1_pct">30%</div><div class="bar"><span style="width:33%"></span></div><div class="note" data-cms="tier1_note">up to €10,000 / mo net revenue</div></div>
-        <div class="tier"><div class="pct" data-cms="tier2_pct">40%</div><div class="bar"><span style="width:66%"></span></div><div class="note" data-cms="tier2_note">up to €25,000 / mo net revenue</div></div>
-        <div class="tier"><div class="pct" data-cms="tier3_pct">50%</div><div class="bar"><span style="width:100%"></span></div><div class="note" data-cms="tier3_note">up to €40,000 / mo net revenue</div></div>
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk1"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk1)"/>
+            </svg>
+            <div class="pct" data-cms="tier1_pct">30%</div>
+          </div>
+          <div class="note" data-cms="tier1_note">up to €10,000 / mo net revenue</div>
+        </div>
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk2"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk2)"/>
+            </svg>
+            <div class="pct" data-cms="tier2_pct">40%</div>
+          </div>
+          <div class="note" data-cms="tier2_note">up to €25,000 / mo net revenue</div>
+        </div>
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk3"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk3)"/>
+            </svg>
+            <div class="pct" data-cms="tier3_pct">50%</div>
+          </div>
+          <div class="note" data-cms="tier3_note">up to €40,000 / mo net revenue</div>
+        </div>
       </div>
       <p class="foot-note" data-cms="commission_footnote">* CPA and hybrid deals available on request.</p>
     </div>
@@ -477,7 +512,7 @@
      faqs) and Storage (assets bucket for logos). No redeploy needed. */
   (function () {
     var SUPABASE_URL = 'https://qzrskdcfdtrhdvywwfzk.supabase.co';
-    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF6cnNrZGNmZHRyaGR2eXd3ZnprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTE1MzUsImV4cCI6MjEwNDUyNzUzNX0.VR4oMDKZglkaKuOFuXd-rr_Y6uHn7pmf4ga6I-KEFAs';
+    var SUPABASE_ANON_KEY = 'sb_publishable_LlrpYAOKRQJmswXgeQouWw_qzTbhQrm';
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
 
     var H = { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY };
@@ -540,6 +575,42 @@
         wrap.appendChild(d);
       });
     }
+  })();
+  </script>
+
+  <script>
+  /* Commission rings — animate the green arc + count the number up when scrolled into view. */
+  (function () {
+    var wraps = [].slice.call(document.querySelectorAll('#commission .ring-wrap'));
+    if (!wraps.length) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function run(wrap) {
+      var pctEl = wrap.querySelector('.pct');
+      var reveal = wrap.querySelector('.reveal');
+      var raw = (pctEl.textContent || '').trim();
+      var target = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+      if (isNaN(target)) target = 0;
+      if (reveal) reveal.style.strokeDashoffset = String(100 - target);
+      if (reduce) { pctEl.textContent = raw; return; }
+      var start = null, dur = 1500;
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        pctEl.textContent = Math.round(eased * target) + '%';
+        if (p < 1) requestAnimationFrame(step); else pctEl.textContent = raw;
+      }
+      requestAnimationFrame(step);
+    }
+
+    if (!('IntersectionObserver' in window)) { wraps.forEach(run); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { run(e.target); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.4 });
+    wraps.forEach(function (w) { io.observe(w); });
   })();
   </script>
 
