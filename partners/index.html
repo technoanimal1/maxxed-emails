@@ -269,14 +269,19 @@
   .card-stack__item-top { display: grid; grid-template-columns: 1fr 1fr; grid-auto-columns: 1fr; place-items: end start; gap: clamp(16px, 2vw, 32px); }
   .card-stack__item-h { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: -.02em; max-width: 7em; font-size: clamp(28px, 4.4vw, 56px); line-height: .95; margin: 0; }
   .card-stack__item-p { margin: 0; font-size: clamp(14px, 1.4vw, 16px); line-height: 1.4; opacity: .78; }
-  .card-stack__item-bottom { flex: 1; width: 100%; border-radius: 1.25em; display: flex; align-items: center;
-    justify-content: center; gap: clamp(8px, 2.5vw, 40px); background: rgba(0,0,0,.10); overflow: hidden; }
-  .card-stack__art { flex: none; width: clamp(56px, 11vw, 148px); height: auto; display: block; }
-  .card-stack__coin { flex: none; width: clamp(52px, 10vw, 132px); height: auto; display: block;
-    animation: coin-float 3.6s ease-in-out infinite; }
-  .card-stack__coin.is--flip { animation-delay: -1.8s; }
-  @keyframes coin-float { 0%, 100% { translate: 0 -4%; } 50% { translate: 0 4%; } }
-  @media (prefers-reduced-motion: reduce) { .card-stack__coin { animation: none; } }
+  .card-stack__item-bottom { position: relative; flex: 1; width: 100%; border-radius: 1.25em; display: flex;
+    align-items: center; justify-content: center; background: rgba(0,0,0,.10); overflow: hidden; }
+  /* the object sits large and centred behind the figure */
+  .card-stack__art {
+    position: absolute; top: 50%; left: 50%; translate: -50% -50%;
+    height: 150%; width: auto; max-width: 82%; object-fit: contain;
+    z-index: 0; pointer-events: none; user-select: none;
+    /* `rotate` is its own property, so the wiggle never fights the centring translate */
+    animation: art-wiggle 4.6s ease-in-out infinite;
+  }
+  .card-stack__big { position: relative; z-index: 1; }
+  @keyframes art-wiggle { 0%, 100% { rotate: -5deg; } 50% { rotate: 5deg; } }
+  @media (prefers-reduced-motion: reduce) { .card-stack__art { animation: none; } }
   .card-stack__item:not(.is--1):not(.is--3):not(.is--5) .card-stack__item-bottom { background: rgba(255,255,255,.04); }
   .card-stack__big { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(40px, 8vw, 112px); line-height: 1; letter-spacing: -.04em; text-align: center; padding: 0 .2em; }
 
@@ -733,7 +738,7 @@
               <h3 class="card-stack__item-h">RevShare that scales</h3>
               <p class="card-stack__item-p">Rate grows with your players' revenue.</p>
             </div>
-            <div class="card-stack__item-bottom"><img class="card-stack__art" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/uJ3NUJnoeeCB-Percent%201.png" alt="" aria-hidden="true" loading="lazy" /><span class="card-stack__big">Up to 50%</span><img class="card-stack__coin is--flip" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/coin.png" alt="" aria-hidden="true" loading="lazy" /></div>
+            <div class="card-stack__item-bottom"><img class="card-stack__art" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/uJ3NUJnoeeCB-Percent%201.png" alt="" aria-hidden="true" loading="lazy" /><span class="card-stack__big">Up to 50%</span></div>
           </div>
         </article>
         <article class="card-stack__item is--2">
