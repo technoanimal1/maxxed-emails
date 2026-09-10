@@ -44,6 +44,7 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
   html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     font-family: var(--body);
@@ -329,6 +330,32 @@
   .js-anim .hero-media { opacity: 0; transform: scale(.95); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
   .js-anim .is-in { opacity: 1 !important; transform: none !important; }
   .scroll-bar { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform: scaleX(0); transform-origin: 0 50%; background: var(--accent); z-index: 100; pointer-events: none; will-change: transform; }
+
+  /* ── Scramble-text cursor ── */
+  .cursor { position: fixed; top: 0; left: 0; z-index: 200; pointer-events: none; will-change: transform; }
+  .cursor-dot { position: absolute; top: -4px; left: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .cursor-scramble {
+    position: absolute; top: 12px; left: 14px; opacity: 0;
+    font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--accent-ink); background: var(--accent);
+    padding: 6px 10px; border-radius: 6px; white-space: nowrap;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    [data-cursor] .cursor-scramble {
+      transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1), opacity 0.2s ease 0.1s;
+      transform: translateX(0%) scale(1) rotate(0.001deg);
+    }
+    [data-cursor="active"] .cursor-scramble {
+      transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1), opacity 0.2s ease 0s;
+      opacity: 1; transform: translateX(0%) scale(1) rotate(0.001deg);
+    }
+    [data-cursor="active-edge"] .cursor-scramble {
+      transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1), opacity 0.2s ease 0s;
+      opacity: 1; transform: translateX(-100%) scale(1) rotate(0.001deg);
+    }
+  }
+  @media (hover: none) and (pointer: coarse) { .cursor { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .cursor { display: none; } }
   @media (prefers-reduced-motion: reduce) {
     .js-anim .section-head, .js-anim .prod-card, .js-anim .tier, .js-anim .benefit,
     .js-anim .kit-card, .js-anim .quote, .js-anim .faq details, .js-anim .apply-cta > *,
@@ -596,13 +623,23 @@
       var map = {}; rows.forEach(function (r) { map[r.key] = r.value; }); applyCopy(map);
     }).catch(function () {});
 
+    /* Empty table => the section is removed from the page, so the client can
+       turn Reviews / FAQ off from Supabase alone. A failed request keeps the
+       built-in content instead, so a network blip never blanks the page. */
     api('reviews?select=quote,name,role&order=sort.asc').then(function (rows) {
-      if (rows && rows.length) renderReviews(rows);
+      if (rows && rows.length) renderReviews(rows); else hideSection('partners-say');
     }).catch(function () {});
 
     api('faqs?select=question,answer&order=sort.asc').then(function (rows) {
-      if (rows && rows.length) renderFaqs(rows);
+      if (rows && rows.length) renderFaqs(rows); else hideSection('faq');
     }).catch(function () {});
+
+    function hideSection(id) {
+      var s = document.getElementById(id);
+      if (s) s.hidden = true;
+      /* drop any nav link that would jump to a section that is no longer there */
+      document.querySelectorAll('a[href="#' + id + '"]').forEach(function (a) { a.hidden = true; });
+    }
 
     function applyCopy(map) {
       Object.keys(map).forEach(function (key) {
@@ -737,6 +774,112 @@
       update();
     }
   })();
+  </script>
+
+  <div class="cursor" data-cursor aria-hidden="true">
+    <span class="cursor-dot"></span>
+    <span class="cursor-scramble"><span data-cursor-text-target></span></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrambleTextPlugin.min.js"></script>
+  <script>
+  /* Scramble-text cursor. Uses GSAP + ScrambleTextPlugin when they load, and
+     falls back to a self-contained tween/scramble if the CDN is unavailable. */
+  function initScrambleTextCursor() {
+    var cursor = document.querySelector('[data-cursor]');
+    var textTarget = document.querySelector('[data-cursor-text-target]');
+    if (!cursor || !textTarget) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var CHARS = 'XYZxy#&@0$€£';
+    var mouseX = 0, mouseY = 0, hasMouseMoved = false, activeHoverItem = null;
+
+    /* Label the things worth hovering, so the markup stays clean. */
+    function tag(sel, text) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (el.hasAttribute('data-cursor-hover')) return;
+        el.setAttribute('data-cursor-hover', '');
+        el.setAttribute('data-cursor-text', typeof text === 'function' ? text(el) : text);
+      });
+    }
+    var txt = function (sel, fallback) {
+      return function (el) { var n = el.querySelector(sel); return n ? n.textContent.trim() : fallback; };
+    };
+    tag('.prod-card', txt('.tag', 'Explore'));
+    tag('.tier', txt('.pct', 'Revshare'));
+    tag('.benefit', txt('.big', 'Why us'));
+    tag('.kit-card', 'Assets');
+    tag('.quote', 'Partner');
+    tag('.faq details', 'Open');
+    tag('.contact-chips .chip', txt('.chip-k', 'Contact'));
+    tag('.hero-media', 'Maxxed');
+    tag('.btn', 'Apply');
+
+    var hasGsap = !!window.gsap;
+    var hasScramble = false;
+    if (hasGsap && window.ScrambleTextPlugin) {
+      try { gsap.registerPlugin(window.ScrambleTextPlugin); hasScramble = true; } catch (e) {}
+    }
+
+    var xTo, yTo;
+    if (hasGsap) {
+      xTo = gsap.quickTo(cursor, 'x', { duration: 0.4, ease: 'power3.out' });
+      yTo = gsap.quickTo(cursor, 'y', { duration: 0.4, ease: 'power3.out' });
+    } else {
+      var cx = 0, cy = 0;
+      (function loop() {
+        cx += (mouseX - cx) * 0.18; cy += (mouseY - cy) * 0.18;
+        cursor.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0)';
+        requestAnimationFrame(loop);
+      })();
+      xTo = yTo = function () {};
+    }
+
+    var timer = null;
+    function setText(text) {
+      if (hasScramble) {
+        gsap.to(textTarget, { duration: 0.6, overwrite: 'auto', scrambleText: { text: text, chars: CHARS, speed: 1.2 } });
+        return;
+      }
+      clearInterval(timer);
+      if (!text) { textTarget.textContent = ''; return; }
+      var frame = 0, total = 14;
+      timer = setInterval(function () {
+        frame++;
+        var settled = Math.floor(text.length * (frame / total)), out = '';
+        for (var i = 0; i < text.length; i++) {
+          out += i < settled ? text.charAt(i) : CHARS.charAt(Math.floor(Math.random() * CHARS.length));
+        }
+        textTarget.textContent = out;
+        if (frame >= total) { clearInterval(timer); textTarget.textContent = text; }
+      }, 28);
+    }
+
+    function updateCursor() {
+      var under = document.elementFromPoint(mouseX, mouseY);
+      var hoverItem = under && under.closest ? under.closest('[data-cursor-hover]') : null;
+      var isEdge = mouseX + 180 >= window.innerWidth;
+      cursor.setAttribute('data-cursor', hoverItem ? (isEdge ? 'active-edge' : 'active') : '');
+      if (hoverItem !== activeHoverItem) {
+        setText(hoverItem ? (hoverItem.getAttribute('data-cursor-text') || '') : '');
+        activeHoverItem = hoverItem;
+      }
+    }
+
+    window.addEventListener('mousemove', function (event) {
+      mouseX = event.clientX; mouseY = event.clientY; hasMouseMoved = true;
+      xTo(mouseX); yTo(mouseY);
+      requestAnimationFrame(updateCursor);
+    });
+    window.addEventListener('scroll', function () {
+      if (!hasMouseMoved) return;
+      requestAnimationFrame(updateCursor);
+    }, { passive: true });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () { initScrambleTextCursor(); });
   </script>
 
 </body>
