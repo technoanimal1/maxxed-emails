@@ -196,7 +196,7 @@
     --graph-line-default: #4a4a4a;
     --graph-series-color: var(--graph-line-default);
     display: flex; flex-direction: column; gap: 1em;
-    width: min(56em, 100%); margin-inline: auto; margin-top: clamp(28px, 4vw, 52px); padding: 1em;
+    width: 100%; margin-top: clamp(28px, 4vw, 52px); padding: 1em;
     background: var(--surface); border: 1px solid var(--line2); border-radius: 1.25em;
   }
   .lgraph__top { display: flex; justify-content: space-between; align-items: center; gap: 1em;
@@ -271,18 +271,22 @@
   .card-stack__item-p { margin: 0; font-size: clamp(14px, 1.4vw, 16px); line-height: 1.4; opacity: .78; }
   .card-stack__item-bottom { position: relative; flex: 1; width: 100%; border-radius: 1.25em; display: flex;
     align-items: center; justify-content: space-between; gap: clamp(16px, 3vw, 48px);
-    padding-inline: clamp(20px, 3.5vw, 56px); background: rgba(0,0,0,.10); overflow: hidden; }
+    padding-inline: clamp(20px, 3.5vw, 56px); padding-block: clamp(10px, 1.6vw, 22px);
+    background: rgba(0,0,0,.10); overflow: hidden; }
   /* figure on the left, object on the right */
-  .card-stack__big { order: 1; text-align: left; padding: 0; }
+  /* line-height 1 clips tall display glyphs once the block hides overflow,
+     so give the figure headroom and let it shrink rather than spill */
+  .card-stack__big { order: 1; text-align: left; padding-block: .08em; line-height: 1.08;
+    min-width: 0; flex: 0 1 auto; }
   .card-stack__art {
-    order: 2; flex: none; height: 128%; width: auto; max-width: 44%; object-fit: contain;
+    order: 2; flex: none; height: 128%; width: auto; max-width: 36%; object-fit: contain;
     pointer-events: none; user-select: none;
     animation: art-wiggle 4.6s ease-in-out infinite;
   }
   @keyframes art-wiggle { 0%, 100% { rotate: -5deg; } 50% { rotate: 5deg; } }
   @media (prefers-reduced-motion: reduce) { .card-stack__art { animation: none; } }
   .card-stack__item:not(.is--1):not(.is--3):not(.is--5) .card-stack__item-bottom { background: rgba(255,255,255,.04); }
-  .card-stack__big { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(40px, 8vw, 112px); line-height: 1; letter-spacing: -.04em; text-align: center; padding: 0 .2em; }
+  .card-stack__big { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(34px, 6vw, 84px); line-height: 1; letter-spacing: -.04em; text-align: center; padding: 0 .2em; }
 
   .card-stack__item:nth-child(1) { --stack-i: 1; }
   .card-stack__item:nth-child(2) { --stack-i: 2; }
