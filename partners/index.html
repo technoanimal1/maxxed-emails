@@ -99,8 +99,22 @@
     transition: transform .15s ease, background .2s ease, border-color .2s ease;
   }
   .btn:hover { transform: translateY(-2px); }
-  .btn-primary { background: var(--accent); color: var(--accent-ink); }
-  .btn-primary:hover { background: var(--accent-2); }
+  .btn-primary { color: var(--accent-ink); background: transparent; }
+  /* the fill is its own layer so it can inset on hover */
+  .btn__bg { position: absolute; inset: 0; z-index: 0; border-radius: inherit;
+    background: var(--accent); transition: inset .6s cubic-bezier(.625,.05,0,1), background .2s ease; }
+  .btn:hover .btn__bg { inset: .125em; background: var(--accent-2); }
+  .btn__label { position: relative; z-index: 1; white-space: nowrap; line-height: 1.3; }
+  /* characters roll up to their text-shadow duplicate */
+  .btn [data-button-animate-chars] { position: relative; display: inline-block; overflow: hidden; }
+  .btn [data-button-animate-chars] span { display: inline-block; position: relative;
+    text-shadow: 0 1.3em currentColor; transform: translateY(0) rotate(.001deg);
+    transition: transform .6s cubic-bezier(.625,.05,0,1); }
+  .btn:hover [data-button-animate-chars] span { transform: translateY(-1.3em) rotate(.001deg); }
+  @media (prefers-reduced-motion: reduce) {
+    .btn [data-button-animate-chars] span, .btn__bg { transition: none; }
+    .btn:hover [data-button-animate-chars] span { transform: none; }
+  }
   .btn-ghost { background: var(--surface2); color: var(--white); border-color: var(--line2); }
   .btn-ghost:hover { border-color: var(--accent); }
   .btn-block { width: 100%; }
@@ -172,14 +186,54 @@
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 40px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;
   }
-  .tier .ring-wrap { position: relative; width: clamp(150px, 42vw, 188px); aspect-ratio: 1 / 1; display: grid; place-items: center; }
-  .tier .ring { width: 100%; height: 100%; overflow: visible; }
-  .tier .ring .track { stroke: var(--line2); }
-  .tier .ring .fill { stroke: var(--accent); filter: drop-shadow(0 0 5px rgba(143,252,128,.45)); }
-  .tier .ring .reveal { transition: stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1); }
-  .tier .pct { position: absolute; font-family: var(--display); font-weight: 800; font-size: clamp(34px, 5.5vw, 52px); line-height: 1; color: var(--accent); letter-spacing: -.03em; }
-  @media (prefers-reduced-motion: reduce) { .tier .ring .reveal { transition: none; } }
-  .tier .note { color: var(--white); font-size: 13px; }
+  /* ── Commission line graph ── */
+  .lgraph {
+    --graph-bg: #0b0b0b;
+    --graph-grid: #2a2a2a;
+    --graph-text: var(--dim);
+    --graph-line-default: #4a4a4a;
+    --graph-series-color: var(--graph-line-default);
+    display: flex; flex-direction: column; gap: 1em;
+    width: min(56em, 100%); margin-inline: auto; padding: 1em;
+    background: var(--surface); border: 1px solid var(--line2); border-radius: 1.25em;
+  }
+  .lgraph__top { display: flex; justify-content: space-between; align-items: center; gap: 1em;
+    padding: .5em 1em .25em .75em; flex-wrap: wrap; }
+  .lgraph__title-h { margin: 0; font-family: var(--display); font-weight: 800; text-transform: uppercase;
+    letter-spacing: -.01em; font-size: 1.125em; line-height: 1.2; color: var(--white); }
+  .lgraph__legend { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 1.5em; }
+  .lgraph__legend-item { display: flex; align-items: center; gap: .4375em; font-family: var(--mono);
+    font-size: .75em; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+  .lgraph__legend-dot { flex: none; width: 1.5em; height: .3125em; border-radius: 50em; background: var(--graph-series-color); }
+  .lgraph__box { background: var(--graph-bg); border-radius: .5em; overflow: hidden; }
+  .lgraph__scroll { border-radius: inherit; overflow-x: auto; }
+  .lgraph__visual { position: relative; width: 100%; min-width: 34em; aspect-ratio: 2; border-radius: inherit; }
+  .lgraph__visual:focus-visible { outline: .125em solid var(--accent); outline-offset: -.125em; }
+  .lgraph__tooltip {
+    position: absolute; top: 50%; left: 50%; z-index: 2; display: flex; flex-flow: column; gap: .25em;
+    min-width: 10em; padding: 1em; border-radius: .875em; white-space: nowrap; pointer-events: none; opacity: 0;
+    color: var(--white); background: #17171a; border: 1px solid var(--line2);
+    transform: translate(-50%, -100%) translateY(-1em); transition: opacity .3s ease;
+  }
+  .lgraph__tooltip[data-graph-tooltip-status="active"] { opacity: 1; }
+  .lgraph__tooltip[data-graph-tooltip-move="true"] {
+    transition: left .8s cubic-bezier(.32,.72,0,1), top .8s cubic-bezier(.32,.72,0,1), opacity .3s ease; }
+  .lgraph__tooltip-label { margin: -.125em 0 .25em; font-size: 1em; font-weight: 500; }
+  .lgraph__tooltip-row { display: flex; justify-content: space-between; align-items: center; gap: 1.5em; font-size: .8125em; }
+  .lgraph__tooltip-series { display: flex; align-items: center; gap: .45em; color: #ffffff80; white-space: nowrap; }
+  .lgraph__tooltip-series-dot { flex: none; width: .5em; height: .5em; border-radius: 50%; background: var(--graph-series-color); }
+  .lgraph__tooltip-value { font-weight: 500; }
+  .lgraph__grid-line { stroke: var(--graph-grid); stroke-width: 2px; stroke-dasharray: 2 10;
+    stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .lgraph__grid-line.is--baseline { stroke-dasharray: none; }
+  .lgraph__axis-label { fill: var(--graph-text); font-family: var(--mono); font-size: .875em; }
+  .lgraph__line { fill: none; stroke: var(--graph-series-color); stroke-width: 6px;
+    stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .lgraph__hover[data-graph-hover-status="not-active"] { opacity: 0; }
+  .lgraph__hover-line { stroke: var(--graph-grid); stroke-width: 2px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .lgraph__hover-dot { fill: var(--graph-series-color); stroke: var(--bg); stroke-width: 4px; vector-effect: non-scaling-stroke; }
+  .lgraph__data { display: none; }
+
   .foot-note { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 28px; }
 
   /* ── Benefits grid ── */
@@ -444,7 +498,6 @@
   .js-anim .section-head .eyebrow,
   .js-anim .section-head .lead,
   .js-anim .prod-card,
-  .js-anim .tier,
   .js-anim .kit-card,
   .js-anim .quote,
   .js-anim .faq details,
@@ -489,7 +542,7 @@
   @media (hover: none) and (pointer: coarse) { .cursor { display: none; } }
   @media (prefers-reduced-motion: reduce) { .cursor { display: none; } }
   @media (prefers-reduced-motion: reduce) {
-    .js-anim .section-head, .js-anim .prod-card, .js-anim .tier,
+    .js-anim .section-head, .js-anim .prod-card,
     .js-anim .kit-card, .js-anim .quote, .js-anim .faq details, .js-anim .apply-cta > *,
     .js-anim .hero > *, .js-anim .hero-media { opacity: 1 !important; transform: none !important; transition: none !important; }
     .scroll-bar { display: none; }
@@ -538,7 +591,7 @@
           <div class="hero-logo" aria-label="Maxxed"><img id="heroLogo" src="assets/logo.svg" alt="Maxxed" width="120" height="48" /></div>
           <p class="hero-tag" data-cms="hero_tagline">Maxxed Partners is the official affiliate program for Maxxed.io, built around crypto, performance, and long-term partnerships.</p>
           <div class="hero-cta">
-            <a class="btn btn-primary" href="#apply" data-cms="cta_label">Become a partner</a>
+            <a class="btn btn-primary" href="#apply"><span class="btn__bg"></span><span class="btn__label" data-button-animate-chars data-cms="cta_label">Become a partner</span></a>
           </div>
         </div>
         <div class="hero-media">
@@ -587,39 +640,32 @@
         <span class="eyebrow">Commission structure</span>
         <h2 class="h2" data-cms="commission_h2">Your rate scales with revenue</h2>
       </div>
-      <div class="tiers">
-        <div class="tier">
-          <div class="ring-wrap">
-            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
-              <defs><mask id="mk1"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
-              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
-              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk1)"/>
-            </svg>
-            <div class="pct" data-cms="tier1_pct">30%</div>
-          </div>
-          <div class="note" data-cms="tier1_note">up to €10,000 / mo net revenue</div>
+      <div class="lgraph" data-line-graph-svg-init data-graph-steps="6"
+           data-graph-curve="exact" data-graph-suffix="%" data-graph-min="0" data-graph-max="60"
+           aria-label="Commission rate against monthly net revenue">
+        <div class="lgraph__top">
+          <div><h3 class="lgraph__title-h">Revshare by monthly net revenue</h3></div>
+          <div data-graph-legend class="lgraph__legend" aria-hidden="true"></div>
         </div>
-        <div class="tier">
-          <div class="ring-wrap">
-            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
-              <defs><mask id="mk2"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
-              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
-              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk2)"/>
-            </svg>
-            <div class="pct" data-cms="tier2_pct">40%</div>
+        <div class="lgraph__box">
+          <div class="lgraph__scroll">
+            <div data-graph-visual class="lgraph__visual"></div>
           </div>
-          <div class="note" data-cms="tier2_note">up to €25,000 / mo net revenue</div>
-        </div>
-        <div class="tier">
-          <div class="ring-wrap">
-            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
-              <defs><mask id="mk3"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
-              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
-              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk3)"/>
-            </svg>
-            <div class="pct" data-cms="tier3_pct">50%</div>
+          <div class="lgraph__data">
+            <div data-graph-series="primary" data-graph-series-color="#8FFC80"
+                 data-graph-series-label="Your rate" data-graph-series-legend="Revshare"></div>
+            <div data-graph-label="€0" data-graph-primary="30" data-graph-tier="1"></div>
+            <div data-graph-label="€10K" data-graph-primary="30" data-graph-tier="1"></div>
+            <div data-graph-label="€25K" data-graph-primary="40" data-graph-tier="2"></div>
+            <div data-graph-label="€40K+" data-graph-primary="50" data-graph-tier="3"></div>
+            <!-- hidden carriers so the Supabase copy rows still have a home -->
+            <span data-cms="tier1_pct" hidden>30%</span>
+            <span data-cms="tier2_pct" hidden>40%</span>
+            <span data-cms="tier3_pct" hidden>50%</span>
+            <span data-cms="tier1_revenue" hidden>€10K</span>
+            <span data-cms="tier2_revenue" hidden>€25K</span>
+            <span data-cms="tier3_revenue" hidden>€40K+</span>
           </div>
-          <div class="note" data-cms="tier3_note">up to €40,000 / mo net revenue</div>
         </div>
       </div>
       <p class="foot-note" data-cms="commission_footnote">* CPA and hybrid deals available on request.</p>
@@ -787,7 +833,7 @@
         <span class="eyebrow" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:20px;"><span class="dot"></span>Become a partner</span>
         <div class="display-xl">Apply in<br><span class="green">2 minutes</span></div>
         <p class="lead" style="margin-top:24px;max-width:46ch;" data-cms="apply_line">Tell us about your traffic. We'll review and get back to you within 24 hours.</p>
-        <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener">Become a partner</a>
+        <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener"><span class="btn__bg"></span><span class="btn__label" data-button-animate-chars>Become a partner</span></a>
         <div class="contact-chips">
           <button type="button" class="chip" id="emailChip" data-copy-button data-copy-email
                   aria-label="Copy email to clipboard">
@@ -837,7 +883,7 @@
       <a class="link" href="#commission">Commission</a>
       <a class="link" href="#mediakit">Media kit</a>
       <a class="link" href="#faq">FAQ</a>
-      <a class="btn btn-primary" href="#apply">Apply</a>
+      <a class="btn btn-primary" href="#apply"><span class="btn__bg"></span><span class="btn__label" data-button-animate-chars>Apply</span></a>
     </div>
   </nav>
 
@@ -971,41 +1017,6 @@
   })();
   </script>
 
-  <script>
-  /* Commission rings — animate the green arc + count the number up when scrolled into view. */
-  (function () {
-    var wraps = [].slice.call(document.querySelectorAll('#commission .ring-wrap'));
-    if (!wraps.length) return;
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function run(wrap) {
-      var pctEl = wrap.querySelector('.pct');
-      var reveal = wrap.querySelector('.reveal');
-      var raw = (pctEl.textContent || '').trim();
-      var target = parseInt(raw.replace(/[^0-9]/g, ''), 10);
-      if (isNaN(target)) target = 0;
-      if (reveal) reveal.style.strokeDashoffset = String(100 - target);
-      if (reduce) { pctEl.textContent = raw; return; }
-      var start = null, dur = 1500;
-      function step(ts) {
-        if (start === null) start = ts;
-        var p = Math.min((ts - start) / dur, 1);
-        var eased = 1 - Math.pow(1 - p, 3);
-        pctEl.textContent = Math.round(eased * target) + '%';
-        if (p < 1) requestAnimationFrame(step); else pctEl.textContent = raw;
-      }
-      requestAnimationFrame(step);
-    }
-
-    if (!('IntersectionObserver' in window)) { wraps.forEach(run); return; }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { run(e.target); io.unobserve(e.target); }
-      });
-    }, { threshold: 0.4 });
-    wraps.forEach(function (w) { io.observe(w); });
-  })();
-  </script>
 
   <script>
   /* Scroll storytelling: staggered reveal-on-scroll + top progress bar. */
@@ -1013,7 +1024,7 @@
     var root = document.documentElement;
     if (root.className.indexOf('js-anim') === -1) return;
 
-    var SEL = '.section-head .eyebrow, .section-head .lead, .prod-card, .tier, .kit-card, .faq details, .apply-cta > *:not(.display-xl), .hero > *:not(h1), .hero-media';
+    var SEL = '.section-head .eyebrow, .section-head .lead, .prod-card, .kit-card, .faq details, .apply-cta > *:not(.display-xl), .hero > *:not(h1), .hero-media';
     var items = [].slice.call(document.querySelectorAll(SEL));
 
     /* Stagger siblings so grids cascade instead of popping in together. */
@@ -1120,7 +1131,7 @@
       return function (el) { var n = el.querySelector(sel); return n ? n.textContent.trim() : fallback; };
     };
     tag('.prod-card', txt('.tag', 'Explore'));
-    tag('.tier', txt('.pct', 'Revshare'));
+    tag('.lgraph', 'Revshare');
     tag('.card-stack__item', txt('.card-stack__big', 'Why us'));
     tag('.kit-card', 'Assets');
     tag('.quote', 'Partner');
@@ -1322,7 +1333,11 @@
 
   (function () {
     var started = false;
-    function go() { if (started) return; started = true; initCenteredSlider(); }
+    function go() {
+      if (started) return; started = true;
+      initCenteredSlider();
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
     document.addEventListener('reviews:ready', go);
     setTimeout(go, 3000);   /* fallback if Supabase never answers */
   })();
@@ -1625,7 +1640,11 @@
       g.querySelectorAll('.num').forEach(function (n) { n.setAttribute('data-odometer-element', ''); });
     });
     var started = false;
-    function start() { if (started) return; started = true; initNumberOdometer(); }
+    function start() {
+      if (started) return; started = true;
+      initNumberOdometer();
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
     document.addEventListener('cms:ready', start);
     setTimeout(start, 2500);
   })();
@@ -1711,6 +1730,10 @@
             trigger: el, start: scrollStart, once: true,
             onEnter: function () { tl.play(); }
           });
+          /* A re-split (font load / resize) rebuilds this paused timeline with a
+             fresh once-trigger. If the heading is already past its start point
+             that trigger never fires, so reveal it here instead of stranding it. */
+          if (el.getBoundingClientRect().top < window.innerHeight * 0.9) tl.play();
         }
       });
     });
@@ -1727,6 +1750,375 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(done).catch(done);
     else done();
   });
+  </script>
+
+  <script>
+  /* Interactive commission line graph (plain SVG, no GSAP). Values come from the
+     Supabase copy rows, so it runs after the CMS has written them. */
+  function initLineGraphSVG() {
+    const namespace = 'http://www.w3.org/2000/svg';
+    const numberFormat = new Intl.NumberFormat();
+    const width = 1000, height = 500, graphHeadroomPercent = 20, axisGap = 40;
+    const graphPadding = { top: 55, right: 45, bottom: 30, left: 35 };
+
+    const createElement = (tag, className, text = '') => {
+      const el = document.createElement(tag); el.className = className; el.textContent = text; return el;
+    };
+    const createSvgElement = (tag, attributes = {}) => {
+      const el = document.createElementNS(namespace, tag);
+      Object.entries(attributes).forEach(([k, v]) => el.setAttribute(k, v));
+      return el;
+    };
+
+    document.querySelectorAll('[data-line-graph-svg-init]').forEach((container) => {
+      container._lgObserver?.disconnect();
+      container._lgController?.abort();
+
+      const visual = container.querySelector('[data-graph-visual]');
+      const legend = container.querySelector('[data-graph-legend]');
+      const seriesElements = container.querySelectorAll('[data-graph-series]');
+      const pointElements = container.querySelectorAll('[data-graph-label]');
+      if (!visual || !seriesElements.length || pointElements.length < 2) return;
+
+      const viewport = visual.parentElement;
+      const series = Array.from(seriesElements, (element, index) => {
+        const label = element.getAttribute('data-graph-series-label') || `Series ${index + 1}`;
+        return {
+          key: element.getAttribute('data-graph-series'), label,
+          legendLabel: element.getAttribute('data-graph-series-legend') || label,
+          color: element.getAttribute('data-graph-series-color') || 'var(--graph-line-default)'
+        };
+      }).filter(({ key }) => key);
+      if (!series.length) return;
+
+      const points = Array.from(pointElements, (element) => ({
+        label: element.getAttribute('data-graph-label') || '',
+        values: Object.fromEntries(series.map(({ key }) => [key, parseFloat(element.getAttribute(`data-graph-${key}`))]))
+      }));
+
+      const requestedSteps = Math.max(1, parseInt(container.getAttribute('data-graph-steps'), 10) || 4);
+      const prefix = container.getAttribute('data-graph-prefix') || '';
+      const suffix = container.getAttribute('data-graph-suffix') || '';
+      const exact = container.getAttribute('data-graph-curve') === 'exact';
+      const values = points.flatMap((pt) => series.map(({ key }) => pt.values[key])).filter(Number.isFinite);
+      if (!values.length) values.push(0, 1);
+
+      const minAttribute = parseFloat(container.getAttribute('data-graph-min'));
+      const maxAttribute = parseFloat(container.getAttribute('data-graph-max'));
+      const min = Number.isFinite(minAttribute) ? minAttribute : Math.min(0, ...values);
+      const highestValue = Math.max(...values);
+      const range = Math.max(highestValue - min, Math.abs(highestValue || 1));
+      const targetMax = highestValue + range * (1 / (1 - graphHeadroomPercent / 100) - 1);
+      const rawMax = Number.isFinite(maxAttribute) ? maxAttribute : targetMax;
+      const roughStep = (rawMax - min) / requestedSteps;
+      const magnitude = 10 ** Math.floor(Math.log10(roughStep));
+      const step = Math.ceil(roughStep / magnitude) * magnitude;
+      const max = Number.isFinite(maxAttribute) ? maxAttribute : min + step * requestedSteps;
+      const gridValues = Array.from({ length: requestedSteps + 1 }, (_, i) => Number((min + step * i).toFixed(10)));
+
+      const setSeriesColor = (el, item) => el.style.setProperty('--graph-series-color', item.color);
+      const formatNumber = (value, compact = true) => {
+        const abs = Math.abs(value); let out;
+        if (compact && abs >= 1e9) out = `${parseFloat((value / 1e9).toFixed(1))}B`;
+        else if (compact && abs >= 1e6) out = `${parseFloat((value / 1e6).toFixed(1))}M`;
+        else if (compact && abs >= 1e3) out = `${parseFloat((value / 1e3).toFixed(1))}K`;
+        else out = numberFormat.format(value);
+        return `${prefix}${out}${suffix}`;
+      };
+
+      const svg = createSvgElement('svg', {
+        viewBox: `0 0 ${width} ${height}`, role: 'img',
+        'aria-label': container.getAttribute('aria-label') || 'Line graph'
+      });
+      visual.replaceChildren(svg);
+
+      const measureLabels = (texts) => {
+        const layer = createSvgElement('g', { visibility: 'hidden', 'aria-hidden': 'true' });
+        const labels = texts.map((t) => {
+          const l = createSvgElement('text', { class: 'lgraph__axis-label' });
+          l.textContent = t; layer.appendChild(l); return l;
+        });
+        svg.appendChild(layer);
+        const boxes = labels.map((l) => l.getBBox());
+        layer.remove();
+        return boxes;
+      };
+      const yBoxes = measureLabels(gridValues.map((v) => formatNumber(v)));
+      const xBoxes = measureLabels(points.map(({ label }) => label));
+
+      const plot = {
+        top: graphPadding.top, right: graphPadding.right,
+        bottom: Math.max(...xBoxes.map(({ height }) => height), 0) + axisGap + graphPadding.bottom,
+        left: Math.max(...yBoxes.map(({ width }) => width), 0) + axisGap + graphPadding.left
+      };
+      const plotWidth = width - plot.left - plot.right;
+      const plotHeight = height - plot.top - plot.bottom;
+      const getX = (i) => plot.left + (i / (points.length - 1)) * plotWidth;
+      const getY = (v) => plot.top + ((max - v) / (max - min)) * plotHeight;
+
+      const getSmoothPath = (coords) => {
+        if (coords.length === 1) return `M ${coords[0].x} ${coords[0].y} l 0 0`;
+        if (exact) {
+          const slopes = coords.slice(1).map((pt, i) => (pt.y - coords[i].y) / (pt.x - coords[i].x));
+          const tangents = coords.map((pt, i) => {
+            if (i === 0) return slopes[0];
+            if (i === coords.length - 1) return slopes[i - 1];
+            const a = slopes[i - 1], c = slopes[i];
+            return a * c <= 0 ? 0 : 2 * a * c / (a + c);
+          });
+          let path = `M ${coords[0].x} ${coords[0].y}`;
+          coords.slice(1).forEach((pt, i) => {
+            const prev = coords[i], d = (pt.x - prev.x) / 3;
+            path += ` C ${prev.x + d} ${prev.y + tangents[i] * d}, ${pt.x - d} ${pt.y - tangents[i + 1] * d}, ${pt.x} ${pt.y}`;
+          });
+          return path;
+        }
+        const first = coords[0], last = coords[coords.length - 1];
+        const controls = [first, first, first, ...coords.slice(1, -1), last, last, last];
+        let path = `M ${first.x} ${first.y}`;
+        const blend = (a, c, d, w) => ({
+          x: (a.x * w[0] + c.x * w[1] + d.x * w[2]) / 6,
+          y: (a.y * w[0] + c.y * w[1] + d.y * w[2]) / 6
+        });
+        for (let i = 0; i < controls.length - 3; i++) {
+          const [a, c, d, e] = controls.slice(i, i + 4);
+          const c1 = blend(a, c, d, [0, 4, 2]), c2 = blend(a, c, d, [0, 2, 4]), end = blend(c, d, e, [1, 4, 1]);
+          path += ` C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}`;
+        }
+        return path;
+      };
+
+      gridValues.forEach((value) => {
+        const y = getY(value);
+        svg.append(
+          createSvgElement('line', { x1: plot.left, x2: width - plot.right, y1: y, y2: y,
+            class: `lgraph__grid-line${value === 0 ? ' is--baseline' : ''}` }),
+          (() => {
+            const l = createSvgElement('text', { x: graphPadding.left, y, 'text-anchor': 'start',
+              'dominant-baseline': 'middle', 'data-graph-y-label': '', class: 'lgraph__axis-label' });
+            l.textContent = formatNumber(value); return l;
+          })()
+        );
+      });
+
+      points.forEach((point, index) => {
+        const l = createSvgElement('text', {
+          x: getX(index), y: height - graphPadding.bottom,
+          'text-anchor': index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle',
+          'dominant-baseline': 'text-after-edge', 'data-graph-x-label': '', class: 'lgraph__axis-label' });
+        l.textContent = point.label; svg.appendChild(l);
+      });
+
+      const hover = createSvgElement('g', { class: 'lgraph__hover', 'data-graph-hover-status': 'not-active' });
+      const hoverLine = createSvgElement('line', { y1: plot.top, y2: height - plot.bottom, class: 'lgraph__hover-line' });
+
+      [...series].reverse().forEach((item) => {
+        const segments = []; let segment = [];
+        points.forEach((point, index) => {
+          if (Number.isFinite(point.values[item.key])) segment.push({ x: getX(index), y: getY(point.values[item.key]), index });
+          else if (segment.length) { segments.push(segment); segment = []; }
+        });
+        if (segment.length) segments.push(segment);
+        item.paths = segments.map((coords) => {
+          const path = createSvgElement('path', { d: getSmoothPath(coords), class: 'lgraph__line', 'data-graph-series-path': item.key });
+          setSeriesColor(path, item); svg.appendChild(path);
+          return { path, coordinates: coords };
+        });
+        item.dot = createSvgElement('circle', { r: 7, class: 'lgraph__hover-dot', 'data-graph-hover-dot': item.key });
+        setSeriesColor(item.dot, item);
+      });
+      hover.append(hoverLine, ...[...series].reverse().map(({ dot }) => dot));
+      svg.appendChild(hover);
+
+      if (legend) {
+        legend.replaceChildren(...series.map((item) => {
+          const li = createElement('div', 'lgraph__legend-item');
+          const dot = createElement('div', 'lgraph__legend-dot');
+          const text = createElement('span', 'lgraph__legend-text', item.legendLabel);
+          setSeriesColor(dot, item); li.append(dot, text); return li;
+        }));
+      }
+
+      const tooltip = createElement('div', 'lgraph__tooltip');
+      const tooltipLabel = createElement('div', 'lgraph__tooltip-label');
+      tooltip.setAttribute('data-graph-tooltip-status', 'not-active');
+      tooltip.setAttribute('data-graph-tooltip-move', 'false');
+      tooltip.setAttribute('aria-hidden', 'true');
+      tooltip.setAttribute('aria-live', 'polite');
+      tooltip.appendChild(tooltipLabel);
+      series.forEach((item) => {
+        const row = createElement('div', 'lgraph__tooltip-row');
+        const wrapS = createElement('div', 'lgraph__tooltip-series');
+        const dot = createElement('div', 'lgraph__tooltip-series-dot');
+        const text = createElement('span', 'lgraph__tooltip-series-text', item.label);
+        const value = createElement('span', 'lgraph__tooltip-value');
+        setSeriesColor(dot, item); wrapS.append(dot, text); row.append(wrapS, value); tooltip.appendChild(row);
+        item.tooltipRow = row; item.tooltipValue = value;
+      });
+      visual.appendChild(tooltip);
+
+      const getPathPointAtX = (path, targetX) => {
+        let start = 0, end = path.getTotalLength();
+        for (let i = 0; i < 24; i++) {
+          const mid = (start + end) / 2;
+          if (path.getPointAtLength(mid).x < targetX) start = mid; else end = mid;
+        }
+        return path.getPointAtLength((start + end) / 2);
+      };
+      series.forEach((item) => {
+        item.positions = new Array(points.length).fill(null);
+        item.paths.forEach(({ path, coordinates }) => {
+          coordinates.forEach((point) => {
+            item.positions[point.index] = exact || coordinates.length === 1 ? point : getPathPointAtX(path, point.x);
+          });
+        });
+      });
+
+      let activeIndex = -1;
+      visual.tabIndex = 0;
+      visual.setAttribute('role', 'group');
+      visual.setAttribute('aria-label', 'Interactive graph. Use left and right arrows to explore values. Escape dismisses details.');
+
+      const setHoverStatus = (active) => {
+        const status = active ? 'active' : 'not-active';
+        hover.setAttribute('data-graph-hover-status', status);
+        tooltip.setAttribute('data-graph-tooltip-status', status);
+        tooltip.setAttribute('aria-hidden', String(!active));
+      };
+      const showPoint = (index, animateMove = true) => {
+        if (activeIndex === index) return;
+        tooltip.setAttribute('data-graph-tooltip-move', String(animateMove && activeIndex >= 0));
+        activeIndex = index;
+        const point = points[index];
+        const rect = svg.getBoundingClientRect();
+        const scaleX = rect.width / width, scaleY = rect.height / height;
+        const x = getX(index);
+        const curvePoints = series.map((item) => {
+          const cp = item.positions[index];
+          item.dot.style.display = cp ? '' : 'none';
+          item.tooltipRow.style.display = cp ? '' : 'none';
+          if (!cp) return null;
+          item.tooltipValue.textContent = formatNumber(point.values[item.key], false);
+          item.dot.setAttribute('cx', cp.x); item.dot.setAttribute('cy', cp.y);
+          return cp;
+        }).filter(Boolean);
+        hoverLine.setAttribute('x1', x); hoverLine.setAttribute('x2', x);
+        tooltipLabel.textContent = point.label;
+        setHoverStatus(true);
+        const tw = tooltip.offsetWidth, th = tooltip.offsetHeight, edge = 16;
+        const naturalLeft = x * scaleX;
+        const naturalTop = (curvePoints.length ? Math.min(...curvePoints.map(({ y }) => y)) : plot.top) * scaleY;
+        const minLeft = viewport.scrollLeft + tw / 2 + edge;
+        const maxLeft = viewport.scrollLeft + viewport.clientWidth - tw / 2 - edge;
+        tooltip.style.left = `${Math.max(minLeft, Math.min(maxLeft, naturalLeft))}px`;
+        tooltip.style.top = `${Math.max(th + edge * 2, naturalTop)}px`;
+      };
+      const hidePoint = () => { activeIndex = -1; tooltip.setAttribute('data-graph-tooltip-move', 'false'); setHoverStatus(false); };
+
+      const axisLabels = svg.querySelectorAll('[data-graph-x-label], [data-graph-y-label]');
+      const xLabels = svg.querySelectorAll('[data-graph-x-label]');
+      const updateLabels = () => {
+        const visibleWidth = visual.getBoundingClientRect().width;
+        if (!visibleWidth) return;
+        axisLabels.forEach((l) => { l.style.fontSize = `${14 * width / visibleWidth}px`; });
+        const labelStep = Math.max(1, Math.ceil((points.length * 42) / (plotWidth * visibleWidth / width)));
+        xLabels.forEach((l, i) => {
+          const isEdge = i === 0 || i === xLabels.length - 1;
+          l.style.display = (isEdge || (i % labelStep === 0 && xLabels.length - 1 - i >= labelStep)) ? '' : 'none';
+        });
+      };
+
+      const controller = new AbortController();
+      const signal = controller.signal;
+      const showPointer = (event) => {
+        const rect = svg.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width * width;
+        const progress = Math.max(0, Math.min(1, (x - plot.left) / plotWidth));
+        showPoint(Math.round(progress * (points.length - 1)));
+      };
+      visual.addEventListener('pointermove', (e) => { if (e.pointerType !== 'touch') showPointer(e); }, { signal });
+      visual.addEventListener('pointerleave', hidePoint, { signal });
+      visual.addEventListener('click', showPointer, { signal });
+      visual.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') return hidePoint();
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        let index = activeIndex < 0 ? 0 : activeIndex + (event.key === 'ArrowRight' ? 1 : -1);
+        if (event.key === 'Home') index = 0;
+        if (event.key === 'End') index = points.length - 1;
+        index = Math.max(0, Math.min(points.length - 1, index));
+        viewport.scrollLeft = getX(index) / width * visual.clientWidth - viewport.clientWidth / 2;
+        showPoint(index);
+      }, { signal });
+      visual.addEventListener('blur', hidePoint, { signal });
+      document.addEventListener('pointerdown', (e) => { if (!visual.contains(e.target)) hidePoint(); }, { signal });
+      viewport.addEventListener('scroll', () => {
+        if (activeIndex < 0) return;
+        const index = activeIndex; activeIndex = -1; showPoint(index, false);
+      }, { signal });
+
+      const observer = new ResizeObserver(updateLabels);
+      observer.observe(visual);
+      container._lgController = controller;
+      container._lgObserver = observer;
+      updateLabels();
+    });
+  }
+
+  /* Pull the tier percentages / axis labels the client edits in Supabase into
+     the graph's data attributes, then draw. */
+  (function () {
+    function syncFromCms() {
+      document.querySelectorAll('[data-graph-tier]').forEach(function (el) {
+        var t = el.getAttribute('data-graph-tier');
+        var pctEl = document.querySelector('[data-cms="tier' + t + '_pct"]');
+        var revEl = document.querySelector('[data-cms="tier' + t + '_revenue"]');
+        if (pctEl) {
+          var n = parseInt((pctEl.textContent || '').replace(/[^0-9]/g, ''), 10);
+          if (!isNaN(n)) el.setAttribute('data-graph-primary', n);
+        }
+        if (revEl && revEl.textContent.trim() && el.getAttribute('data-graph-label') !== '€0') {
+          el.setAttribute('data-graph-label', revEl.textContent.trim());
+        }
+      });
+    }
+    var started = false;
+    function go() {
+      if (started) return; started = true;
+      syncFromCms(); initLineGraphSVG();
+      /* drawing the graph changes page height, so triggers below it are stale */
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
+    document.addEventListener('cms:ready', go);
+    setTimeout(go, 2500);
+  })();
+  </script>
+
+  <script>
+  /* Split button labels into characters so they roll up one after another.
+     Runs after the CMS writes cta_label, otherwise that write wipes the spans. */
+  function initButtonCharacterStagger() {
+    var offsetIncrement = 0.01;
+    document.querySelectorAll('[data-button-animate-chars]').forEach(function (button) {
+      if (button.__charsSplit) return;
+      button.__charsSplit = true;
+      var text = button.textContent;
+      button.textContent = '';
+      text.split('').forEach(function (char, index) {
+        var span = document.createElement('span');
+        span.textContent = char;
+        span.style.transitionDelay = (index * offsetIncrement) + 's';
+        if (char === ' ') span.style.whiteSpace = 'pre';
+        button.appendChild(span);
+      });
+    });
+  }
+  (function () {
+    var started = false;
+    function go() { if (started) return; started = true; initButtonCharacterStagger(); }
+    document.addEventListener('cms:ready', go);
+    setTimeout(go, 2500);
+  })();
   </script>
 
 </body>
