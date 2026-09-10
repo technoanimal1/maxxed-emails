@@ -712,6 +712,7 @@
       <div class="section-head">
         <span class="eyebrow">What partners say</span>
         <h2 class="h2" data-cms="reviews_h2">Proven, not promised</h2>
+        </div>
       </div>
       <div class="cslider" id="reviews" data-cslider="wrapper" data-slider-autoplay="true" data-slider-autoplay-duration="4" aria-label="Testimonials">
         <div class="cslider-content">
@@ -759,7 +760,6 @@
           </div>
         </div>
       </div>
-    </div>
   </section>
 
   <!-- ══ FAQ ══ -->
@@ -1236,6 +1236,26 @@
       if (slides.length < 2) return;            /* nothing to loop */
       wrapper.__sliderReady = true;
 
+      /* A handful of reviews cannot fill a wide row, so repeat the set until it
+         comfortably covers the viewport. Bullets still map to the originals. */
+      var uniqueCount = slides.length;
+      var list = wrapper.querySelector('[data-cslider="list"]');
+      var row = wrapper.querySelector('.cslider-row');
+      if (list && row) {
+        var need = Math.max(row.clientWidth, window.innerWidth) * 2;
+        var guard = 0;
+        while (list.scrollWidth < need && guard < 5) {
+          for (var c = 0; c < uniqueCount; c++) {
+            var clone = slides[c].cloneNode(true);
+            clone.classList.remove('active');
+            clone.removeAttribute('id');
+            list.appendChild(clone);
+          }
+          guard++;
+        }
+        slides = gsap.utils.toArray(wrapper.querySelectorAll('[data-cslider="slide"]'));
+      }
+
       var bullets = gsap.utils.toArray(wrapper.querySelectorAll('[data-cslider="bullet"]'));
       var prevBtn = wrapper.querySelector('[data-cslider="prev-button"]');
       var nextBtn = wrapper.querySelector('[data-cslider="next-button"]');
@@ -1259,9 +1279,10 @@
           element.classList.add('active');
           activeSlide = element;
           if (bullets.length) {
+            var bi = index % uniqueCount;
             if (activeBullet) activeBullet.classList.remove('active');
-            if (bullets[index]) { bullets[index].classList.add('active'); activeBullet = bullets[index]; }
-            bullets.forEach(function (bt, i) { bt.setAttribute('aria-selected', i === index ? 'true' : 'false'); });
+            if (bullets[bi]) { bullets[bi].classList.add('active'); activeBullet = bullets[bi]; }
+            bullets.forEach(function (bt, i) { bt.setAttribute('aria-selected', i === bi ? 'true' : 'false'); });
           }
         }
       });
