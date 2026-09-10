@@ -331,6 +331,9 @@
   .kit-card:hover { transform: translateY(-4px); border-color: var(--line2); }
   .kit-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
   .kit-card .thumb { height: 180px; background: var(--surface2); border-bottom: 1px solid var(--line); position: relative; }
+  .kit-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* the diagonal texture is a placeholder for empty thumbs only */
+  .kit-card .thumb:has(img)::after { content: none; }
   .kit-card .thumb::after { content: ""; position: absolute; inset: 0; background:
     repeating-linear-gradient(45deg, transparent 0 14px, rgba(143,252,128,.05) 14px 15px); }
   .kit-card .body { padding: 28px; }
@@ -801,9 +804,9 @@
         <h2 class="h2" data-cms="mediakit_h2">Everything you need to promote</h2>
       </div>
       <div class="kit">
-        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Banners &amp; display</h3><p>All standard IAB sizes, static and animated. Casino, sport and event-based.</p></div></div>
-        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Logos &amp; brand pack</h3><p>Logos, wordmarks and color guidance in SVG and PNG. Light and dark.</p></div></div>
-        <div class="kit-card"><div class="thumb"></div><div class="body"><h3>Social templates</h3><p>Story, post and Telegram formats — editable, ready to drop your first link into.</p></div></div>
+        <div class="kit-card"><div class="thumb"><img src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20uploads/banners.png" alt="" loading="lazy" /></div><div class="body"><h3>Banners &amp; display</h3><p>All standard IAB sizes, static and animated. Casino, sport and event-based.</p></div></div>
+        <div class="kit-card"><div class="thumb"><img src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20uploads/logos%20and%20brandback.png" alt="" loading="lazy" /></div><div class="body"><h3>Logos &amp; brand pack</h3><p>Logos, wordmarks and color guidance in SVG and PNG. Light and dark.</p></div></div>
+        <div class="kit-card"><div class="thumb"><img src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20uploads/social%20templates.png" alt="" loading="lazy" /></div><div class="body"><h3>Social templates</h3><p>Story, post and Telegram formats — editable, ready to drop your first link into.</p></div></div>
       </div>
     </div>
   </section>
