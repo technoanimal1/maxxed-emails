@@ -75,7 +75,7 @@
     letter-spacing: -0.01em;
     text-transform: none;
   }
-  .h2 { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 6vw, 64px); line-height: 1.1; }
+  .h2 { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 6vw, 64px); line-height: 1.1; text-transform: uppercase; letter-spacing: -.02em; }
   .h3 { font-family: var(--display); font-weight: 800; font-size: clamp(22px, 3.4vw, 40px); line-height: 1.15; text-transform: uppercase; }
   .lead { color: var(--dim); font-size: clamp(15px, 1.6vw, 17px); }
   .kicker { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
@@ -241,8 +241,16 @@
   /* ── Apply ── */
   .apply-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 48px); align-items: start; }
   .apply-info h2 .green { color: var(--accent); }
-  .apply-info .display-xl { font-family: var(--display); font-weight: 800; font-size: clamp(48px, 8vw, 104px); line-height: .95; }
-  .apply-info .display-xl .green { color: var(--accent); }
+  /* unscoped: the markup lives in .apply-cta, so .apply-info never matched */
+  .display-xl { font-family: var(--display); font-weight: 800; font-size: clamp(48px, 8vw, 104px); line-height: .95; text-transform: uppercase; letter-spacing: -.02em; }
+  .display-xl .green { color: var(--accent); }
+
+  /* ── Highlight-marker heading reveal ──
+     Headings are hidden only while the effect is pending; a failsafe removes
+     that class if GSAP/SplitText never load, so text can never stay invisible. */
+  .marker-pending .h2, .marker-pending .display-xl { visibility: hidden; }
+  [data-highlight-marker-reveal] .highlight-marker-line { width: auto; display: inline-block !important; margin: -0.055em 0px; }
+  .highlight-marker-bar { position: absolute; inset: -0.055em 0px; z-index: 1; pointer-events: none; }
   .contact { display: flex; flex-direction: column; gap: 18px; margin-top: 40px; }
   .contact .row { display: flex; align-items: baseline; gap: 12px; }
   .contact .k { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 800; width: 80px; flex: none; }
@@ -377,7 +385,13 @@
   /* Set synchronously so reveal styles apply before first paint (no flash).
      Skipped when the visitor prefers reduced motion. */
   if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-    document.documentElement.className += ' js-anim';
+    document.documentElement.className += ' js-anim marker-pending';
+    /* Failsafe: if GSAP/SplitText never initialise the marker reveal, drop the
+       class so headings become visible instead of staying hidden forever. */
+    setTimeout(function () {
+      document.documentElement.className =
+        document.documentElement.className.replace(/\bmarker-pending\b/, '');
+    }, 2000);
   }
 </script>
 </head>
@@ -793,6 +807,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrambleTextPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/SplitText.min.js"></script>
   <script>
   /* Scramble-text cursor. Uses GSAP + ScrambleTextPlugin when they load, and
      falls back to a self-contained tween/scramble if the CDN is unavailable. */
@@ -1042,6 +1057,104 @@
     document.addEventListener('cms:ready', start);
     setTimeout(start, 2500);
   })();
+  </script>
+
+  <script>
+  /* Highlight-marker heading reveal: a lime bar wipes off each line of every
+     heading as it scrolls in. */
+  function initHighlightMarkerTextReveal() {
+    if (!window.gsap || !window.ScrollTrigger || !window.SplitText) return false;
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+
+    var defaults = {
+      direction: 'right', theme: 'maxxed', scrollStart: 'top 90%',
+      staggerStart: 'start', stagger: 100, barDuration: 0.6, barEase: 'power3.inOut'
+    };
+    var colorMap = { maxxed: '#8FFC80', white: '#FFFFFF', ink: '#050505' };
+    var directionMap = {
+      right: { prop: 'scaleX', origin: 'right center' },
+      left:  { prop: 'scaleX', origin: 'left center' },
+      up:    { prop: 'scaleY', origin: 'center top' },
+      down:  { prop: 'scaleY', origin: 'center bottom' }
+    };
+
+    function resolveColor(v) {
+      if (colorMap[v]) return colorMap[v];
+      if (v.indexOf('--') === 0) return getComputedStyle(document.body).getPropertyValue(v).trim() || v;
+      return v;
+    }
+    function createBar(color, origin) {
+      var bar = document.createElement('div');
+      bar.className = 'highlight-marker-bar';
+      bar.style.backgroundColor = color;
+      bar.style.transformOrigin = origin;
+      return bar;
+    }
+
+    /* Tag the headings here so the markup stays clean. */
+    document.querySelectorAll('.h2, .display-xl').forEach(function (el) {
+      el.setAttribute('data-highlight-marker-reveal', '');
+    });
+
+    var elements = document.querySelectorAll('[data-highlight-marker-reveal]');
+    if (!elements.length) return true;
+
+    elements.forEach(function (el) {
+      var direction = el.getAttribute('data-marker-direction') || defaults.direction;
+      var theme = el.getAttribute('data-marker-theme') || defaults.theme;
+      var scrollStart = el.getAttribute('data-marker-scroll-start') || defaults.scrollStart;
+      var staggerStart = el.getAttribute('data-marker-stagger-start') || defaults.staggerStart;
+      var staggerOffset = (parseFloat(el.getAttribute('data-marker-stagger')) || defaults.stagger) / 1000;
+      var color = resolveColor(theme);
+      var dir = directionMap[direction] || directionMap.right;
+
+      el._marker = {};
+      el._marker.split = SplitText.create(el, {
+        type: 'lines',
+        linesClass: 'highlight-marker-line',
+        autoSplit: true,
+        onSplit: function (self) {
+          var inst = el._marker;
+          if (inst.timeline) inst.timeline.kill();
+          if (inst.scrollTrigger) inst.scrollTrigger.kill();
+          el.querySelectorAll('.highlight-marker-bar').forEach(function (b) { b.remove(); });
+
+          var lines = self.lines;
+          var tl = gsap.timeline({ paused: true });
+          lines.forEach(function (line, i) {
+            gsap.set(line, { position: 'relative', overflow: 'hidden' });
+            var bar = createBar(color, dir.origin);
+            line.appendChild(bar);
+            var idx = staggerStart === 'end' ? lines.length - 1 - i : i;
+            var vars = { duration: defaults.barDuration, ease: defaults.barEase };
+            vars[dir.prop] = 0;
+            tl.to(bar, vars, idx * staggerOffset);
+          });
+
+          gsap.set(el, { autoAlpha: 1 });
+          inst.timeline = tl;
+          inst.scrollTrigger = ScrollTrigger.create({
+            trigger: el, start: scrollStart, once: true,
+            onEnter: function () { tl.play(); }
+          });
+        }
+      });
+    });
+    return true;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var done = function () {
+      initHighlightMarkerTextReveal();
+      /* headings are now controlled by GSAP (or the effect is unavailable) */
+      document.documentElement.className =
+        document.documentElement.className.replace(/\bmarker-pending\b/, '');
+    };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(done).catch(done);
+    else done();
+  });
   </script>
 
 </body>
