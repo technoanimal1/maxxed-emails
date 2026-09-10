@@ -270,16 +270,15 @@
   .card-stack__item-h { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: -.02em; max-width: 7em; font-size: clamp(28px, 4.4vw, 56px); line-height: .95; margin: 0; }
   .card-stack__item-p { margin: 0; font-size: clamp(14px, 1.4vw, 16px); line-height: 1.4; opacity: .78; }
   .card-stack__item-bottom { position: relative; flex: 1; width: 100%; border-radius: 1.25em; display: flex;
-    align-items: center; justify-content: center; background: rgba(0,0,0,.10); overflow: hidden; }
-  /* the object sits large and centred behind the figure */
+    align-items: center; justify-content: space-between; gap: clamp(16px, 3vw, 48px);
+    padding-inline: clamp(20px, 3.5vw, 56px); background: rgba(0,0,0,.10); overflow: hidden; }
+  /* figure on the left, object on the right */
+  .card-stack__big { order: 1; text-align: left; padding: 0; }
   .card-stack__art {
-    position: absolute; top: 50%; left: 50%; translate: -50% -50%;
-    height: 150%; width: auto; max-width: 82%; object-fit: contain;
-    z-index: 0; pointer-events: none; user-select: none;
-    /* `rotate` is its own property, so the wiggle never fights the centring translate */
+    order: 2; flex: none; height: 128%; width: auto; max-width: 44%; object-fit: contain;
+    pointer-events: none; user-select: none;
     animation: art-wiggle 4.6s ease-in-out infinite;
   }
-  .card-stack__big { position: relative; z-index: 1; }
   @keyframes art-wiggle { 0%, 100% { rotate: -5deg; } 50% { rotate: 5deg; } }
   @media (prefers-reduced-motion: reduce) { .card-stack__art { animation: none; } }
   .card-stack__item:not(.is--1):not(.is--3):not(.is--5) .card-stack__item-bottom { background: rgba(255,255,255,.04); }
