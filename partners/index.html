@@ -132,7 +132,9 @@
   .marquee:hover .marquee-track { animation-play-state: paused; }
   .marquee-item { display: inline-flex; align-items: center; gap: clamp(24px, 4vw, 44px); font-family: var(--display); font-weight: 800; font-size: clamp(28px, 5vw, 54px); letter-spacing: 0; text-transform: uppercase; color: var(--white); }
   .marquee-item .dot { width: clamp(12px, 1.6vw, 18px); height: clamp(12px, 1.6vw, 18px); }
-  .marquee-item .marquee-mark { height: clamp(24px, 3.4vw, 44px); width: auto; flex: none; }
+  /* Explicit width: the white SVG has no intrinsic size, so width:auto would
+     collapse to 0 and the text would overlap the mark. */
+  .marquee-item .marquee-mark { height: clamp(24px, 3.4vw, 44px); width: clamp(32px, 4.4vw, 58px); object-fit: contain; flex: none; }
   @keyframes scroll { to { transform: translateX(-50%); } }
 
   /* ── Generic section spacing ── */
@@ -174,7 +176,15 @@
   .foot-note { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 28px; }
 
   /* ── Benefits grid ── */
-  .benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  /* Bento: 2 wide / 3 mid / 1 full — an editorial rhythm instead of a flat 3×2 */
+  .benefits { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+  .benefits > .benefit:nth-child(1), .benefits > .benefit:nth-child(2) { grid-column: span 3; }
+  .benefits > .benefit:nth-child(3), .benefits > .benefit:nth-child(4), .benefits > .benefit:nth-child(5) { grid-column: span 2; }
+  .benefits > .benefit:nth-child(6) { grid-column: span 6; display: flex; align-items: center; gap: clamp(16px, 3vw, 40px); flex-wrap: wrap; }
+  .benefits > .benefit:nth-child(6) h3 { margin: 0; }
+  .benefits > .benefit:nth-child(6) p { max-width: 46ch; }
+  .benefit { transition: transform .25s ease, border-color .25s ease, background .25s ease; }
+  .benefit:hover { transform: translateY(-4px); border-color: var(--line2); background: var(--surface2); }
   .benefit { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 28px; }
   .benefit .big { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
   .benefit h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 26px; margin: 14px 0 10px; }
@@ -188,7 +198,11 @@
   .step p { color: var(--dim); font-size: 13px; }
 
   /* ── Media kit ── */
-  .kit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .kit { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .kit > .kit-card:nth-child(1) { grid-column: span 2; }
+  .kit > .kit-card:nth-child(2), .kit > .kit-card:nth-child(3) { grid-column: span 1; }
+  .kit-card { transition: transform .25s ease, border-color .25s ease; }
+  .kit-card:hover { transform: translateY(-4px); border-color: var(--line2); }
   .kit-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
   .kit-card .thumb { height: 180px; background: var(--surface2); border-bottom: 1px solid var(--line); position: relative; }
   .kit-card .thumb::after { content: ""; position: absolute; inset: 0; background:
@@ -199,7 +213,11 @@
   .kit-card .avail { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
 
   /* ── Testimonials ── */
-  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
+  .quotes > .quote:nth-child(2) { margin-top: clamp(16px, 3vw, 40px); }
+  .quotes > .quote:nth-child(3) { margin-top: clamp(32px, 6vw, 80px); }
+  .quote { transition: transform .25s ease, border-color .25s ease; }
+  .quote:hover { transform: translateY(-4px); border-color: var(--line2); }
   .quote { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 32px; display: flex; flex-direction: column; }
   .quote .mark { font-family: var(--body); font-weight: 900; font-size: 56px; line-height: .5; color: var(--accent); height: 34px; }
   .quote p { color: var(--dim); font-size: 15px; margin-bottom: 28px; flex: 1; }
@@ -273,9 +291,13 @@
     .cards-2 { grid-template-columns: 1fr; }
     .tiers { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
     .benefits { grid-template-columns: 1fr 1fr; }
+    .benefits > .benefit:nth-child(n) { grid-column: span 1; }
+    .benefits > .benefit:nth-child(6) { grid-column: span 2; }
     .steps { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
     .kit { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
+    .kit > .kit-card:nth-child(n) { grid-column: span 1; }
     .quotes { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
+    .quotes > .quote:nth-child(n) { margin-top: 0; }
     .faq { grid-template-columns: 1fr; }
     .apply-grid { grid-template-columns: 1fr; }
     .foot-grid { flex-direction: column; align-items: flex-start; }
@@ -283,8 +305,35 @@
   }
   @media (max-width: 560px) {
     .benefits { grid-template-columns: 1fr; }
+    .benefits > .benefit:nth-child(n) { grid-column: span 1; }
     .field.row2 { grid-template-columns: 1fr; }
     .stats { gap: 24px; }
+  }
+
+  /* ── Scroll storytelling: reveal-on-scroll + progress bar ──
+     .js-anim is set synchronously on <html> so there is no flash of hidden
+     content when JS is off — without it everything renders normally. */
+  .js-anim .section-head,
+  .js-anim .prod-card,
+  .js-anim .tier,
+  .js-anim .benefit,
+  .js-anim .kit-card,
+  .js-anim .quote,
+  .js-anim .faq details,
+  .js-anim .apply-cta > *,
+  .js-anim .hero > * {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
+    transition-delay: var(--d, 0ms);
+  }
+  .js-anim .hero-media { opacity: 0; transform: scale(.95); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
+  .js-anim .is-in { opacity: 1 !important; transform: none !important; }
+  .scroll-bar { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform: scaleX(0); transform-origin: 0 50%; background: var(--accent); z-index: 100; pointer-events: none; will-change: transform; }
+  @media (prefers-reduced-motion: reduce) {
+    .js-anim .section-head, .js-anim .prod-card, .js-anim .tier, .js-anim .benefit,
+    .js-anim .kit-card, .js-anim .quote, .js-anim .faq details, .js-anim .apply-cta > *,
+    .js-anim .hero > *, .js-anim .hero-media { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .scroll-bar { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .marquee-track { animation: none; }
@@ -292,8 +341,16 @@
     .btn:hover { transform: none; }
   }
 </style>
+<script>
+  /* Set synchronously so reveal styles apply before first paint (no flash).
+     Skipped when the visitor prefers reduced motion. */
+  if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    document.documentElement.className += ' js-anim';
+  }
+</script>
 </head>
 <body>
+  <div class="scroll-bar" id="scrollBar" aria-hidden="true"></div>
 
   <!-- ══ HERO ══ -->
   <header class="top" id="top">
@@ -627,6 +684,58 @@
       });
     }, { threshold: 0.4 });
     wraps.forEach(function (w) { io.observe(w); });
+  })();
+  </script>
+
+  <script>
+  /* Scroll storytelling: staggered reveal-on-scroll + top progress bar. */
+  (function () {
+    var root = document.documentElement;
+    if (root.className.indexOf('js-anim') === -1) return;
+
+    var SEL = '.section-head, .prod-card, .tier, .benefit, .kit-card, .quote, .faq details, .apply-cta > *, .hero > *, .hero-media';
+    var items = [].slice.call(document.querySelectorAll(SEL));
+
+    /* Stagger siblings so grids cascade instead of popping in together. */
+    var seen = new Map();
+    items.forEach(function (el) {
+      var p = el.parentNode;
+      var i = seen.get(p) || 0;
+      seen.set(p, i + 1);
+      el.style.setProperty('--d', Math.min(i * 90, 450) + 'ms');
+    });
+
+    function show(el) { el.classList.add('is-in'); }
+
+    if (!('IntersectionObserver' in window)) { items.forEach(show); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+
+    /* Anything already in view on load (the hero) reveals immediately. */
+    requestAnimationFrame(function () {
+      items.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.9) { show(el); io.unobserve(el); }
+      });
+    });
+
+    /* Top progress bar */
+    var bar = document.getElementById('scrollBar');
+    if (bar) {
+      var ticking = false;
+      var update = function () {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        var p = h > 0 ? Math.min(window.scrollY / h, 1) : 0;
+        bar.style.transform = 'scaleX(' + p + ')';
+        ticking = false;
+      };
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      update();
+    }
   })();
   </script>
 
