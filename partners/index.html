@@ -47,6 +47,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
   html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  section[id], header[id] { scroll-margin-top: calc(var(--header-h, 0px) + 12px); }
   body {
     font-family: var(--body);
     background: var(--bg);
@@ -127,6 +128,8 @@
 
   /* ── Marquee ── */
   .marquee {
+    /* sticky header: stays in flow, so no spacer is needed under it */
+    position: sticky; top: 0; z-index: 90;
     /* sits at the very top of the page now, so no top border */
     border-bottom: 1px solid var(--line);
     background: var(--bg); overflow: hidden; padding-block: clamp(14px, 2vw, 24px);
@@ -240,8 +243,9 @@
   /* ── Sticky card stack (scroll-driven, no JS) ── */
   .card-stack {
     --stack-row: 84svh;
-    --stack-top: 9svh;
-    --stack-card-height: calc(var(--stack-row) - 2 * var(--stack-top));
+    /* clear the sticky header, otherwise pinned cards slide under it */
+    --stack-top: calc(var(--header-h, 0px) + 2svh);
+    --stack-card-height: calc(var(--stack-row) - var(--stack-top) - 7svh);
     view-timeline-name: --card-stack;
     grid-auto-rows: var(--stack-row);
     width: 100%; max-width: var(--maxw); margin-inline: auto;
@@ -1245,6 +1249,18 @@
       requestAnimationFrame(updateCursor);
     }, { passive: true });
   }
+
+  /* Expose the sticky header's height so sticky cards and anchor jumps clear it. */
+  (function () {
+    var header = document.querySelector('.marquee');
+    if (!header) return;
+    var apply = function () {
+      document.documentElement.style.setProperty('--header-h', Math.round(header.offsetHeight) + 'px');
+    };
+    apply();
+    if (window.ResizeObserver) new ResizeObserver(apply).observe(header);
+    window.addEventListener('resize', apply);
+  })();
 
   document.addEventListener('DOMContentLoaded', function () { initScrambleTextCursor(); });
 
