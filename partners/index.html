@@ -300,7 +300,8 @@
   /* ── Highlight-marker heading reveal ──
      Headings are hidden only while the effect is pending; a failsafe removes
      that class if GSAP/SplitText never load, so text can never stay invisible. */
-  .marker-pending .h2, .marker-pending .display-xl { visibility: hidden; }
+  .marker-pending .h2, .marker-pending .display-xl, .marker-pending .hero h1,
+  .marker-pending .card-stack__item-h, .marker-pending .card-stack__big { visibility: hidden; }
   [data-highlight-marker-reveal] .highlight-marker-line { width: auto; display: inline-block !important; margin: -0.055em 0px; }
   .highlight-marker-bar { position: absolute; inset: -0.055em 0px; z-index: 1; pointer-events: none; }
   .contact { display: flex; flex-direction: column; gap: 18px; margin-top: 40px; }
@@ -311,14 +312,36 @@
   .apply-cta { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 640px; margin-inline: auto; }
   .apply-cta .lead { margin-inline: auto; }
   .btn-lg { margin-top: 32px; padding: 18px 40px; font-size: 14px; }
-  .contact-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: clamp(32px, 5vw, 44px); }
-  .contact-chips .chip { display: inline-flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--line2); border-radius: 14px; padding: 12px 22px 12px 12px; transition: transform .15s ease, border-color .2s ease, background .2s ease; }
-  .contact-chips .chip:hover { transform: translateY(-3px); border-color: var(--accent); background: var(--surface2); }
-  .contact-chips .chip-ic { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); flex: none; }
-  .contact-chips .chip-ic svg { width: 22px; height: 22px; display: block; }
-  .contact-chips .chip-txt { display: flex; flex-direction: column; line-height: 1.25; text-align: left; }
-  .contact-chips .chip-k { font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
-  .contact-chips .chip-v { font-size: 14px; font-weight: 500; color: var(--white); }
+  /* ── Big copy / open contact buttons ── */
+  .contact-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: clamp(32px, 5vw, 48px); }
+  .chip {
+    display: flex; align-items: center; gap: .75em; cursor: pointer;
+    font: inherit; color: var(--white); text-align: left;
+    background: var(--surface2); border: 1px solid var(--line2); border-radius: .625em;
+    padding: .75em 1.25em .75em .75em;
+    transition: border-color .2s ease, background .2s ease, transform .15s ease;
+  }
+  .chip:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); }
+  .chip-ic {
+    display: grid; place-items: center; flex: none; width: 2.5em; height: 2.5em;
+    padding: .5em; border-radius: .375em; background: var(--accent); color: var(--accent-ink);
+    transition: background .2s ease;
+  }
+  .chip-ic svg { width: 100%; height: auto; display: block; }
+  /* three stacked labels; the wrap is one line tall and slides between them */
+  .chip-text { display: flex; flex-flow: column; align-items: flex-start; justify-content: flex-start;
+    height: 1.2em; font-size: clamp(15px, 2.1vw, 26px); line-height: 1.2; overflow: hidden; }
+  .chip-text span { white-space: nowrap; font-size: 1em; transition: transform .45s cubic-bezier(.65, 0, 0, 1); }
+  @media (hover: hover) {
+    .chip:hover .chip-text span { transform: translate(0, -100%); }
+    .chip:hover .chip-ic { background: var(--accent-2); }
+  }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .chip:focus-visible .chip-text span { transform: translate(0, -100%); }
+  .chip:focus-visible .chip-ic { background: var(--accent-2); }
+  [data-copy-button="copied"] .chip-ic { background: var(--accent-2) !important; }
+  [data-copy-button="copied"] .chip-text span { transform: translate(0, -200%) !important; }
+  @media (max-width: 479px) { .chip-text { font-size: 15px; } }
   .contact-center { align-items: center; margin-top: 40px; }
   .contact-center .row { justify-content: center; }
   .legal { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); margin-top: 28px; text-align: center; }
@@ -377,7 +400,7 @@
   .js-anim .quote,
   .js-anim .faq details,
   .js-anim .apply-cta > *:not(.display-xl),
-  .js-anim .hero > * {
+  .js-anim .hero > *:not(h1) {
     opacity: 0; transform: translateY(30px);
     transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
     transition-delay: var(--d, 0ms);
@@ -676,13 +699,22 @@
         <p class="lead" style="margin-top:24px;max-width:46ch;" data-cms="apply_line">Tell us about your traffic. We'll review and get back to you within 24 hours.</p>
         <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener">Become a partner</a>
         <div class="contact-chips">
-          <a class="chip" id="emailChip" href="mailto:affiliates@maxxedpartners.com">
-            <span class="chip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 5.5 8.5-5.5"/></svg></span>
-            <span class="chip-txt"><span class="chip-k">Email</span><span class="chip-v" data-cms="contact_email">affiliates@maxxedpartners.com</span></span>
-          </a>
+          <button type="button" class="chip" id="emailChip" data-copy-button data-copy-email
+                  aria-label="Copy email to clipboard">
+            <span class="chip-ic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 2H8V5H16V2Z"/><path d="M16 3H17.5L19 4.5V19.5L17.5 21H6.5L5 19.5V4.5L6.5 3H8"/></svg></span>
+            <span class="chip-text">
+              <span data-copy-email-element data-cms="contact_email">affiliates@maxxedpartners.com</span>
+              <span>Click to copy email</span>
+              <span>Copied to clipboard!</span>
+            </span>
+          </button>
           <a class="chip" id="tgChip" href="https://t.me/Maxxed_affiliates" target="_blank" rel="noopener">
-            <span class="chip-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.48a1.2 1.2 0 0 0-1.2-.2L2.9 11.36c-.86.34-.83 1.58.04 1.87l4.6 1.53 1.7 5.34c.2.62 1 .8 1.45.3l2.5-2.65 4.63 3.4c.53.4 1.3.1 1.45-.55l3.05-14.4a1.2 1.2 0 0 0-.43-1.14ZM9.2 14.1l8.2-5.03c.18-.11.37.13.22.28l-6.63 6.2a.9.9 0 0 0-.28.55l-.24 2-1.13-3.5a.5.5 0 0 1 .19-.5Z"/></svg></span>
-            <span class="chip-txt"><span class="chip-k">Telegram</span><span class="chip-v" data-cms="contact_telegram">@Maxxed_affiliates</span></span>
+            <span class="chip-ic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.48a1.2 1.2 0 0 0-1.2-.2L2.9 11.36c-.86.34-.83 1.58.04 1.87l4.6 1.53 1.7 5.34c.2.62 1 .8 1.45.3l2.5-2.65 4.63 3.4c.53.4 1.3.1 1.45-.55l3.05-14.4a1.2 1.2 0 0 0-.43-1.14ZM9.2 14.1l8.2-5.03c.18-.11.37.13.22.28l-6.63 6.2a.9.9 0 0 0-.28.55l-.24 2-1.13-3.5a.5.5 0 0 1 .19-.5Z"/></svg></span>
+            <span class="chip-text">
+              <span data-cms="contact_telegram">@Maxxed_affiliates</span>
+              <span>Open in Telegram</span>
+              <span>Open in Telegram</span>
+            </span>
           </a>
         </div>
         <p class="legal">By applying you agree to the partner terms. 18+. Please gamble responsibly.</p>
@@ -765,7 +797,10 @@
         var val = map[key]; if (val == null) return; val = String(val);
         if (key === 'registration_url') { if (val) setHref('registerCta', val); return; }
         if (key === 'terms_url') { if (val) setHref('termsLink', val); return; }
-        if (key === 'contact_email' && val.trim()) { setHref('emailChip', 'mailto:' + val.trim()); }
+        if (key === 'contact_email' && val.trim()) {
+          var ec = document.getElementById('emailChip');
+          if (ec) ec.setAttribute('data-copy-email', val.trim());
+        }
         if (key === 'contact_telegram' && val.trim()) { setHref('tgChip', 'https://t.me/' + val.trim().replace(/^@/, '')); }
         if (key === 'hero_logo') { if (val) { var l = document.getElementById('heroLogo'); if (l) l.src = val; } return; }
         if (key === 'footer_mark') {
@@ -794,6 +829,7 @@
         var rl = document.createElement('div'); rl.className = 'role'; rl.textContent = (r.role || '').trim(); meta.appendChild(rl);
         who.appendChild(meta); el.appendChild(who); wrap.appendChild(el);
       });
+      if (window.__revealScan) window.__revealScan();
     }
     function renderFaqs(rows) {
       var wrap = document.getElementById('faqlist'); if (!wrap) return; wrap.textContent = '';
@@ -803,6 +839,7 @@
         var p = document.createElement('p'); p.textContent = (r.answer || '').trim(); d.appendChild(p);
         wrap.appendChild(d);
       });
+      if (window.__revealScan) window.__revealScan();
     }
   })();
   </script>
@@ -849,7 +886,7 @@
     var root = document.documentElement;
     if (root.className.indexOf('js-anim') === -1) return;
 
-    var SEL = '.section-head .eyebrow, .section-head .lead, .prod-card, .tier, .kit-card, .quote, .faq details, .apply-cta > *:not(.display-xl), .hero > *, .hero-media';
+    var SEL = '.section-head .eyebrow, .section-head .lead, .prod-card, .tier, .kit-card, .quote, .faq details, .apply-cta > *:not(.display-xl), .hero > *:not(h1), .hero-media';
     var items = [].slice.call(document.querySelectorAll(SEL));
 
     /* Stagger siblings so grids cascade instead of popping in together. */
@@ -863,11 +900,35 @@
 
     function show(el) { el.classList.add('is-in'); }
 
-    if (!('IntersectionObserver' in window)) { items.forEach(show); return; }
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(show);
+      window.__revealScan = function () { [].slice.call(document.querySelectorAll(SEL)).forEach(show); };
+      return;
+    }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
     }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
     items.forEach(function (el) { io.observe(el); });
+
+    /* Reviews/FAQ replace their DOM once Supabase answers, so those fresh nodes
+       were never observed and stayed at opacity 0. Let renderers re-scan. */
+    window.__revealScan = function () {
+      var fresh = [].slice.call(document.querySelectorAll(SEL)).filter(function (el) {
+        return !el.classList.contains('is-in');
+      });
+      var s2 = new Map();
+      fresh.forEach(function (el) {
+        var pa = el.parentNode; var i = s2.get(pa) || 0; s2.set(pa, i + 1);
+        el.style.setProperty('--d', Math.min(i * 90, 450) + 'ms');
+        io.observe(el);
+      });
+      requestAnimationFrame(function () {
+        fresh.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.9) { show(el); io.unobserve(el); }
+        });
+      });
+    };
 
     /* Anything already in view on load (the hero) reveals immediately. */
     requestAnimationFrame(function () {
@@ -1001,6 +1062,29 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () { initScrambleTextCursor(); });
+
+  /* Copy-to-clipboard email button: the label stack slides to confirm. */
+  function initCopyEmailClipboard() {
+    var button = document.getElementById('emailChip');
+    if (!button) return;
+    var reset = function () {
+      button.removeAttribute('data-copy-button');
+      button.setAttribute('aria-label', 'Copy email to clipboard');
+    };
+    var copy = function () {
+      var el = button.querySelector('[data-copy-email-element]');
+      var email = button.getAttribute('data-copy-email') || (el && el.textContent.trim());
+      if (!email || !navigator.clipboard) return;
+      navigator.clipboard.writeText(email).then(function () {
+        button.setAttribute('data-copy-button', 'copied');
+        button.setAttribute('aria-label', 'Email copied to clipboard!');
+      }).catch(function () {});
+    };
+    button.addEventListener('click', function (e) { e.preventDefault(); copy(); });
+    button.addEventListener('mouseleave', function () { reset(); button.blur(); });
+    button.addEventListener('blur', reset);
+  }
+  document.addEventListener('DOMContentLoaded', initCopyEmailClipboard);
   </script>
 
   <script>
@@ -1190,7 +1274,7 @@
     }
 
     /* Tag the headings here so the markup stays clean. */
-    document.querySelectorAll('.h2, .display-xl').forEach(function (el) {
+    document.querySelectorAll('.hero h1, h2, .h2, .display-xl, .card-stack__item-h, .card-stack__big').forEach(function (el) {
       el.setAttribute('data-highlight-marker-reveal', '');
     });
 
