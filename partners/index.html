@@ -26,6 +26,7 @@
     --surface2:#171717;
     --line:    #1c1c1c;
     --line2:   #262626;
+    --band-alt:#101010;
     --accent:  #8ffc80;
     --accent-2:#63ee4f;
     --accent-ink:#050505;
@@ -51,7 +52,9 @@
     background: var(--bg);
     color: var(--white);
     line-height: 1.6;
-    overflow-x: hidden;
+    /* clip, not hidden: `hidden` makes body a scroll container and breaks
+       position:sticky for the card stack. */
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
   }
   img, svg, video { display: block; max-width: 100%; }
@@ -124,7 +127,8 @@
 
   /* ── Marquee ── */
   .marquee {
-    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    /* sits at the very top of the page now, so no top border */
+    border-bottom: 1px solid var(--line);
     background: var(--bg); overflow: hidden; padding-block: clamp(14px, 2vw, 24px);
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
@@ -140,6 +144,8 @@
 
   /* ── Generic section spacing ── */
   .band { padding-block: clamp(64px, 10vw, 120px); }
+  /* every other section sits on a lighter band for separation */
+  .band-alt { background: var(--band-alt); border-block: 1px solid var(--line); }
   .band-tight { padding-block: clamp(48px, 7vw, 80px); }
   .section-head { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; margin-bottom: clamp(36px, 6vw, 56px); }
   .section-head .lead { max-width: 60ch; }
@@ -177,19 +183,65 @@
   .foot-note { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 28px; }
 
   /* ── Benefits grid ── */
-  /* Bento: 2 wide / 3 mid / 1 full — an editorial rhythm instead of a flat 3×2 */
-  .benefits { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
-  .benefits > .benefit:nth-child(1), .benefits > .benefit:nth-child(2) { grid-column: span 3; }
-  .benefits > .benefit:nth-child(3), .benefits > .benefit:nth-child(4), .benefits > .benefit:nth-child(5) { grid-column: span 2; }
-  .benefits > .benefit:nth-child(6) { grid-column: span 6; display: flex; align-items: center; gap: clamp(16px, 3vw, 40px); flex-wrap: wrap; }
-  .benefits > .benefit:nth-child(6) h3 { margin: 0; }
-  .benefits > .benefit:nth-child(6) p { max-width: 46ch; }
-  .benefit { transition: transform .25s ease, border-color .25s ease, background .25s ease; }
-  .benefit:hover { transform: translateY(-4px); border-color: var(--line2); background: var(--surface2); }
-  .benefit { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 28px; }
-  .benefit .big { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
-  .benefit h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 26px; margin: 14px 0 10px; }
-  .benefit p { color: var(--dim); font-size: 13px; }
+  /* ── Sticky card stack (scroll-driven, no JS) ── */
+  .card-stack {
+    --stack-row: 84svh;
+    --stack-top: 9svh;
+    --stack-card-height: calc(var(--stack-row) - 2 * var(--stack-top));
+    view-timeline-name: --card-stack;
+    grid-auto-rows: var(--stack-row);
+    width: 100%; max-width: var(--maxw); margin-inline: auto;
+    display: grid; position: relative;
+  }
+  .card-stack__item {
+    transform-origin: 50% 100%;
+    top: var(--stack-top);
+    height: var(--stack-card-height);
+    border-radius: var(--radius);
+    padding: clamp(28px, 4vw, 56px);
+    position: sticky; overflow: hidden;
+    background: var(--surface2); color: var(--white);
+    border: 1px solid var(--line2);
+  }
+  /* Alternating lime / dark keeps the stack on-brand as it tips away */
+  .card-stack__item.is--1, .card-stack__item.is--3, .card-stack__item.is--5 {
+    background: var(--accent); color: var(--accent-ink); border-color: var(--accent);
+  }
+  .card-stack__item-inner { display: flex; flex-flow: column; justify-content: space-between; align-items: stretch; height: 100%; gap: clamp(24px, 4vw, 56px); }
+  .card-stack__item-top { display: grid; grid-template-columns: 1fr 1fr; grid-auto-columns: 1fr; place-items: end start; gap: clamp(16px, 2vw, 32px); }
+  .card-stack__item-h { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: -.02em; max-width: 7em; font-size: clamp(28px, 4.4vw, 56px); line-height: .95; margin: 0; }
+  .card-stack__item-p { margin: 0; font-size: clamp(14px, 1.4vw, 16px); line-height: 1.4; opacity: .78; }
+  .card-stack__item-bottom { flex: 1; width: 100%; border-radius: 1.25em; display: grid; place-items: center; background: rgba(0,0,0,.10); }
+  .card-stack__item:not(.is--1):not(.is--3):not(.is--5) .card-stack__item-bottom { background: rgba(255,255,255,.04); }
+  .card-stack__big { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: clamp(40px, 8vw, 112px); line-height: 1; letter-spacing: -.04em; text-align: center; padding: 0 .2em; }
+
+  .card-stack__item:nth-child(1) { --stack-i: 1; }
+  .card-stack__item:nth-child(2) { --stack-i: 2; }
+  .card-stack__item:nth-child(3) { --stack-i: 3; }
+  .card-stack__item:nth-child(4) { --stack-i: 4; }
+  .card-stack__item:nth-child(5) { --stack-i: 5; }
+  .card-stack__item:nth-child(6) { --stack-i: 6; }
+  @supports (width: calc(sibling-index() * 1px)) {
+    .card-stack__item { --stack-i: sibling-index(); }
+  }
+  @supports (animation-timeline: view()) {
+    .card-stack__item {
+      animation: card-stack-away linear forwards;
+      animation-timeline: --card-stack;
+      animation-range:
+        exit-crossing calc(var(--stack-i, 1) * var(--stack-row) - 100svh)
+        exit-crossing calc(var(--stack-i, 1) * var(--stack-row) - var(--stack-top));
+    }
+    .card-stack__item:last-of-type { animation: none; }
+  }
+  @keyframes card-stack-away {
+    to { transform: perspective(60em) rotateX(25deg) scale(0.85); filter: brightness(0.45); }
+  }
+  @media (prefers-reduced-motion: reduce) { .card-stack__item { animation: none; } }
+  @media (max-width: 767px) {
+    .card-stack__item-top { grid-template-columns: 1fr; }
+    .card-stack__item-h { max-width: none; }
+  }
 
   /* ── Steps ── */
   .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -299,9 +351,6 @@
     .hero-media { max-width: 480px; order: -1; }
     .cards-2 { grid-template-columns: 1fr; }
     .tiers { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
-    .benefits { grid-template-columns: 1fr 1fr; }
-    .benefits > .benefit:nth-child(n) { grid-column: span 1; }
-    .benefits > .benefit:nth-child(6) { grid-column: span 2; }
     .steps { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
     .kit { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
     .kit > .kit-card:nth-child(n) { grid-column: span 1; }
@@ -313,8 +362,6 @@
     .foot-right { align-items: flex-start; text-align: left; }
   }
   @media (max-width: 560px) {
-    .benefits { grid-template-columns: 1fr; }
-    .benefits > .benefit:nth-child(n) { grid-column: span 1; }
     .field.row2 { grid-template-columns: 1fr; }
     .stats { gap: 24px; }
   }
@@ -322,14 +369,14 @@
   /* ── Scroll storytelling: reveal-on-scroll + progress bar ──
      .js-anim is set synchronously on <html> so there is no flash of hidden
      content when JS is off — without it everything renders normally. */
-  .js-anim .section-head,
+  .js-anim .section-head .eyebrow,
+  .js-anim .section-head .lead,
   .js-anim .prod-card,
   .js-anim .tier,
-  .js-anim .benefit,
   .js-anim .kit-card,
   .js-anim .quote,
   .js-anim .faq details,
-  .js-anim .apply-cta > *,
+  .js-anim .apply-cta > *:not(.display-xl),
   .js-anim .hero > * {
     opacity: 0; transform: translateY(30px);
     transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
@@ -370,7 +417,7 @@
   @media (hover: none) and (pointer: coarse) { .cursor { display: none; } }
   @media (prefers-reduced-motion: reduce) { .cursor { display: none; } }
   @media (prefers-reduced-motion: reduce) {
-    .js-anim .section-head, .js-anim .prod-card, .js-anim .tier, .js-anim .benefit,
+    .js-anim .section-head, .js-anim .prod-card, .js-anim .tier,
     .js-anim .kit-card, .js-anim .quote, .js-anim .faq details, .js-anim .apply-cta > *,
     .js-anim .hero > *, .js-anim .hero-media { opacity: 1 !important; transform: none !important; transition: none !important; }
     .scroll-bar { display: none; }
@@ -398,6 +445,18 @@
 <body>
   <div class="scroll-bar" id="scrollBar" aria-hidden="true"></div>
 
+  <!-- ══ MARQUEE ══ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item">
+        <img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners
+      </span>
+      <span class="marquee-item">
+        <img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners
+      </span>
+    </div>
+  </div>
+
   <!-- ══ HERO ══ -->
   <header class="top" id="top">
     <div class="wrap">
@@ -417,17 +476,6 @@
     </div>
   </header>
 
-  <!-- ══ MARQUEE ══ -->
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span class="marquee-item">
-        <img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners
-      </span>
-      <span class="marquee-item">
-        <img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners<img class="marquee-mark" src="https://qzrskdcfdtrhdvywwfzk.supabase.co/storage/v1/object/public/assets/maxxed%20white%20svg.svg" alt="" aria-hidden="true" />Maxxed Partners
-      </span>
-    </div>
-  </div>
 
   <!-- ══ PRODUCT ══ -->
   <section class="band" id="products">
@@ -461,7 +509,7 @@
   </section>
 
   <!-- ══ COMMISSION ══ -->
-  <section class="band" id="commission">
+  <section class="band band-alt" id="commission">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Commission structure</span>
@@ -512,19 +560,67 @@
       <div class="section-head">
         <h2 class="h2" data-cms="why_h2">Why partner with Maxxed</h2>
       </div>
-      <div class="benefits">
-        <div class="benefit"><span class="big">Up to 50%</span><h3>RevShare that scales</h3><p>Rate grows with your players' revenue.</p></div>
-        <div class="benefit"><span class="big">Zero</span><h3>Negative carryover</h3><p>A bad month never rolls into the next. Every month starts clean.</p></div>
-        <div class="benefit"><span class="big">Monthly</span><h3>Crypto payouts</h3><p>Paid every month, straight to your wallet. No fiat delays.</p></div>
-        <div class="benefit"><span class="big">2-in-1</span><h3>Casino + sport</h3><p>One link, both products. Earn on every player, whatever they play.</p></div>
-        <div class="benefit"><span class="big">Live</span><h3>Real-time dashboard</h3><p>Clicks, signups, deposits and revenue — tracked as it happens.</p></div>
-        <div class="benefit"><span class="big">1:1</span><h3>Dedicated manager</h3><p>A real person who knows your account and answers fast.</p></div>
+      <div class="card-stack">
+        <article class="card-stack__item is--1">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">RevShare that scales</h3>
+              <p class="card-stack__item-p">Rate grows with your players' revenue.</p>
+            </div>
+            <div class="card-stack__item-bottom"><span class="card-stack__big">Up to 50%</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--2">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Negative carryover</h3>
+              <p class="card-stack__item-p">A bad month never rolls into the next. Every month starts clean.</p>
+            </div>
+            <div class="card-stack__item-bottom"><span class="card-stack__big">Zero</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--3">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Crypto payouts</h3>
+              <p class="card-stack__item-p">Paid every month, straight to your wallet. No fiat delays.</p>
+            </div>
+            <div class="card-stack__item-bottom"><span class="card-stack__big">Monthly</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--4">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Casino + sport</h3>
+              <p class="card-stack__item-p">One link, both products. Earn on every player, whatever they play.</p>
+            </div>
+            <div class="card-stack__item-bottom"><span class="card-stack__big">2-in-1</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--5">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Real-time dashboard</h3>
+              <p class="card-stack__item-p">Clicks, signups, deposits and revenue — tracked as it happens.</p>
+            </div>
+            <div class="card-stack__item-bottom"><span class="card-stack__big">Live</span></div>
+          </div>
+        </article>
+        <article class="card-stack__item is--6">
+          <div class="card-stack__item-inner">
+            <div class="card-stack__item-top">
+              <h3 class="card-stack__item-h">Dedicated manager</h3>
+              <p class="card-stack__item-p">A real person who knows your account and answers fast.</p>
+            </div>
+            <div class="card-stack__item-bottom"><span class="card-stack__big">1:1</span></div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- ══ MEDIA KIT ══ -->
-  <section class="band" id="mediakit">
+  <section class="band band-alt" id="mediakit">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Affiliate media kit</span>
@@ -554,7 +650,7 @@
   </section>
 
   <!-- ══ FAQ ══ -->
-  <section class="band" id="faq">
+  <section class="band band-alt" id="faq">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">FAQ</span>
@@ -753,7 +849,7 @@
     var root = document.documentElement;
     if (root.className.indexOf('js-anim') === -1) return;
 
-    var SEL = '.section-head, .prod-card, .tier, .benefit, .kit-card, .quote, .faq details, .apply-cta > *, .hero > *, .hero-media';
+    var SEL = '.section-head .eyebrow, .section-head .lead, .prod-card, .tier, .kit-card, .quote, .faq details, .apply-cta > *:not(.display-xl), .hero > *, .hero-media';
     var items = [].slice.call(document.querySelectorAll(SEL));
 
     /* Stagger siblings so grids cascade instead of popping in together. */
@@ -834,7 +930,7 @@
     };
     tag('.prod-card', txt('.tag', 'Explore'));
     tag('.tier', txt('.pct', 'Revshare'));
-    tag('.benefit', txt('.big', 'Why us'));
+    tag('.card-stack__item', txt('.card-stack__big', 'Why us'));
     tag('.kit-card', 'Assets');
     tag('.quote', 'Partner');
     tag('.faq details', 'Open');
