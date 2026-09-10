@@ -99,22 +99,8 @@
     transition: transform .15s ease, background .2s ease, border-color .2s ease;
   }
   .btn:hover { transform: translateY(-2px); }
-  .btn-primary { color: var(--accent-ink); background: transparent; }
-  /* the fill is its own layer so it can inset on hover */
-  .btn__bg { position: absolute; inset: 0; z-index: 0; border-radius: inherit;
-    background: var(--accent); transition: inset .6s cubic-bezier(.625,.05,0,1), background .2s ease; }
-  .btn:hover .btn__bg { inset: .125em; background: var(--accent-2); }
-  .btn__label { position: relative; z-index: 1; white-space: nowrap; line-height: 1.3; }
-  /* characters roll up to their text-shadow duplicate */
-  .btn [data-button-animate-chars] { position: relative; display: inline-block; overflow: hidden; }
-  .btn [data-button-animate-chars] span { display: inline-block; position: relative;
-    text-shadow: 0 1.3em currentColor; transform: translateY(0) rotate(.001deg);
-    transition: transform .6s cubic-bezier(.625,.05,0,1); }
-  .btn:hover [data-button-animate-chars] span { transform: translateY(-1.3em) rotate(.001deg); }
-  @media (prefers-reduced-motion: reduce) {
-    .btn [data-button-animate-chars] span, .btn__bg { transition: none; }
-    .btn:hover [data-button-animate-chars] span { transform: none; }
-  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-2); }
   .btn-ghost { background: var(--surface2); color: var(--white); border-color: var(--line2); }
   .btn-ghost:hover { border-color: var(--accent); }
   .btn-block { width: 100%; }
@@ -186,6 +172,19 @@
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 40px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;
   }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .tier {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 40px 32px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  .tier .ring-wrap { position: relative; width: clamp(150px, 42vw, 188px); aspect-ratio: 1 / 1; display: grid; place-items: center; }
+  .tier .ring { width: 100%; height: 100%; overflow: visible; }
+  .tier .ring .track { stroke: var(--line2); }
+  .tier .ring .fill { stroke: var(--accent); filter: drop-shadow(0 0 5px rgba(143,252,128,.45)); }
+  .tier .ring .reveal { transition: stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1); }
+  .tier .pct { position: absolute; font-family: var(--display); font-weight: 800; font-size: clamp(34px, 5.5vw, 52px); line-height: 1; color: var(--accent); letter-spacing: -.03em; }
+  @media (prefers-reduced-motion: reduce) { .tier .ring .reveal { transition: none; } }
+  .tier .note { color: var(--white); font-size: 13px; }
   /* ── Commission line graph ── */
   .lgraph {
     --graph-bg: #0b0b0b;
@@ -194,7 +193,7 @@
     --graph-line-default: #4a4a4a;
     --graph-series-color: var(--graph-line-default);
     display: flex; flex-direction: column; gap: 1em;
-    width: min(56em, 100%); margin-inline: auto; padding: 1em;
+    width: min(56em, 100%); margin-inline: auto; margin-top: clamp(28px, 4vw, 52px); padding: 1em;
     background: var(--surface); border: 1px solid var(--line2); border-radius: 1.25em;
   }
   .lgraph__top { display: flex; justify-content: space-between; align-items: center; gap: 1em;
@@ -229,6 +228,7 @@
   .lgraph__axis-label { fill: var(--graph-text); font-family: var(--mono); font-size: .875em; }
   .lgraph__line { fill: none; stroke: var(--graph-series-color); stroke-width: 6px;
     stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .lgraph__marker { fill: var(--graph-bg); stroke: var(--accent); stroke-width: 4px; vector-effect: non-scaling-stroke; }
   .lgraph__hover[data-graph-hover-status="not-active"] { opacity: 0; }
   .lgraph__hover-line { stroke: var(--graph-grid); stroke-width: 2px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
   .lgraph__hover-dot { fill: var(--graph-series-color); stroke: var(--bg); stroke-width: 4px; vector-effect: non-scaling-stroke; }
@@ -498,6 +498,7 @@
   .js-anim .section-head .eyebrow,
   .js-anim .section-head .lead,
   .js-anim .prod-card,
+  .js-anim .tier,
   .js-anim .kit-card,
   .js-anim .quote,
   .js-anim .faq details,
@@ -591,7 +592,7 @@
           <div class="hero-logo" aria-label="Maxxed"><img id="heroLogo" src="assets/logo.svg" alt="Maxxed" width="120" height="48" /></div>
           <p class="hero-tag" data-cms="hero_tagline">Maxxed Partners is the official affiliate program for Maxxed.io, built around crypto, performance, and long-term partnerships.</p>
           <div class="hero-cta">
-            <a class="btn btn-primary" href="#apply"><span class="btn__bg"></span><span class="btn__label" data-button-animate-chars data-cms="cta_label">Become a partner</span></a>
+            <a class="btn btn-primary" href="#apply" data-cms="cta_label">Become a partner</a>
           </div>
         </div>
         <div class="hero-media">
@@ -640,7 +641,42 @@
         <span class="eyebrow">Commission structure</span>
         <h2 class="h2" data-cms="commission_h2">Your rate scales with revenue</h2>
       </div>
-      <div class="lgraph" data-line-graph-svg-init data-graph-steps="6"
+      <div class="tiers">
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk1"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk1)"/>
+            </svg>
+            <div class="pct" data-cms="tier1_pct">30%</div>
+          </div>
+          <div class="note" data-cms="tier1_note">up to €10,000 / mo net revenue</div>
+        </div>
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk2"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk2)"/>
+            </svg>
+            <div class="pct" data-cms="tier2_pct">40%</div>
+          </div>
+          <div class="note" data-cms="tier2_note">up to €25,000 / mo net revenue</div>
+        </div>
+        <div class="tier">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+              <defs><mask id="mk3"><circle class="reveal" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="20" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" stroke-linecap="round" transform="rotate(-90 110 110)"/></mask></defs>
+              <circle class="track" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round"/>
+              <circle class="fill" cx="110" cy="110" r="92" fill="none" stroke-width="6" pathLength="100" stroke-dasharray="0.6 2.4" stroke-linecap="round" mask="url(#mk3)"/>
+            </svg>
+            <div class="pct" data-cms="tier3_pct">50%</div>
+          </div>
+          <div class="note" data-cms="tier3_note">up to €40,000 / mo net revenue</div>
+        </div>
+      </div>
+            <div class="lgraph" data-line-graph-svg-init data-graph-steps="6"
            data-graph-curve="exact" data-graph-suffix="%" data-graph-min="0" data-graph-max="60"
            aria-label="Commission rate against monthly net revenue">
         <div class="lgraph__top">
@@ -655,9 +691,9 @@
             <div data-graph-series="primary" data-graph-series-color="#8FFC80"
                  data-graph-series-label="Your rate" data-graph-series-legend="Revshare"></div>
             <div data-graph-label="€0" data-graph-primary="30" data-graph-tier="1"></div>
-            <div data-graph-label="€10K" data-graph-primary="30" data-graph-tier="1"></div>
-            <div data-graph-label="€25K" data-graph-primary="40" data-graph-tier="2"></div>
-            <div data-graph-label="€40K+" data-graph-primary="50" data-graph-tier="3"></div>
+            <div data-graph-label="€10K" data-graph-primary="30" data-graph-tier="1" data-graph-marker></div>
+            <div data-graph-label="€25K" data-graph-primary="40" data-graph-tier="2" data-graph-marker></div>
+            <div data-graph-label="€40K+" data-graph-primary="50" data-graph-tier="3" data-graph-marker></div>
             <!-- hidden carriers so the Supabase copy rows still have a home -->
             <span data-cms="tier1_pct" hidden>30%</span>
             <span data-cms="tier2_pct" hidden>40%</span>
@@ -833,7 +869,7 @@
         <span class="eyebrow" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:20px;"><span class="dot"></span>Become a partner</span>
         <div class="display-xl">Apply in<br><span class="green">2 minutes</span></div>
         <p class="lead" style="margin-top:24px;max-width:46ch;" data-cms="apply_line">Tell us about your traffic. We'll review and get back to you within 24 hours.</p>
-        <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener"><span class="btn__bg"></span><span class="btn__label" data-button-animate-chars>Become a partner</span></a>
+        <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener">Become a partner</a>
         <div class="contact-chips">
           <button type="button" class="chip" id="emailChip" data-copy-button data-copy-email
                   aria-label="Copy email to clipboard">
@@ -883,7 +919,7 @@
       <a class="link" href="#commission">Commission</a>
       <a class="link" href="#mediakit">Media kit</a>
       <a class="link" href="#faq">FAQ</a>
-      <a class="btn btn-primary" href="#apply"><span class="btn__bg"></span><span class="btn__label" data-button-animate-chars>Apply</span></a>
+      <a class="btn btn-primary" href="#apply">Apply</a>
     </div>
   </nav>
 
@@ -1024,7 +1060,7 @@
     var root = document.documentElement;
     if (root.className.indexOf('js-anim') === -1) return;
 
-    var SEL = '.section-head .eyebrow, .section-head .lead, .prod-card, .kit-card, .faq details, .apply-cta > *:not(.display-xl), .hero > *:not(h1), .hero-media';
+    var SEL = '.section-head .eyebrow, .section-head .lead, .prod-card, .tier, .kit-card, .faq details, .apply-cta > *:not(.display-xl), .hero > *:not(h1), .hero-media';
     var items = [].slice.call(document.querySelectorAll(SEL));
 
     /* Stagger siblings so grids cascade instead of popping in together. */
@@ -1131,7 +1167,8 @@
       return function (el) { var n = el.querySelector(sel); return n ? n.textContent.trim() : fallback; };
     };
     tag('.prod-card', txt('.tag', 'Explore'));
-    tag('.lgraph', 'Revshare');
+    tag('.tier', txt('.pct', 'Revshare'));
+    tag('.lgraph', 'Graph');
     tag('.card-stack__item', txt('.card-stack__big', 'Why us'));
     tag('.kit-card', 'Assets');
     tag('.quote', 'Partner');
@@ -1793,6 +1830,7 @@
 
       const points = Array.from(pointElements, (element) => ({
         label: element.getAttribute('data-graph-label') || '',
+        marker: element.hasAttribute('data-graph-marker'),
         values: Object.fromEntries(series.map(({ key }) => [key, parseFloat(element.getAttribute(`data-graph-${key}`))]))
       }));
 
@@ -1927,6 +1965,17 @@
         item.dot = createSvgElement('circle', { r: 7, class: 'lgraph__hover-dot', 'data-graph-hover-dot': item.key });
         setSeriesColor(item.dot, item);
       });
+      /* outline the commission tiers directly on the curve */
+      const primaryKey = series[0].key;
+      points.forEach((point, index) => {
+        if (!point.marker) return;
+        const value = point.values[primaryKey];
+        if (!Number.isFinite(value)) return;
+        svg.appendChild(createSvgElement('circle', {
+          cx: getX(index), cy: getY(value), r: 9, class: 'lgraph__marker'
+        }));
+      });
+
       hover.append(hoverLine, ...[...series].reverse().map(({ dot }) => dot));
       svg.appendChild(hover);
 
@@ -2071,8 +2120,11 @@
     function syncFromCms() {
       document.querySelectorAll('[data-graph-tier]').forEach(function (el) {
         var t = el.getAttribute('data-graph-tier');
-        var pctEl = document.querySelector('[data-cms="tier' + t + '_pct"]');
-        var revEl = document.querySelector('[data-cms="tier' + t + '_revenue"]');
+        var scope = document.querySelector('.lgraph__data') || document;
+        var pctEl = scope.querySelector('[data-cms="tier' + t + '_pct"]')
+                 || document.querySelector('[data-cms="tier' + t + '_pct"]');
+        var revEl = scope.querySelector('[data-cms="tier' + t + '_revenue"]')
+                 || document.querySelector('[data-cms="tier' + t + '_revenue"]');
         if (pctEl) {
           var n = parseInt((pctEl.textContent || '').replace(/[^0-9]/g, ''), 10);
           if (!isNaN(n)) el.setAttribute('data-graph-primary', n);
@@ -2095,29 +2147,38 @@
   </script>
 
   <script>
-  /* Split button labels into characters so they roll up one after another.
-     Runs after the CMS writes cta_label, otherwise that write wipes the spans. */
-  function initButtonCharacterStagger() {
-    var offsetIncrement = 0.01;
-    document.querySelectorAll('[data-button-animate-chars]').forEach(function (button) {
-      if (button.__charsSplit) return;
-      button.__charsSplit = true;
-      var text = button.textContent;
-      button.textContent = '';
-      text.split('').forEach(function (char, index) {
-        var span = document.createElement('span');
-        span.textContent = char;
-        span.style.transitionDelay = (index * offsetIncrement) + 's';
-        if (char === ' ') span.style.whiteSpace = 'pre';
-        button.appendChild(span);
-      });
-    });
-  }
+  /* Commission rings — animate the green arc + count the number up when scrolled into view. */
   (function () {
-    var started = false;
-    function go() { if (started) return; started = true; initButtonCharacterStagger(); }
-    document.addEventListener('cms:ready', go);
-    setTimeout(go, 2500);
+    var wraps = [].slice.call(document.querySelectorAll('#commission .ring-wrap'));
+    if (!wraps.length) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function run(wrap) {
+      var pctEl = wrap.querySelector('.pct');
+      var reveal = wrap.querySelector('.reveal');
+      var raw = (pctEl.textContent || '').trim();
+      var target = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+      if (isNaN(target)) target = 0;
+      if (reveal) reveal.style.strokeDashoffset = String(100 - target);
+      if (reduce) { pctEl.textContent = raw; return; }
+      var start = null, dur = 1500;
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        pctEl.textContent = Math.round(eased * target) + '%';
+        if (p < 1) requestAnimationFrame(step); else pctEl.textContent = raw;
+      }
+      requestAnimationFrame(step);
+    }
+
+    if (!('IntersectionObserver' in window)) { wraps.forEach(run); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { run(e.target); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.4 });
+    wraps.forEach(function (w) { io.observe(w); });
   })();
   </script>
 
