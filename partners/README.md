@@ -68,27 +68,18 @@ TERMS_URL        = ""   // optional: footer T&C link
 
 ## Launch state
 
-The public page is the "Launching soon" holding page. The finished site is
-**not** hidden with CSS or JavaScript — it is a separate file, so none of its
-markup is served to the public page.
+**Live.** The finished site is served at `/`, indexable, with no holding page.
 
-| URL | File | Who |
-|---|---|---|
-| `/` | `index.html` | public — holding page |
-| `/preview` | `preview.html` | private — the finished site |
+`/preview` and `/preview.html` redirect to `/` (temporary redirects, so they
+are never cached hard) — old preview links keep working.
 
-`/preview` carries `noindex, nofollow` and is disallowed in `robots.txt`, so
-search engines skip it. It is unlisted, not password protected: anyone with
-the link can open it.
+### Putting a holding page back
 
-### Going live
-
-Swap the two files and push:
+The "Launching soon" page was removed but is kept in git history:
 
 ```sh
-git mv partners/index.html partners/soon.html
-git mv partners/preview.html partners/index.html
-# remove the noindex line from the new index.html, and the Disallow in robots.txt
+git show 000c03c:partners/index.html > partners/soon.html
 ```
 
-Keep `soon.html` around if you ever want to put the holding page back up.
+Then swap `soon.html` into `index.html`, move the site back to `preview.html`,
+restore its `noindex` meta and the `Disallow` in `robots.txt`.
