@@ -159,14 +159,22 @@
     position: relative; overflow: hidden;
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
     padding: clamp(28px, 3.5vw, 36px);
+    /* art gets its own column, so it can never sit on top of the text */
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "tag art" "head art" "stats stats";
+    align-items: start; column-gap: clamp(12px, 2vw, 24px);
   }
+  .prod-card > .tag { grid-area: tag; }
+  .prod-card > h3 { grid-area: head; }
+  .prod-card > .stats { grid-area: stats; }
   .prod-card .tag { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 800; }
   .prod-card h3 { margin: 20px 0 16px; }
   .prod-card p { color: var(--dim); font-size: 15px; max-width: 44ch; }
   .stats { display: flex; flex-wrap: wrap; gap: clamp(28px, 5vw, 48px); margin-top: 36px; }
   .stat .num { font-family: var(--body); font-weight: 800; font-size: clamp(28px, 4vw, 36px); letter-spacing: -.03em; }
   .stat .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--dim); }
-  .prod-card .art { position: absolute; right: -8px; bottom: -8px; width: clamp(140px, 24%, 200px); height: auto; opacity: 1; pointer-events: none; z-index: 0; }
+  .prod-card .art { grid-area: art; align-self: start; width: clamp(96px, 16vw, 168px);
+    height: auto; pointer-events: none; }
   .prod-card > .tag, .prod-card > h3, .prod-card > .stats { position: relative; z-index: 1; }
 
   /* ── Commission tiers ── */
