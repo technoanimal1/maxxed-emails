@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Terms and Conditions — Maxxed Partners</title>
+<meta name="description" content="The Maxxed Partners Affiliate Program Agreement: terms and conditions governing membership, marketing, commission and payment." />
+<meta name="theme-color" content="#050505" />
+<meta name="robots" content="index, follow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Anton&display=swap" rel="stylesheet" />
+<style>
+  @font-face {
+    font-family: "PP Right Grotesk Compact Dark";
+    src: url("https://framerusercontent.com/assets/MCsGYC4nzIhUPFZcPpY9pBD50.woff2") format("woff2");
+    font-display: swap; font-style: normal; font-weight: 800;
+  }
+  :root {
+    --bg: #050505; --surface: #0e0e0e; --surface2: #171717;
+    --line: #1c1c1c; --line2: #262626;
+    --accent: #8ffc80; --accent-2: #63ee4f; --accent-ink: #050505;
+    --white: #ffffff; --dim: #8a8a8a; --muted: #555555;
+    --display: "PP Right Grotesk Compact Dark", "Anton", "Inter", system-ui, sans-serif;
+    --body: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --maxw: 1240px; --gutter: clamp(20px, 5vw, 48px);
+    --radius: 18px; --radius-sm: 8px;
+    --bar-h: 64px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--body); background: var(--bg); color: var(--white);
+    line-height: 1.65; overflow-x: clip; -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { width: min(var(--maxw), 100%); margin-inline: auto; padding-inline: var(--gutter); }
+
+  /* ── Top bar ── */
+  .bar {
+    position: sticky; top: 0; z-index: 20; height: var(--bar-h);
+    display: flex; align-items: center;
+    background: rgba(5,5,5,.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .bar .mark { display: flex; align-items: center; gap: 12px; }
+  .bar .mark img { width: 34px; height: auto; display: block; }
+  .bar .mark span { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+  .back {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--dim); display: inline-flex; align-items: center; gap: 8px; transition: color .2s ease;
+  }
+  .back:hover { color: var(--accent); }
+
+  /* ── Masthead ── */
+  .masthead { padding: clamp(48px, 8vw, 96px) 0 clamp(28px, 4vw, 44px); border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--accent); display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px;
+  }
+  .dot { width: 7px; height: 7px; background: var(--accent); transform: rotate(45deg); flex: none; }
+  h1 {
+    font-family: var(--display); font-weight: 800; text-transform: uppercase;
+    font-size: clamp(40px, 8vw, 96px); line-height: .96; letter-spacing: -.02em;
+  }
+  .masthead p { color: var(--dim); max-width: 60ch; margin-top: 20px; font-size: 15px; }
+  .meta { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 22px; }
+
+  /* ── Layout: contents rail + document ── */
+  .doc-grid {
+    display: grid; grid-template-columns: 276px minmax(0, 1fr);
+    gap: clamp(28px, 4vw, 56px); align-items: start;
+    padding: clamp(32px, 5vw, 64px) 0 clamp(60px, 9vw, 120px);
+  }
+  .toc {
+    position: sticky; top: calc(var(--bar-h) + 20px);
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px 18px;
+  }
+  .toc-links {
+    max-height: calc(100svh - var(--bar-h) - 104px); overflow-y: auto; overscroll-behavior: contain;
+  }
+  .toc summary {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px; font-weight: 700; cursor: pointer; list-style: none;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .toc summary::-webkit-details-marker { display: none; }
+  .toc summary::after { content: "−"; color: var(--dim); font-size: 13px; }
+  .toc:not([open]) summary { margin-bottom: 0; }
+  .toc:not([open]) summary::after { content: "+"; }
+  .toc a {
+    display: block; font-size: 12.5px; line-height: 1.45; color: var(--dim);
+    padding: 5px 8px; border-radius: 6px; border-left: 2px solid transparent;
+    transition: color .18s ease, background .18s ease, border-color .18s ease;
+  }
+  .toc a:hover { color: var(--white); background: var(--surface2); }
+  .toc a.toc-1 { padding-left: 20px; font-size: 12px; color: var(--muted); }
+  .toc a.is-current { color: var(--accent); border-left-color: var(--accent); background: var(--surface2); }
+  .toc-links::-webkit-scrollbar { width: 6px; }
+  .toc-links::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 3px; }
+
+  /* ── The agreement itself ── */
+  .doc { max-width: 78ch; font-size: 15px; color: #d6d6d6; }
+  .doc h2 {
+    font-family: var(--body); color: var(--white); letter-spacing: -.01em;
+    font-size: clamp(20px, 2.4vw, 25px); font-weight: 800; line-height: 1.25;
+    margin: clamp(44px, 5vw, 64px) 0 18px; scroll-margin-top: calc(var(--bar-h) + 20px);
+  }
+  .doc h2.h-1 { font-size: clamp(16px, 1.8vw, 18px); margin-top: clamp(30px, 3.5vw, 40px); color: var(--accent); }
+  .doc h2:first-child { margin-top: 0; }
+  .doc .p { margin: 0 0 14px; }
+  .doc .cl { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 4px; margin: 0 0 14px; }
+  .doc .cl-1 { margin-left: clamp(12px, 2.5vw, 34px); grid-template-columns: 2.4em minmax(0, 1fr); }
+  .doc .cn { font-family: var(--mono); font-size: 12.5px; color: var(--accent); padding-top: 2px; }
+  .doc strong { color: var(--white); font-weight: 700; }
+  .doc a[href] { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+  .doc a[href]:hover { color: var(--accent-2); }
+
+  /* ── Footer ── */
+  footer { border-top: 1px solid var(--line); padding: clamp(32px, 5vw, 52px) 0; }
+  .foot-row { display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center; }
+  .foot-row a.btn {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-ink);
+    font-weight: 800; font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+    padding: 14px 22px; border-radius: var(--radius-sm); transition: background .2s ease, transform .15s ease;
+  }
+  .foot-row a.btn:hover { background: var(--accent-2); transform: translateY(-2px); }
+  .foot-legal { font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+
+  @media (max-width: 1000px) {
+    .doc-grid { grid-template-columns: 1fr; }
+    .toc { position: static; order: -1; }
+    .toc-links { max-height: 46svh; }
+  }
+  @media print {
+    .bar, .toc, footer .btn { display: none; }
+    body { background: #fff; color: #000; }
+    .doc, .doc .cn, .doc strong, h1 { color: #000; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="bar">
+    <div class="wrap">
+      <a class="mark" href="/"><img src="assets/mark.svg" alt="Maxxed" width="34" height="28" /><span>Maxxed Partners</span></a>
+      <a class="back" href="/">&larr; Back to site</a>
+    </div>
+  </div>
+
+  <div class="wrap masthead">
+    <span class="eyebrow"><span class="dot"></span>Affiliate Program Agreement</span>
+    <h1>Terms and<br>Conditions</h1>
+    <p>These terms govern membership of the Maxxed Partners affiliate program, how you may market the Promoted Sites, and how commission is calculated and paid. Please read them together with any Insertion Order agreed with us.</p>
+    <p class="meta">Obsidian Ventures Limited &nbsp;/&nbsp; BVI company no. 2192674</p>
+  </div>
+
+  <div class="wrap doc-grid">
+    <details class="toc" id="toc" open>
+      <summary>Contents</summary>
+      <nav class="toc-links" aria-label="Contents">
+      <a class="toc-0" href="#s1">1. Introduction</a>
+      <a class="toc-0" href="#s2">2. Definitions and Interpretation</a>
+      <a class="toc-0" href="#s3">3. Application and Membership of the Affiliate Program</a>
+      <a class="toc-1" href="#s4">3.1. Application and Eligibility</a>
+      <a class="toc-1" href="#s5">3.2. Application Review and Approval</a>
+      <a class="toc-1" href="#s6">3.3. Information and Verification</a>
+      <a class="toc-1" href="#s7">3.4. Affiliate Account</a>
+      <a class="toc-0" href="#s8">4. Use of Marketing Materials</a>
+      <a class="toc-1" href="#s9">4.1. Permitted Use</a>
+      <a class="toc-1" href="#s10">4.2. Modification and Compliance</a>
+      <a class="toc-1" href="#s11">4.3. Company&#x27;s Instructions and Removal Rights</a>
+      <a class="toc-1" href="#s12">4.4. Access to and Maintenance of Marketing Materials</a>
+      <a class="toc-1" href="#s13">4.5. Insertion Orders</a>
+      <a class="toc-0" href="#s14">5. Marketing of the Promoted Sites and Operation of the Affiliate Sites</a>
+      <a class="toc-1" href="#s15">5.1. General Requirements and Compliance</a>
+      <a class="toc-1" href="#s16">5.2. Ownership, Operation and Content of Affiliate Sites</a>
+      <a class="toc-1" href="#s17">5.3. Permitted Territories, Audiences and Promotional Methods</a>
+      <a class="toc-1" href="#s18">5.4. Responsible Marketing and Advertising Standards</a>
+      <a class="toc-1" href="#s19">5.5. Restrictions on Use of Promoted Site Content and Advertising</a>
+      <a class="toc-1" href="#s20">5.6. Placement Requirements and Listing Fees</a>
+      <a class="toc-0" href="#s21">6. Electronic Marketing of the Promoted Sites</a>
+      <a class="toc-1" href="#s22">6.1. General Requirements for Sent Marketing</a>
+      <a class="toc-1" href="#s23">6.2. Identification and Content of Sent Marketing</a>
+      <a class="toc-1" href="#s24">6.3. Sender Identity and Brand Protection</a>
+      <a class="toc-1" href="#s25">6.4. Consent and Unsubscribe Requirements</a>
+      <a class="toc-1" href="#s26">6.5. Suppression and Self-Exclusion</a>
+      <a class="toc-1" href="#s27">6.6. Complaints, Investigations and Information Requests</a>
+      <a class="toc-1" href="#s28">6.7. Disclosure and Regulatory Cooperation</a>
+      <a class="toc-0" href="#s29">7. Commission</a>
+      <a class="toc-1" href="#s30">7.1. Standard Commission</a>
+      <a class="toc-1" href="#s31">7.2. Negotiated Plans and Insertion Orders</a>
+      <a class="toc-1" href="#s32">7.3. CPA, Revenue Share and Hybrid Commission Rules</a>
+      <a class="toc-1" href="#s33">7.4. Amendments and Additional Payments</a>
+      <a class="toc-1" href="#s34">7.5. Commission Eligibility Restrictions</a>
+      <a class="toc-1" href="#s35">7.6. Commission Calculations and Disputes</a>
+      <a class="toc-0" href="#s36">8. Payment</a>
+      <a class="toc-1" href="#s37">8.1. Currency of Affiliate Payments</a>
+      <a class="toc-1" href="#s38">8.2. Reporting and Tracking</a>
+      <a class="toc-1" href="#s39">8.3. Minimum Payment Threshold</a>
+      <a class="toc-1" href="#s40">8.4. Payment Process and Invoicing</a>
+      <a class="toc-1" href="#s41">8.5. Payment Method</a>
+      <a class="toc-1" href="#s42">8.6. Incorrect Payment Information</a>
+      <a class="toc-1" href="#s43">8.7. Unclaimed Affiliate Payments</a>
+      <a class="toc-1" href="#s44">8.8. Amendments to Negotiated Plans</a>
+      <a class="toc-1" href="#s45">8.9. Payments Generated in Breach</a>
+      <a class="toc-1" href="#s46">8.10. Operator Payment Dependency</a>
+      <a class="toc-1" href="#s47">8.11. Taxes and Withholding</a>
+      <a class="toc-1" href="#s48">8.12. No Negative Carry Over Policy</a>
+      <a class="toc-1" href="#s49">8.13. Set-Off Rights</a>
+      <a class="toc-1" href="#s50">8.14. Removal of Promoted Site from Affiliate Program</a>
+      <a class="toc-1" href="#s51">8.15. Jurisdiction Becoming a Prohibited Territory</a>
+      <a class="toc-0" href="#s52">9. Fraud</a>
+      <a class="toc-1" href="#s53">9.1. Fraud Review and Account Suspension</a>
+      <a class="toc-1" href="#s54">9.2. Effect of Account Suspension</a>
+      <a class="toc-1" href="#s55">9.3. Completion of Fraud Investigation</a>
+      <a class="toc-1" href="#s56">9.4. Fraud as a Breach</a>
+      <a class="toc-1" href="#s57">9.5. Set-Off of Fraud-Related Payments</a>
+      <a class="toc-0" href="#s58">10. Additional Restrictions</a>
+      <a class="toc-1" href="#s59">10.1. Prohibited Activities</a>
+      <a class="toc-1" href="#s60">10.2. Protection of Goodwill and Reputation</a>
+      <a class="toc-1" href="#s61">10.3. Non-Competition with Marketing Efforts</a>
+      <a class="toc-0" href="#s62">11. Intellectual Property Rights</a>
+      <a class="toc-1" href="#s63">11.1. License to Use Marketing Materials</a>
+      <a class="toc-1" href="#s64">11.2. Ownership of Marks and Marketing Materials</a>
+      <a class="toc-1" href="#s65">11.3. Ownership and Goodwill</a>
+      <a class="toc-1" href="#s66">11.4. No Imitation or Misrepresentation</a>
+      <a class="toc-1" href="#s67">11.5. Restrictions Relating to Marks</a>
+      <a class="toc-1" href="#s68">11.6. Non-Compliance and Transfer of Intellectual Property</a>
+      <a class="toc-0" href="#s69">12. Representations and Warranties</a>
+      <a class="toc-0" href="#s70">13. Duration, Termination and Consequences of Termination</a>
+      <a class="toc-1" href="#s71">13.1. Duration</a>
+      <a class="toc-1" href="#s72">13.2. Termination by Either Party</a>
+      <a class="toc-1" href="#s73">13.3. Termination of Affiliate Program Participation</a>
+      <a class="toc-1" href="#s74">13.4. Termination by the Company</a>
+      <a class="toc-1" href="#s75">13.5. Automatic Termination of IOs and Negotiated Plans</a>
+      <a class="toc-1" href="#s76">13.6. Payments Following Termination under Sections 13.2 or 22</a>
+      <a class="toc-1" href="#s77">13.7. Termination under Sections 3.3, 13.4 or 19.9</a>
+      <a class="toc-1" href="#s78">13.8. Termination of an IO or Negotiated Plan under Section 13.2</a>
+      <a class="toc-1" href="#s79">13.9. Termination of an IO or Negotiated Plan under Section 13.4</a>
+      <a class="toc-1" href="#s80">13.10. Obligations Following Termination</a>
+      <a class="toc-1" href="#s81">13.11. Termination of Rights and Licences</a>
+      <a class="toc-1" href="#s82">13.12. No Payments Following Termination</a>
+      <a class="toc-0" href="#s83">14. Indemnification</a>
+      <a class="toc-0" href="#s84">15. Confidentiality</a>
+      <a class="toc-1" href="#s85">15.1. Confidential Information</a>
+      <a class="toc-1" href="#s86">15.2. Public Announcements</a>
+      <a class="toc-0" href="#s87">16. Disclaimers</a>
+      <a class="toc-1" href="#s88">16.1. Marketing Materials and Information</a>
+      <a class="toc-1" href="#s89">16.2. Compliance of Marketing Activities</a>
+      <a class="toc-1" href="#s90">16.3. Liability for Affiliate Marketing Activities</a>
+      <a class="toc-1" href="#s91">16.4. Affiliate Program, Promoted Sites and Affiliate Program Site</a>
+      <a class="toc-0" href="#s92">17. Limitation of Liability</a>
+      <a class="toc-1" href="#s93">17.1. Excluded Losses</a>
+      <a class="toc-1" href="#s94">17.2. Aggregate Liability</a>
+      <a class="toc-0" href="#s95">18. Personal Data</a>
+      <a class="toc-1" href="#s96">18.1. Data Protection Agreement</a>
+      <a class="toc-1" href="#s97">18.2. Privacy Policy</a>
+      <a class="toc-1" href="#s98">18.3. Compliance with Data Protection Laws</a>
+      <a class="toc-0" href="#s99">19. Sub Affiliates</a>
+      <a class="toc-1" href="#s100">19.1. Introduction of Sub Affiliates</a>
+      <a class="toc-1" href="#s101">19.2. Sub Affiliate Application and Approval</a>
+      <a class="toc-1" href="#s102">19.3. Acceptance of Terms</a>
+      <a class="toc-1" href="#s103">19.4. Sub Affiliate Commission</a>
+      <a class="toc-1" href="#s104">19.5. Sub Affiliate Fee</a>
+      <a class="toc-1" href="#s105">19.6. No Second-Level Sub Affiliate Payments</a>
+      <a class="toc-1" href="#s106">19.7. Prohibited Sub Affiliates</a>
+      <a class="toc-1" href="#s107">19.8. Prohibited Conduct</a>
+      <a class="toc-1" href="#s108">19.9. Breach of Sub Affiliate Requirements</a>
+      <a class="toc-0" href="#s109">20. Amending the Agreement</a>
+      <a class="toc-0" href="#s110">21. Suspension</a>
+      <a class="toc-0" href="#s111">22. Force Major</a>
+      <a class="toc-0" href="#s112">23. General</a>
+      <a class="toc-0" href="#s113">SCHEDULE A</a>
+      <a class="toc-0" href="#s114">1. INTRODUCTION</a>
+      <a class="toc-0" href="#s115">2. DEFINITIONS AND INTERPRETATION</a>
+      <a class="toc-0" href="#s116">3. APPLICATION OF THIS DPA</a>
+      <a class="toc-0" href="#s117">4. ROLES AND RESTRICTIONS ON PROCESSING</a>
+      <a class="toc-0" href="#s118">5. INDEPENDENT CONTROLLERS</a>
+      <a class="toc-0" href="#s119">6. SUB-PROCESSING</a>
+      <a class="toc-0" href="#s120">7. TRANSFER OF PERSONAL DATA</a>
+      <a class="toc-0" href="#s121">8. SECURITY STANDARDS</a>
+      <a class="toc-0" href="#s122">9. GENERAL</a>
+      <a class="toc-0" href="#s123">10. PRIORITY</a>
+      <a class="toc-0" href="#s124">11. CHANGES TO THIS DPA</a>
+      <a class="toc-0" href="#s125">B. Description of Transfer</a>
+      <a class="toc-0" href="#s126">Categories of Personal Data</a>
+      <a class="toc-0" href="#s127">Special Categories of Personal Data</a>
+      <a class="toc-0" href="#s128">Frequency of Transfer</a>
+      <a class="toc-0" href="#s129">Nature of Processing</a>
+      <a class="toc-0" href="#s130">The purposes of the Transfer and Further Processing</a>
+      <a class="toc-0" href="#s131">Retention Period</a>
+      <a class="toc-0" href="#s132">ANNEXE II – TECHNICAL AND ORGANIZATIONAL MEASURES TO ENSURE THE SECURITY OF PERSONAL DATA</a>
+      <a class="toc-0" href="#s133">1. Security Measures and Incident Response</a>
+      <a class="toc-0" href="#s134">2. Security and Penetration Testing</a>
+      <a class="toc-0" href="#s135">3. Risk-Based Security</a>
+      <a class="toc-0" href="#s136">4. Confidentiality, Personnel Integrity and Training</a>
+      <a class="toc-0" href="#s137">5. Confidentiality, Integrity, Availability and Resilience</a>
+      <a class="toc-0" href="#s138">6. Testing and Continuous Improvement</a>
+      <a class="toc-0" href="#s139">7. Access Logging and Monitoring</a>
+      <a class="toc-0" href="#s140">8. Authentication and Access Controls</a>
+      <a class="toc-0" href="#s141">9. Encryption and Pseudonymization</a>
+      <a class="toc-0" href="#s142">10. Information Security Program</a>
+      <a class="toc-0" href="#s143">11. Secure Disposal of Storage Media</a>
+      </nav>
+    </details>
+
+    <main class="doc">
+      <h2 id="s1" class="h-0">1. Introduction</h2>
+      <p class="cl cl-0"><span class="cn">1.1</span><span class="ct">This Affiliate Program Agreement (&quot;Affiliate Agreement&quot; or &quot;Agreement&quot;) incorporates (i) the terms and conditions below, including the Schedule, and (ii) the terms of any agreed IO (as defined below). Please read and understand both before proceeding.</span></p>
+      <p class="cl cl-0"><span class="cn">1.2</span><span class="ct">Questions about the Affiliate Program or this Agreement can be sent to <a href="mailto:affiliates@maxxedpartners.com" target="_blank" rel="noopener">affiliates@maxxedpartners.com.</a></span></p>
+      <p class="cl cl-0"><span class="cn">1.3</span><span class="ct">By ticking the box to confirm your acceptance (&quot;Agreement Acceptance&quot;), you agree to be bound by this Agreement.</span></p>
+      <h2 id="s2" class="h-0">2. Definitions and Interpretation</h2>
+      <p class="p">2.1. In this Agreement, the following expressions have the meanings set out below:</p>
+      <p class="p"><strong>&quot;Additional Payments&quot; </strong>means, if and as applicable, the Revenue Share Commission, CPA Commission, Hybrid Commission, Fixed Fee, Listing Fee, and/ or Sub Affiliate Fee that the Affiliate is entitled to receive.</p>
+      <p class="p"><strong>&quot;Administrative Fees&quot; </strong>means any administrative fees the Company charges in connection with the Affiliate Program.</p>
+      <p class="p"><strong>&quot;Affiliate&quot;</strong>, <strong>&quot;you&quot;</strong>, or <strong>&quot;your&quot; </strong>means the person, company, or other entity named in the Application Form.</p>
+      <p class="p"><strong>&quot;Affiliate Account&quot; </strong>means your account under the Affiliate Program, accessible through the Affiliate Program Site.</p>
+      <p class="p"><strong>&quot;Affiliate Program&quot; </strong>means the Maxxed Partners affiliate program that the Company operates, accessible through the Affiliate Program Site.</p>
+      <p class="p"><strong>&quot;Affiliate Program Site&quot; </strong>means the website at <a href="https://maxxedpartners.com/" target="_blank" rel="noopener">https://maxxedpartners.com/</a><a href="https://maxxedpartners.com/" target="_blank" rel="noopener">.</a></p>
+      <p class="p"><strong>&quot;Agreement Acceptance&quot; </strong>has the meaning given in Section 1.3.</p>
+      <p class="p"><strong>&quot;Application Form&quot; </strong>means the form used to register for the Affiliate Program, available on the Affiliate Program Site at <a href="https://maxxedpartners.com/" target="_blank" rel="noopener">https://maxxedpartners.com/</a> or at any other URL we designate from time to time.</p>
+      <p class="p"><strong>&quot;Application Approval&quot; </strong>has the meaning given in Section 3.2.</p>
+      <p class="p"><strong>&quot;Affiliate Site&quot; </strong>or <strong>&quot;Affiliate Sites&quot; </strong>means the websites or mobile applications that you own and operate, or that you use for Sent Marketing. These are set out in your Application Form or, where applicable, agreed in an IO or a Negotiated Plan (solely for clarity, and only for the duration of that IO or Negotiated Plan).</p>
+      <p class="p"><strong>&quot;Affiliate Payments&quot; </strong>means, as applicable, the Commission, Fixed Fee, Listing Fee, and/or Sub-Affiliate Fee that you are entitled to receive.</p>
+      <p class="p"><strong>&quot;Applicable Laws&quot; </strong>means all laws, directives, regulations, marketing guidelines, rules, mandatory codes of practice or conduct, standards, judgments, judicial orders, ordinances, and decrees imposed by law or by any competent governmental or regulatory authority or agency.</p>
+      <p class="p"><strong>&quot;Back Office&quot; </strong>means the software the Company uses to manage the Affiliate Program.</p>
+      <p class="p"><strong>&quot;Bonuses&quot; </strong>means any credits, bonuses, bonus points, or other promotional amounts.</p>
+      <p class="p"><strong>&quot;CPA Commission&quot; </strong>means, if applicable, a fixed amount payable to you for each person who, during the term of the relevant IO or Negotiated Plan (as applicable): (i) becomes a Customer on a Promoted Site in accordance with this Agreement; (ii) makes a minimum real-money deposit of the amount set out in that IO or agreed in that Negotiated Plan on that Promoted Site; and (iii) wagers the minimum amount set out in that IO or agreed in that Negotiated Plan on that Promoted Site. For the avoidance of doubt, the CPA Commission applies only if agreed in an IO or a Negotiated Plan, and only for its duration. The CPA Commission amount is set out in that IO or agreed in that Negotiated Plan.</p>
+      <p class="p"><strong>&quot;Commission&quot; </strong>means, as applicable, the Revenue Share Commission, CPA Commission, and/or Hybrid Commission that you are entitled to receive.</p>
+      <p class="p"><strong>&quot;Company&quot;</strong>, <strong>&quot;us&quot;</strong>, <strong>&quot;we&quot;</strong>, or <strong>&quot;our&quot; </strong>means Obsidian Ventures Limited, a company incorporated under the laws of the British Virgin Islands with company registration number 2192674, with its registered office at Road Town, Tortola, P.O. Box 4342, British Virgin Islands.</p>
+      <p class="p"><strong>&quot;Customer&quot; </strong>means a person who is not located in a Prohibited Territory, who enters a Promoted Site directly through Marketing Materials placed on an Affiliate Site, and who we identify, through the Tracking Link, as referred by you. During the term of the Agreement, that person must also: (a) register an account with the Operator of that Promoted Site; (b) not have previously held an account with that Operator; (c) have their registration details validated by the Operator; and (d) meet any other relevant criteria set out in this Agreement, an IO, or a Negotiated Plan (where an IO or Negotiated Plan applies, that criteria applies only for its duration).</p>
+      <p class="p"><strong>&quot;Cut Off Date&quot; </strong>has the meaning given in Section 8.14.</p>
+      <p class="p"><strong>&quot;Deductible Costs&quot; </strong>means any third-party fees (including, without limitation, licensing fees, progressive jackpot contributions, transaction fees, game royalties, payment processing fees, end-user verification and validation fees, software royalties, and game content fees) incurred by the Company, any Group Company, and/or the Operator, together with any amounts they incur as a result of Fraud.</p>
+      <p class="p"><strong>&quot;e-Privacy Directive&quot; </strong>means Directive 2002/58/EC on privacy and electronic communications (and its respective local implementing laws), concerning the processing of personal data and the protection of privacy in the electronic communications sector.</p>
+      <p class="p"><strong>&quot;Fixed Fee&quot; </strong>means, if applicable, a fixed amount payable to you as agreed in an IO or Negotiated Plan, applying only during the term of that IO or Negotiated Plan (or for a set period within it, as applicable).</p>
+      <p class="p"><strong>&quot;Fixed Fee Payment&quot; </strong>means a pro-rata amount of the Fixed Fee, calculated for the number of days between the date the relevant Fixed Fee payment became due and the Cut Off Date or Jurisdiction Cut-Off Date (as applicable).</p>
+      <p class="p"><strong>&quot;Fraud&quot; </strong>means any fraudulent or abusive act, as determined by us, any Group Company, or the Operator, whether or not it results in harm or damage to us, any Group Company, or any Operator. This includes, without limitation: (i) any actual or attempted bonus abuse by a Customer; (ii) encouraging bonus abuse by a Customer, whether by you or a third party; (iii) a chargeback a Customer executes in relation to their deposit; (iv) any collusion by a Customer; (v) opening an Affiliate Account in violation of this Agreement; (vi) you or any third party offering or providing unauthorized incentives (financial or otherwise); (vii) you or any third party offering or providing cashback; (viii) Spam Traffic; (ix) any actual or attempted act by you or a Customer that breaches Applicable Laws; (x) any act by you or a Customer intended to defraud us, any Group Company, or any Operator; (xi) any attempt by you to artificially inflate the number of Customers or the Commission payable to you, including by giving your employees, agents, representatives, contractors, or their Relatives access to a Promoted Site; or (xii) a Customer&#x27;s use of any software program, robot, or AI-powered external aid to play on a Promoted Site.</p>
+      <p class="p"><strong>&quot;GDPR&quot; </strong>has the meaning given in Section 18.3.</p>
+      <p class="p"><strong>&quot;Guidelines&quot; </strong>means any guidelines we may, at our sole and absolute discretion, send you by email or publish on the Affiliate Program Site, as amended from time to time.</p>
+      <p class="p"><strong>&quot;Group Company&quot; </strong>or <strong>&quot;Group Companies&quot; </strong>means any entity that directly or indirectly controls, is controlled by, or is under common control with the Company. For this definition, &quot;control&quot; (including &quot;controlling&quot;, &quot;controlled by&quot;, and &quot;under common control with&quot;) means the power to direct or manage that entity&#x27;s affairs, whether through ownership of voting securities, by contract, or otherwise.</p>
+      <p class="p"><strong>&quot;Hybrid Commission&quot; </strong>means, if applicable, a payment combining CPA Commission and Revenue Share Commission for a given Customer, becoming payable once that Customer meets the CPA Commission criteria. For the avoidance of doubt, the Hybrid Commission applies only if agreed in an IO or a Negotiated Plan, and only for its duration.</p>
+      <p class="p"><strong>&quot;Intellectual Property Rights&quot; </strong>means any and all intellectual property rights of any type or nature, including, without limitation, patents, copyright, design rights, trademarks, trade dress, database rights, applications for any of the foregoing, moral rights, know-how, trade secrets, domain names, URLs, trade names, and any other intellectual or industrial property rights (and any licences relating to any of them), whether or not registered or capable of registration, and wherever in the world they subsist.</p>
+      <p class="p"><strong>&quot;IO&quot; </strong>or <strong>&quot;Insertion Order&quot; </strong>means an insertion order signed by authorised representatives of the Company and the Affiliate, lasting for a specific duration, which may set a Commission different from the Standard Commission and any Negotiated Plan and/or a different Commission payment amount, as well as additional commercial terms.</p>
+      <p class="p"><strong>&quot;IP Pool&quot; </strong>means a network with multiple IP addresses.</p>
+      <p class="p"><strong>&quot;Jurisdiction Cut-Off Date&quot; </strong>has the meaning given in Section 8.15.</p>
+      <p class="p"><strong>&quot;Listing Fee&quot; </strong>means, if applicable, a one-time fixed amount payable to you following signature of an IO or following a Negotiated Plan taking effect, for displaying Marketing Materials in a particular position on an Affiliate Site as agreed in that IO or Negotiated Plan.</p>
+      <p class="p"><strong>&quot;Listing Fee Repayment&quot; </strong>means the amount the Affiliate must repay the Company when an IO and/or Negotiated Plan ends early, calculated as follows:</p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">if the IO and/or Negotiated Plan runs until an agreed number of Customers is delivered, the repayment is a pro-rata amount of the Listing Fee reflecting the number of Customers not delivered as of the effective date of termination; or</span></p>
+      <p class="cl cl-1"><span class="cn">(ii)</span><span class="ct">in all other cases, the repayment is a pro-rata amount of the Listing Fee reflecting the number of days remaining between the effective date of termination and the date the IO and/or Negotiated Plan was due to expire.</span></p>
+      <p class="p"><strong>&quot;Pro Rata Repayment&quot; </strong>means the amount the Affiliate must repay the Company, calculated as follows:</p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">if the IO and/or Negotiated Plan runs until an agreed number of Customers is delivered, the repayment is a pro-rata amount of the Listing Fee reflecting the number of Customers not delivered as of the Cut Off Date or Jurisdiction Cut Off Date (as applicable); or</span></p>
+      <p class="cl cl-1"><span class="cn">(ii)</span><span class="ct">in all other cases, the repayment is a pro-rata amount of the Listing Fee reflecting the number of days remaining between the Cut Off Date or Jurisdiction Cut Off Date (as applicable) and the date the IO and/or Negotiated Plan was due to expire.</span></p>
+      <p class="p"><strong>&quot;Legal Age&quot; </strong>or <strong>&quot;Legally of Age&quot; </strong>means the higher of: (i) 18 years of age; and (ii) the legal age for real-money gambling in the jurisdiction where you are located.</p>
+      <p class="p"><strong>&quot;Marketing Materials&quot; </strong>means the online marketing materials (such as banner advertisements, button links, and text links) that contain the Tracking Links we provide, or make available through the Affiliate Program Site, for you to market and promote a Promoted Site on your Affiliate Site.</p>
+      <p class="p"><strong>&quot;Marks&quot; </strong>has the meaning given in Section 11.2.</p>
+      <p class="p"><strong>&quot;Negotiated Plan&quot; </strong>means, if applicable, a Commission different from the Standard Commission and/or a Commission payment amount different from the Standard Commission that you are to receive, which may include additional commercial terms, lasting for a defined period, provided our agreement to it is recorded through the Back Office.</p>
+      <p class="p"><strong>&quot;Net Revenue&quot; </strong>means, for a calendar month and with respect to a Promoted Site on which individuals became Customers under a Revenue Share Commission or Hybrid Commission, the aggregate of those Customers&#x27; real-money bets on non-sports products or sports products (as applicable) on that Promoted Site, less:</p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">monies paid to those Customers as winnings on those bets (as applicable);</span></p>
+      <p class="cl cl-1"><span class="cn">(ii)</span><span class="ct">Bonuses granted to those Customers;</span></p>
+      <p class="cl cl-1"><span class="cn">(iii)</span><span class="ct">Administrative Fees;</span></p>
+      <p class="cl cl-1"><span class="cn">(iv)</span><span class="ct">monies attributable to Fraud;</span></p>
+      <p class="cl cl-1"><span class="cn">(v)</span><span class="ct">stakes returned to Customers;</span></p>
+      <p class="p"><strong>&quot;Personal Data&quot; </strong>means any information that could be used, directly or by employing additional means, to identify a natural person, and that the Recipient processes in performing this Agreement.</p>
+      <p class="p"><strong>&quot;Revenue Share Commission&quot; </strong>means, if applicable, a percentage of Net Revenue, as set out at <a href="https://maxxedpartners.com/#commissions" target="_blank" rel="noopener">https://maxxedpartners.com/#commissions</a> (as we may amend from time to time) or at any other URL we designate from time to time, or as we otherwise agree with you in an IO or through a Negotiated Plan (solely for the duration of that IO or Negotiated Plan, as applicable), that you are to receive for each Customer. The Revenue Share Commission may also be suspended for the duration of an IO or Negotiated Plan (as applicable).</p>
+      <p class="p"><strong>&quot;Tracking Link&quot; </strong>means the tracking URL through which we track the Customers you direct to the relevant Promoted Sites.</p>
+      <p class="p"><strong>&quot;Operator&quot; </strong>means the operator and/or owner of the Promoted Site.</p>
+      <p class="p"><strong>&quot;Payment Method&quot; </strong>has the meaning given in Section 8.5.</p>
+      <p class="p"><strong>&quot;Prohibited Territories&quot; </strong>or <strong>&quot;Prohibited Territory&quot; </strong>means, with respect to a Promoted Site, the jurisdictions from which that Promoted Site should not accept end users, the jurisdictions from which it does not accept end users, and/or any jurisdictions we notify to you from time to time. Without limiting the foregoing, until we notify you otherwise, Prohibited Territories include the following jurisdictions: Australia; Austria; Comoros; France; Germany; Netherlands; Spain; United Kingdom; USA; Democratic People&#x27;s Republic of Korea; Iran; Myanmar; FATF-blacklisted countries; and any other jurisdiction deemed prohibited by the Anjouan Offshore Financial Authority. This list is not exhaustive and may be amended from time to time.</p>
+      <p class="p"><strong>&quot;Promoted Site&quot; </strong>or <strong>&quot;Promoted Sites&quot; </strong>means a website or application promoted through the Affiliate Program using the Marketing Materials you use.</p>
+      <p class="p"><strong>&quot;Regulator&quot; </strong>means any governmental, regulatory, or administrative authority, agency, commission, board, body, or official, or other regulatory body or agency, with jurisdiction over (or responsible for or involved in regulating) the Company, any Group Company, or any Operator.</p>
+      <p class="p"><strong>&quot;Sent Marketing&quot; </strong>means any form of electronic marketing communication, including but not limited to WhatsApp, Telegram, email, SMS, and push notifications.</p>
+      <p class="p"><strong>&quot;Relatives&quot; </strong>means a spouse, partner, parent, child, or siblings.</p>
+      <p class="p"><strong>&quot;Spam Traffic&quot; </strong>means any deposits, revenue, or traffic generated at a Promoted Site, or in a Customer&#x27;s account on a Promoted Site, through illegal means or in bad faith, regardless of whether it actually causes harm to us, any Group Company, or any third party. Spam Traffic includes, without limitation, spam and false advertising.</p>
+      <p class="p"><strong>&quot;Sub-affiliate&quot; </strong>means a person or entity that you refer, via a sub-affiliate tracking link we provide to you, to the Affiliate Program, and whom we approve to participate in the Affiliate Program.</p>
+      <p class="p"><strong>&quot;Sub-Affiliate Fee&quot; </strong>has the meaning given in Section 19.5.</p>
+      <p class="cl cl-0"><span class="cn">2.2</span><span class="ct">Where the terms “including”, “include”, “in particular” or any similar expression are used, they shall be interpreted as illustrative only and shall not restrict or otherwise limit the meaning of the words preceding them.</span></p>
+      <p class="cl cl-0"><span class="cn">2.3</span><span class="ct">Any provision contained within a definition which confers a right or imposes an obligation on any Party shall have full effect as a substantive provision of this Agreement, notwithstanding that it appears within a definition. The headings used in this Agreement are for convenience and reference only and shall not affect its interpretation or construction.</span></p>
+      <p class="cl cl-0"><span class="cn">2.4</span><span class="ct">Unless the context requires otherwise, words in the singular shall include the plural, and words in the plural shall include the singular. Any reference to a statute, statutory provision or statutory instrument shall include that statute, provision or instrument together with any rules or regulations made under it, as well as any amendment, consolidation, modification or re-enactment thereof from time to time.</span></p>
+      <h2 id="s3" class="h-0">3. Application and Membership of the Affiliate Program</h2>
+      <h2 id="s4" class="h-1">3.1. Application and Eligibility</h2>
+      <p class="p">To participate in the Affiliate Program, you must complete and submit the Application Form with all information requested by the Company. You are responsible for ensuring that all information provided is complete, accurate, and up to date. Incomplete or inaccurate information may result in a delay in processing your application or its rejection.</p>
+      <p class="p">If you are an individual, you must be Legally of Age or older to participate in the Affiliate Program. If you are an entity, you must ensure that no person acting on your behalf or working for you in connection with the Affiliate Program is below the Legal Age.</p>
+      <h2 id="s5" class="h-1">3.2. Application Review and Approval</h2>
+      <p class="p">The acceptance of any Application Form and admission to the Affiliate Program shall be at the Company&#x27;s sole discretion. The Company may reject an Application Form without providing any reason and shall have no liability to you or any other person in connection with such rejection.</p>
+      <p class="p">The Company will notify you by email whether your Application Form has been approved and whether you have been accepted into the Affiliate Program (&quot;Application Approval&quot;). If your Application Form or participation in the Affiliate Program is rejected, the Agreement shall terminate immediately, and you shall have no right to appeal to such decision.</p>
+      <p class="p">You shall not market, promote or otherwise advertise the Promoted Sites unless and until the Company has notified you by email of the Application Approval. For the avoidance of doubt, the Company shall have no obligation to pay any Affiliate Payments arising from activities conducted or traffic generated before Application Approval.</p>
+      <h2 id="s6" class="h-1">3.3. Information and Verification</h2>
+      <p class="p">The Company may, at any time and for any purpose related to your participation in the Affiliate Program, request additional information or supporting documentation from you, including, without limitation, identification documents, proof of address, certificates of incorporation or registered address, certificates of good standing, evidence of financial standing, and documentation verifying your beneficiaries and payment details.</p>
+      <p class="p">You shall provide any requested information or documentation promptly. Where reasonably required by the Company, copies of such documents may need to be notarized by a Public Notary.</p>
+      <p class="p">The Company may withhold Affiliate Payments until the verification of your beneficiaries and payment information has been completed to its satisfaction. If you fail or cease to satisfy the Company&#x27;s verification requirements at any time, the Company may terminate the Agreement with immediate effect.</p>
+      <p class="p">You must promptly update any information previously provided to the Company that becomes inaccurate, incomplete, or out of date by making the relevant changes through your Affiliate Account.</p>
+      <h2 id="s7" class="h-1">3.4. Affiliate Account</h2>
+      <p class="p">The Affiliate Account is provided solely for your use and benefit. You shall not permit any third party to access or use your Affiliate Account, password or identity, and you shall remain fully responsible for all activities carried out through your account.</p>
+      <p class="p">You shall take all reasonable measures to keep your credentials of the account confidential and secure. If you become aware of or suspect any unauthorized access to or misuse of your Affiliate Account, you must notify the Company immediately.</p>
+      <p class="p">To the fullest extent permitted by applicable law, the Company shall not be liable for any activities conducted through your Affiliate Account or for any loss or damage arising from unauthorized access or misuse of the account.</p>
+      <h2 id="s8" class="h-0">4. Use of Marketing Materials</h2>
+      <h2 id="s9" class="h-1">4.1. Permitted Use</h2>
+      <p class="p">From the date of Application Approval until termination of your membership in the Affiliate Program, you may use the Marketing Materials solely for the purpose of marketing and promoting the Promoted Sites through the Affiliate Sites and strictly in accordance with this Agreement.</p>
+      <p class="p">You shall use only the most current versions of the Marketing Materials made available or approved by the Company.</p>
+      <h2 id="s10" class="h-1">4.2. Modification and Compliance</h2>
+      <p class="p">You shall not alter, modify, amend or otherwise change any Marketing Materials, including, without limitation, Tracking Links, without the Company&#x27;s prior written approval. If you make any unauthorized alteration, modification or amendment, the Company may, without prejudice to any other rights or remedies available to it, deactivate or render the relevant Marketing Materials or Tracking Links inoperative.</p>
+      <p class="p">Your use and placement of the Marketing Materials must at all times comply with all Applicable Laws and any requirements or instructions regarding the placement or use of the Marketing Materials that the Company may provide from time to time.</p>
+      <p class="p">Notwithstanding any guidance or requirements provided by the Company, you remain solely responsible for ensuring that your use and placement of the Marketing Materials comply with all Applicable Laws in each Territory in which they are used or displayed.</p>
+      <p class="p">You shall not use the Marketing Materials on any Affiliate Site that:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">breaches or facilitates a breach of Applicable Laws; or</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">infringes or may infringe any third-party Intellectual Property Rights.</span></p>
+      <h2 id="s11" class="h-1">4.3. Company&#x27;s Instructions and Removal Rights</h2>
+      <p class="p">The Company may, at any time, require you to change the positioning or placement of any Marketing Materials, cease using particular Marketing Materials, or replace them with alternative Marketing Materials. You shall comply with any such request immediately.</p>
+      <p class="p">If your use of any Marketing Materials, including without limitation any Tracking Links, does not comply with this Agreement, the Company may deactivate, disable or otherwise render the relevant Marketing Materials or Tracking Links inoperative, without prejudice to any other rights or remedies available to the Company.</p>
+      <h2 id="s12" class="h-1">4.4. Access to and Maintenance of Marketing Materials</h2>
+      <p class="p">You shall not provide, distribute, transfer, or otherwise make the Marketing Materials available to any third party.</p>
+      <p class="p">You shall cooperate fully with the Company in establishing, implementing, updating and maintaining the Marketing Materials, including, without limitation, the Tracking Links.</p>
+      <p class="p">The Company may, at any time and at its sole discretion, modify or amend its tracking system or reporting format and may notify you of any such changes by email.</p>
+      <h2 id="s13" class="h-1">4.5. Insertion Orders</h2>
+      <p class="p">The parties may, from time to time, enter into separate Insertion Orders governing specific Marketing Materials, placements, campaigns or other agreed promotional activities. Any such Insertion Order shall apply in accordance with its terms and this Agreement.</p>
+      <h2 id="s14" class="h-0">5. Marketing of the Promoted Sites and Operation of the Affiliate Sites</h2>
+      <h2 id="s15" class="h-1">5.1. General Requirements and Compliance</h2>
+      <p class="p">You shall promptly comply with the Guidelines and with any additional policies, instructions, terms or conditions relating to the Affiliate Program that the Company may amend from time to time. Such requirements may be communicated to you by email or made available through the Affiliate Program Site.</p>
+      <p class="p">You shall ensure that both your marketing and promotion of the Promoted Sites and the operation and content of the Affiliate Sites comply at all times with all Applicable Laws.</p>
+      <p class="p">You shall also comply promptly with any instructions provided by the Company concerning the marketing or promotion of the Promoted Sites.</p>
+      <h2 id="s16" class="h-1">5.2. Ownership, Operation and Content of Affiliate Sites</h2>
+      <p class="p">You represent and undertake that you are the owner and operator of the Affiliate Sites and shall remain responsible for their operation and content, including the accuracy and completeness of all information published on them.</p>
+      <p class="p">The Affiliate Sites shall not:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">infringe any third-party Intellectual Property Rights;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">be designed or operated in a manner intended to appeal to, or specifically target, persons below the Legal Age;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">contain, distribute or promote spyware, adware, trojans, viruses, worms, spybots, keyloggers or any other malicious, harmful or unwanted software or threats; or</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">contain any content which the Company reasonably considers unlawful, harmful, threatening, defamatory, obscene or harassing, including, without limitation:</span></p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">“hard” or “soft” adult content, pornographic content or sexually explicit content (collectively or individually, “Excluded Content”);</span></p>
+      <p class="cl cl-1"><span class="cn">(ii)</span><span class="ct">content that is discriminatory, including discrimination based on gender, race, religion, disability or sexual orientation;</span></p>
+      <p class="cl cl-1"><span class="cn">(iii)</span><span class="ct">offensive, profane, hateful, threatening, harmful, defamatory, libellous or harassing content; or</span></p>
+      <p class="cl cl-1"><span class="cn">(iv)</span><span class="ct">violent content.</span></p>
+      <p class="p">Notwithstanding the above, the Affiliate Sites may contain Excluded Content where the Company has provided its prior written consent, including consent provided by email, Teams or through an Insertion Order (“IO”).</p>
+      <p class="p">Where the Company&#x27;s consent to Excluded Content is granted through an IO, such content may only be included for the duration of that IO. Where consent is provided by email or Teams, the Company may withdraw such consent at any time by notifying you by email, following which you shall immediately ensure that the Affiliate Sites no longer contain any Excluded Content.</p>
+      <h2 id="s17" class="h-1">5.3. Permitted Territories, Audiences and Promotional Methods</h2>
+      <p class="p">Neither you nor any entity acting on your behalf, or with your express or implied permission or authority, shall market or promote any Promoted Site to a person located in a Prohibited Territory applicable to that Promoted Site. Persons located in any such Prohibited Territory shall not qualify as Customers.</p>
+      <p class="p">Subject to the Company&#x27;s prior written consent, you may, from time to time, promote the Promoted Sites by publishing bonus codes relating to special offers or promotions. Any publication or use of such bonus codes must comply with this Agreement and all Applicable Laws.</p>
+      <p class="p">You shall always market and promote the Promoted Sites:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">in accordance with all Applicable Laws;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">in a manner that does not infringe any third-party Intellectual Property Rights; and</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">only to persons who are above the Legal Age.</span></p>
+      <p class="p">Subject to Sections 11.5 and 11.6, you may conduct keyword bidding and Pay Per Click advertising in relation to the Promoted Sites.</p>
+      <h2 id="s18" class="h-1">5.4. Responsible Marketing and Advertising Standards</h2>
+      <p class="p">You shall market and promote the Promoted Sites at all times in a socially responsible manner and shall not engage in any marketing or promotional activity that:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">portrays, condones or encourages socially irresponsible behaviour or behaviour that may result in social or emotional harm;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">represents or implies that gambling is free from the risk of financial loss;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">promotes behavior that objectively may result in financial harm;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">provides false, misleading or unrealistic information concerning the probability of gambling winnings or returns;</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">suggests that skill can influence the outcome of a game based entirely on chance;</span></p>
+      <p class="cl cl-1"><span class="cn">(f)</span><span class="ct">suggests that gambling can be undertaken anonymously or without maintaining an account with an online gambling operator;</span></p>
+      <p class="cl cl-1"><span class="cn">(g)</span><span class="ct">targets or specifically appeals to persons under the age of 18;</span></p>
+      <p class="cl cl-1"><span class="cn">(h)</span><span class="ct">depicts, condones or encourages criminal or antisocial behaviour;</span></p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">suggests that gambling is an important part of an individual&#x27;s life or can resolve personal, professional or educational problems;</span></p>
+      <p class="cl cl-1"><span class="cn">(j)</span><span class="ct">claims or suggests that gambling can result in social success, enhance personal qualities or improve an individual&#x27;s self-esteem;</span></p>
+      <p class="cl cl-1"><span class="cn">(k)</span><span class="ct">promotes gambling as an alternative to employment, a financial investment or a solution to financial difficulties;</span></p>
+      <p class="cl cl-1"><span class="cn">(l)</span><span class="ct">implies that gambling is more important than family, friends or professional or educational obligations;</span></p>
+      <p class="cl cl-1"><span class="cn">(m)</span><span class="ct">exploits the susceptibilities, aspirations, credulity, inexperience or lack of knowledge of any person, including vulnerable persons;</span></p>
+      <p class="cl cl-1"><span class="cn">(n)</span><span class="ct">suggests that gambling may lead to sexual success or increased attractiveness; or</span></p>
+      <p class="cl cl-1"><span class="cn">(o)</span><span class="ct">applies or suggests peer pressure to gamble or disparages abstention from gambling.</span></p>
+      <h2 id="s19" class="h-1">5.5. Restrictions on Use of Promoted Site Content and Advertising</h2>
+      <p class="p">Except for the permitted use of Marketing Materials under this Agreement, the Affiliate Sites shall not contain any content, materials or other assets belonging to or originating from the Promoted Sites, nor shall the Affiliate Sites copy or substantially resemble the look and feel of the Promoted Sites.</p>
+      <p class="p">You shall not advertise or promote the Promoted Sites through any method, channel, or format that has not been approved by the Company in advance.</p>
+      <p class="p">You shall not market or promote the Promoted Sites through any Sent Marketing unless such activity has been expressly agreed in an IO or Negotiated Plan. Any such Sent Marketing shall only be permitted for the duration specified in the applicable IO or Negotiated Plan.</p>
+      <h2 id="s20" class="h-1">5.6. Placement Requirements and Listing Fees</h2>
+      <p class="p">Where a Listing Fee applies, you shall ensure that the relevant Marketing Materials are displayed continuously and in the position on the Affiliate Site agreed in the applicable IO or Negotiated Plan.</p>
+      <p class="p">You shall remain responsible for ensuring that the Affiliate Sites and all promotional activities operated or conducted by you comply with the requirements of this Agreement, including the accuracy and completeness of the content published on the Affiliate Sites.</p>
+      <h2 id="s21" class="h-0">6. Electronic Marketing of the Promoted Sites</h2>
+      <h2 id="s22" class="h-1">6.1. General Requirements for Sent Marketing</h2>
+      <p class="p">Where the Company has expressly agreed in an IO or Negotiated Plan that you may use Sent Marketing, you represent, warrant and undertake that all Sent Marketing and all marketing activities conducted through your direct channels in connection with the Promoted Sites shall comply with this Agreement, including this Section 6, all Applicable Laws, and all applicable privacy and electronic marketing requirements.</p>
+      <p class="p">You shall be solely responsible for your actions and activities in relation to Customers and for ensuring that all Sent Marketing complies with all Applicable Laws, including applicable privacy laws, the GDPR and the e-Privacy Directive, and does not infringe any such laws or regulations.</p>
+      <h2 id="s23" class="h-1">6.2. Identification and Content of Sent Marketing</h2>
+      <p class="p">You represent, warrant and undertake that all Sent Marketing:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">clearly and unambiguously identifies the Promoted Site being advertised and does not represent or imply that you are advertising any third party, its products or its websites;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">clearly identifies you, and not the Company, its Group Companies or the Operator, as the sender of the communication;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">clearly and unambiguously identifies the communication as a commercial communication or advertisement;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">is not sent to any person below the Legal Age;</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">uses your true name in the “From” field of any email and does not use a sales pitch, promotional message or other marketing content in place of the sender&#x27;s identity. The communication must clearly identify you as its sender, and you shall not falsify, disguise, conceal or otherwise misrepresent your identity or create the impression that the communication has been sent on behalf of the Company;</span></p>
+      <p class="cl cl-1"><span class="cn">(f)</span><span class="ct">contains a clear and functional opt-out or unsubscribe mechanism, including an operative email address through which the recipient can request that future marketing communications cease;</span></p>
+      <p class="cl cl-1"><span class="cn">(g)</span><span class="ct">does not result in any further Sent Marketing being sent to a person who has indicated, by any means, that they do not wish to receive further marketing communications;</span></p>
+      <p class="cl cl-1"><span class="cn">(h)</span><span class="ct">contains a link to an applicable privacy policy; and</span></p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">where any third party is engaged to provide or conduct Sent Marketing on your behalf, ensures that such third party complies with all requirements applicable to you under this Agreement and all Applicable Laws. You remain fully responsible for the acts and omissions of any third party.</span></p>
+      <h2 id="s24" class="h-1">6.3. Sender Identity and Brand Protection</h2>
+      <p class="p">In connection with any marketing campaign, communication, promotion or other activity conducted by or on behalf of you in relation to the Company or the Promoted Sites, you shall not:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">use, register, purchase, acquire, create, control or otherwise deploy any sender domain, email address, domain name or other identifier that is identical or confusingly similar to any domain name, brand name, trade name, trademark or other identifier owned, operated or used by the Company, including any “lookalike” or deceptive sender domain or identifier intended or reasonably likely to create the impression that a communication originates from, is authorized by, or is affiliated with the Company; or</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">purchase, register, create, acquire or otherwise obtain any domain name that is identical, similar or confusingly similar to any domain name owned or used by the Company, or that could reasonably be expected to mislead Customers, partners or other third parties into believing that the domain name is owned, operated, endorsed or authorized by the Company.</span></p>
+      <p class="p">All marketing communications must clearly identify you as the sender. You shall not engage in any activity that misrepresents or may reasonably misrepresent the source, sponsorship, affiliation or legitimacy of any communication or online presence.</p>
+      <p class="p">Upon receiving notice from the Company, you shall immediately cease any prohibited use and shall fully cooperate with the Company in taking any actions reasonably required to mitigate or prevent any resulting or potential harm.</p>
+      <h2 id="s25" class="h-1">6.4. Consent and Unsubscribe Requirements</h2>
+      <p class="p">Before sending any Sent Marketing, you must obtain the recipient&#x27;s prior opt-in consent to receive electronic marketing communications. Such consent must be freely given, specific, informed, and affirmative, and must result from an affirmative action by the recipient indicating their consent.</p>
+      <p class="p">All Sent Marketing relating to the Promoted Sites must contain a valid and functional unsubscribe or opt-out mechanism. You shall ensure that all such Sent Marketing complies with the applicable marketing guidelines and Applicable Laws, as well as any additional guidelines or requirements provided by the Company or made available through the Affiliate Program Site.</p>
+      <p class="p">You shall maintain accurate and up-to-date records of all opt-out requests received from recipients, regardless of the method by which such requests are made and shall ensure that recipients who have opted out are excluded from all future Sent Marketing.</p>
+      <h2 id="s26" class="h-1">6.5. Suppression and Self-Exclusion</h2>
+      <p class="p">You shall maintain and apply appropriate suppression procedures to your mailing lists to ensure that Sent Marketing relating to the Promoted Sites is not sent to:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">individuals who are self-excluded from any gambling platform, including any gambling website or application;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">individuals who have otherwise indicated that they should not receive marketing communications relating to the Promoted Sites or Marketing Materials; or</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">any player who has self-excluded from any of the Promoted Sites, following the effective date of such self-exclusion.</span></p>
+      <p class="p">You shall remain solely responsible for the content and manner of all marketing activities carried out following a recipient&#x27;s self-exclusion or other applicable suppression.</p>
+      <p class="p">If you receive any complaint from a recipient concerning Sent Marketing initiated by you, you must notify the Company promptly and in any event within 24 hours of receiving the complaint.</p>
+      <h2 id="s27" class="h-1">6.6. Complaints, Investigations and Information Requests</h2>
+      <p class="p">If the Company receives any complaint, request or inquiry from a recipient of Sent Marketing or from a competent authority concerning your Sent Marketing, promotional practices, GDPR compliance or compliance with any other Applicable Laws, you shall, upon the Company&#x27;s request, provide all information reasonably required in relation to the relevant recipient and Sent Marketing.</p>
+      <p class="p">Such information may include, without limitation:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">the source from which the recipient&#x27;s personal data was obtained;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">the method by which such personal data was obtained;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">evidence of the recipient&#x27;s prior opt-in consent;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">details concerning any relevant opt-out, suppression or self-exclusion request; and</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">any other information or documentation reasonably requested by the Company in connection with the relevant complaint, request, inquiry or compliance matter.</span></p>
+      <p class="p">You shall provide the requested information within five (5) days of receiving the Company&#x27;s request.</p>
+      <h2 id="s28" class="h-1">6.7. Disclosure and Regulatory Cooperation</h2>
+      <p class="p">You authorize the Company to provide information concerning you, including information relating to your role as the Data Controller responsible for GDPR compliance in connection with the processing of personal data of recipients of Sent Marketing, to any person who has submitted a complaint to the Company and/or to any competent authority.</p>
+      <p class="p">You shall cooperate fully with the Company in providing any relevant information and in responding to any such complaint, inquiry or regulatory request, including by providing the information and responses requested under Section 6.</p>
+      <h2 id="s29" class="h-0">7. Commission</h2>
+      <h2 id="s30" class="h-1">7.1. Standard Commission</h2>
+      <p class="p">From the date of Application Approval, the default Revenue Share Commission published at <a href="https://maxxedpartners.com/#commissions" target="_blank" rel="noopener">[</a><a href="https://maxxedpartners.com/#commissions" target="_blank" rel="noopener">https://maxxedpartners.com/#commissions</a><a href="https://maxxedpartners.com/#commissions" target="_blank" rel="noopener">]</a> shall apply to all Customers referred by you in accordance with this Agreement (“Standard Commission”).</p>
+      <h2 id="s31" class="h-1">7.2. Negotiated Plans and Insertion Orders</h2>
+      <p class="p">The Company and the Affiliate may, from time to time, agree on a Negotiated Plan which provides Commission terms different from the Standard Commission.</p>
+      <p class="p">During the term of a Negotiated Plan:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">the Standard Commission shall be suspended only in respect of Customers covered by the Negotiated Plan;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">Customers not covered by the Negotiated Plan shall continue to generate Commission under the Standard Commission; and</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">upon expiry or termination of the Negotiated Plan, the Standard Commission shall automatically resume and apply to all Customers.</span></p>
+      <p class="p">Where the Company and Affiliate agree with an IO relating to a Negotiated Plan, the Negotiated Plan shall be suspended for the duration of such IO and, for the avoidance of doubt, the Standard Commission shall also be suspended for Customers covered by the IO.</p>
+      <p class="p">During the term of the IO, the Company shall have no obligation to pay the Commission in respect of Customers generated before the IO becomes effective.</p>
+      <p class="p">Following expiry or termination of the IO in accordance with Section 13.2 (whichever occurs first):</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">where the Negotiated Plan remains valid, the Negotiated Commission shall apply to the relevant Customers; or</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">where the Negotiated Plan has been terminated in accordance with Section 13.2, the Standard Commission shall apply to all Customers.</span></p>
+      <h2 id="s32" class="h-1">7.3. CPA, Revenue Share and Hybrid Commission Rules</h2>
+      <p class="p">Notwithstanding any other provision of this Agreement, where the Company and Affiliate agree specific Commission terms through a Negotiated Plan and/or IO, the following rules shall apply:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">Where the Affiliate is entitled solely to CPA Commission for certain Customers, once the CPA Commission has been paid in respect of such Customers, the Company shall have no further liability to pay any additional Commission for those Customers.</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">Where the Affiliate is entitled to Hybrid Commission for certain Customers, once the CPA component of the Hybrid Commission has been paid, the Company shall have no further liability to pay any additional CPA Commission for those Customers.</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">Where Hybrid Commission applies and a person begins the registration process but does not satisfy the requirements to qualify as a Customer for the CPA component during the applicable Negotiated Plan or IO period, the Company shall have no obligation to pay any Commission in respect of such person.</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">Where an IO provides for Hybrid Commission or Revenue Share Commission, while a Negotiated Plan provides solely for CPA Commission, and the IO expires or terminates in accordance with Section 13.2, the suspended Negotiated Plan shall resume. However, the Company shall not be liable to pay any further Commission in respect of Customers generated during the IO period.</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">Where a CAP has been agreed with an Affiliate, the Commission shall only be payable for the agreed number of First Time Depositors (FTDs).</span></p>
+      <p class="cl cl-1"><span class="cn">(f)</span><span class="ct">A player shall qualify for CPA Commission only where the player completes their first-time deposit (FTD) within sixty (60) calendar days from the date of registration. Any FTD completed after this period shall not qualify for CPA Commission or any related payment.</span></p>
+      <h2 id="s33" class="h-1">7.4. Amendments and Additional Payments</h2>
+      <p class="p">Any amendment to an IO and/or Negotiated Plan shall not apply retrospectively to Customers generated before the effective date of such amendment.</p>
+      <p class="p">Any amendment shall only apply to Customers generated after the amendment becomes effective and for the remaining duration of the relevant IO and/or Negotiated Plan.</p>
+      <p class="p">The Company and Affiliate may agree on additional payments through an IO and/or Negotiated Plan.</p>
+      <p class="p">For the avoidance of doubt, the terms of any IO or Negotiated Plan shall not survive the expiry or termination of such IO or Negotiated Plan unless expressly agreed otherwise in writing.</p>
+      <h2 id="s34" class="h-1">7.5. Commission Eligibility Restrictions</h2>
+      <p class="p">The Affiliate shall not become a Customer and shall not be entitled to receive Commission in respect of itself.</p>
+      <p class="p">Where the Affiliate is an individual, the Affiliate shall not be entitled to receive Commission in respect of any Relative becoming a Customer.</p>
+      <p class="p">Where the Affiliate is an entity, its directors, officers, employees and any Relatives of such individuals shall not be eligible to become Customers, and the Affiliate shall not be entitled to receive Commission in respect of such persons.</p>
+      <p class="p">The number of Customers registered or attributed to any individual household computer, tablet device or mobile device shall be limited to one.</p>
+      <h2 id="s35" class="h-1">7.6. Commission Calculations and Disputes</h2>
+      <p class="p">The Company&#x27;s measurements, tracking and Commission calculations shall be deemed accurate unless proven otherwise.</p>
+      <p class="p">If the Affiliate disputes any Commission calculation, the Affiliate may request a review within thirty (30) days from receipt of the relevant statement.</p>
+      <p class="p">The Company shall provide commercially reasonable assistance in reviewing and resolving any identified discrepancy.</p>
+      <h2 id="s36" class="h-0">8. Payment</h2>
+      <h2 id="s37" class="h-1">8.1. Currency of Affiliate Payments</h2>
+      <p class="p">All Affiliate Payments shall be paid to you in USDT equivalent to EUR.</p>
+      <p class="p">For the avoidance of doubt, the Company shall not be responsible for any currency conversion charges, transfer fees, or any other charges associated with transferring funds to your Payment Method.</p>
+      <h2 id="s38" class="h-1">8.2. Reporting and Tracking</h2>
+      <p class="p">The Company shall make available through the Affiliate Program Website the number of Customers, Commission and Sub Affiliate Fee generated during the then-current calendar month, as well as any Additional Payments which may be applicable for payment in the following month.</p>
+      <p class="p">To ensure accurate tracking, reporting and calculation of Customers and Commission, all Marketing Materials, including Tracking Links, must be correctly formatted.</p>
+      <h2 id="s39" class="h-1">8.3. Minimum Payment Threshold</h2>
+      <p class="p">If the total amount of Affiliate Payments payable in any calendar month is less than EUR 100, the outstanding balance shall be carried forward to the following calendar month’s Affiliate Payments until the total amount reaches the USDT equivalent of EUR 100.</p>
+      <h2 id="s40" class="h-1">8.4. Payment Process and Invoicing</h2>
+      <p class="p">Unless otherwise agreed in an IO, and subject to the terms of this Agreement and your full compliance with your obligations hereunder, Commission and Sub Affiliate Fee shall be paid following the end of each calendar month, provided that you submit an invoice for the correct amount of Commission and Sub Affiliate Fee generated during such calendar month.</p>
+      <p class="p">The Listing Fee shall be paid following receipt of an invoice for the correct amount of the Listing Fee after, as applicable:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">the relevant IO has been signed by both parties; or</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">the relevant Negotiated Plan has entered into force.</span></p>
+      <p class="p">The Fixed Fee shall be paid following the end of each calendar month in which the Fixed Fee is applicable, subject to receipt of an invoice for the correct amount of the Fixed Fee.</p>
+      <p class="p">The Company shall settle any undisputed invoice within twenty (20) days following receipt of such invoice.</p>
+      <h2 id="s41" class="h-1">8.5. Payment Method</h2>
+      <p class="p">Affiliate Payments shall be paid to the Payment Method selected by you in the Application Form.</p>
+      <p class="p">If the Company is unable to process Affiliate Payments because you have provided incorrect or incomplete payment information, and as a result the Affiliate Payments are not received by you or are transferred to an incorrect account, the Company shall have no liability for such non-payment.</p>
+      <h2 id="s42" class="h-1">8.6. Incorrect Payment Information</h2>
+      <p class="p">If the Company is unable to transfer Affiliate Payments due to incorrect or incomplete payment information, the Company may deduct a reasonable amount from the Affiliate Payments to cover any investigation, administrative work or additional efforts required as a result of such incorrect or incomplete details.</p>
+      <p class="p">For the avoidance of doubt, the Company is under no obligation to carry out any such investigation or additional work arising from incorrect or incomplete payment information.</p>
+      <h2 id="s43" class="h-1">8.7. Unclaimed Affiliate Payments</h2>
+      <p class="p">If, for six (6) consecutive calendar months, the Company is unable to transfer Affiliate Payments to your Payment Method due to incomplete or incorrect payment details, or any other reason beyond the Company’s control, the Company may retain such Affiliate Payments and shall have no further liability to pay such amounts.</p>
+      <h2 id="s44" class="h-1">8.8. Amendments to Negotiated Plans</h2>
+      <p class="p">Where a Negotiated Plan applies, the Company reserves the right to amend the applicable Commission scheme, Commission amount and qualification criteria for Commission payments, including Customer qualification criteria.</p>
+      <p class="p">Any such amendment shall only take effect after the Company has informed you of the relevant changes and the date on which such changes will become effective.</p>
+      <h2 id="s45" class="h-1">8.9. Payments Generated in Breach</h2>
+      <p class="p">The Company may retain any Affiliate Payments generated in breach of any terms of this Agreement.</p>
+      <h2 id="s46" class="h-1">8.10. Operator Payment Dependency</h2>
+      <p class="p">Any Affiliate Payments payable to you under this Agreement shall be subject to the Company actually receiving the applicable payment from the Operator in respect of such Affiliate Payments.</p>
+      <h2 id="s47" class="h-1">8.11. Taxes and Withholding</h2>
+      <p class="p">You shall be solely responsible for any taxes, charges, duties, imposts, contributions, levies or liabilities applicable to any amounts payable to you under this Agreement in any jurisdiction.</p>
+      <p class="p">All payments made under this Agreement shall be inclusive of such amounts, and the Company shall have no obligation to increase any payment as a result of such taxes or liabilities.</p>
+      <p class="p">The Company may deduct and withhold any amounts required by Applicable Laws and remit such amounts to the relevant tax authorities. Any amount deducted and withheld by the Company shall be deemed to have been paid to you.</p>
+      <h2 id="s48" class="h-1">8.12. No Negative Carry Over Policy</h2>
+      <p class="p">The Company applies a No Negative Carry Over Policy to Revenue Share Commission and the Revenue Share Commission component of Hybrid Commission.</p>
+      <p class="p">Where the aggregate amount of Net Revenue in any calendar month is negative, the Revenue Share Commission or Revenue Share Commission component of Hybrid Commission (as applicable) shall be set to zero for that calendar month.</p>
+      <p class="p">However, where any negative Net Revenue balance results from Fraud or a breach of this Agreement, the Company reserves the right to apply such negative amount against future Affiliate Payments payable to you until the negative balance has been fully set off.</p>
+      <h2 id="s49" class="h-1">8.13. Set-Off Rights</h2>
+      <p class="p">The Company reserves the right to set off any amounts owed by you to the Company against Affiliate Payments payable to you.</p>
+      <p class="p">The Company may also set off any amounts payable by the Company against any liability owed by you, including any claims or allegations arising from your breach of this Agreement or any other agreement between the parties.</p>
+      <h2 id="s50" class="h-1">8.14. Removal of Promoted Site from Affiliate Program</h2>
+      <p class="p">If a Promoted Site ceases to form part of the Affiliate Program, the Company shall have no obligation to pay Affiliate Payments relating to such Promoted Site following the date on which such Promoted Site ceases to form part of the Affiliate Program (“Cut-Off Date”).</p>
+      <p class="p">Where an IO and/or Negotiated Plan is in force at the Cut-Off Date (including where the Negotiated Plan is suspended), and Additional Payments have been agreed in relation to such Promoted Site, the parties shall negotiate in good faith and act reasonably regarding the application of the value of the Pro Rata Repayment towards advertising for another Promoted Site (“Alternative Advertising”).</p>
+      <p class="p">If the parties are unable to agree on Alternative Advertising within fourteen (14) days following the Cut-Off Date:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">where a Fixed Fee applies as of the Cut-Off Date, the Company shall pay the Fixed Fee Payment and shall have no further liability for Fixed Fee payments;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">where the Listing Fee has not been paid, the Company shall have no obligation to pay the Listing Fee; and</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">where the Listing Fee has been paid, the Affiliate shall immediately repay the Pro Rata Repayment to the Company.</span></p>
+      <p class="p">Following the Cut-Off Date, you shall immediately cease using Marketing Materials relating to such Promoted Site and cease marketing of such Promoted Site.</p>
+      <h2 id="s51" class="h-1">8.15. Jurisdiction Becoming a Prohibited Territory</h2>
+      <p class="p">If, during the term of this Agreement, any jurisdiction becomes a Prohibited Territory due to regulatory changes, license conditions, payment processor restrictions, banking changes, sanctions developments or the Company’s strategic decision to exit such market, the Affiliate shall not earn Commission from Customers registered from or located in such jurisdiction from the applicable Jurisdiction Cut-Off Date.</p>
+      <p class="p">Where such change results from a Company strategic decision or a foreseeable regulatory development, the Company shall use reasonable efforts to provide thirty (30) days’ advance notice before the Jurisdiction Cut-Off Date.</p>
+      <p class="p">Where such change results from regulatory action, license conditions, payment processor restrictions, banking restrictions, sanctions developments or any other event outside the Company’s reasonable control, the Jurisdiction Cut-Off Date may take effect immediately or on shorter notice.</p>
+      <p class="p">In such circumstances, the Company shall notify Affiliates as soon as reasonably practicable, and Affiliates shall immediately cease marketing the affected jurisdiction.</p>
+      <p class="p">If the parties are unable to agree on Substitute Advertising within fourteen (14) days following the Jurisdiction Cut-Off Date:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">where a Fixed Fee applies as of the Jurisdiction Cut-Off Date, the Company shall pay the Fixed Fee Payment and shall have no further liability for Fixed Fee payments;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">where the Listing Fee has not been paid, the Company shall have no obligation to pay the Listing Fee; and</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">where the Listing Fee has been paid, the Affiliate shall immediately repay the Pro Rata Repayment to the Company.</span></p>
+      <p class="p">Following the Jurisdiction Cut-Off Date, you shall immediately cease using Marketing Materials relating to such Promoted Site in the relevant Prohibited Territory and cease marketing such Promoted Site in that jurisdiction.</p>
+      <h2 id="s52" class="h-0">9. Fraud</h2>
+      <h2 id="s53" class="h-1">9.1. Fraud Review and Account Suspension</h2>
+      <p class="p">The Company reserves the right to investigate any suspected Fraud, whether such Fraud is attributable to a Customer or to the Affiliate.</p>
+      <p class="p">Any Fraud investigation shall not exceed ninety <strong>(90) days</strong>. During such investigation, the Company may suspend the Affiliate Account.</p>
+      <h2 id="s54" class="h-1">9.2. Effect of Account Suspension</h2>
+      <p class="p">Without prejudice to Section 13.4, where the Affiliate Account is suspended:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">the Company may withhold any Commission and Sub Affiliate Fee accrued but not yet paid before the suspension where the Company has a reasonable basis to believe that such amounts are connected with a breach of this Agreement or fraudulent activity;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">no Commission or Sub Affiliate Fee shall be generated during the suspension in respect of the specific traffic sources, campaigns or Customers subject to the Fraud investigation. Commission and Sub Affiliate Fee relating to traffic sources, campaigns or Customers not subject to the investigation shall continue to be generated and paid in the ordinary course;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">where an IO and/or Negotiated Plan is in force at any time during the suspension, including where the Negotiated Plan is suspended, and any Additional Payments become due and payable, the Company shall have no obligation to pay such Affiliate Payments; and</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">the Affiliate shall immediately cease marketing and promoting the Promoted Sites during the suspension, including ceasing all use of the Marketing Materials.</span></p>
+      <h2 id="s55" class="h-1">9.3. Completion of Fraud Investigation</h2>
+      <p class="p">Once the Company has completed its Fraud investigation, it may lift the suspension of the Affiliate Account. If the suspension is lifted:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">the Affiliate may resume using the Marketing Materials to market and promote the Promoted Sites;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">the Company shall pay any Commission accrued and owed before the suspension which has not yet been paid and which does not relate to Fraud;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">the Company may retain any Commission relating to Fraud;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">the Company shall pay any Sub Affiliate Fee accrued and owed before the suspension which has not yet been paid;</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">where an IO and/or Negotiated Plan remains in force, the applicable IO and/or Negotiated Plan shall continue in accordance with its terms following the suspension; and</span></p>
+      <p class="cl cl-1"><span class="cn">(f)</span><span class="ct">where an IO and/or Negotiated Plan was in force at any time before or during the suspension, including where the Negotiated Plan was suspended, and the Company has already paid a Listing Fee, the Affiliate shall, upon the lifting of the suspension, immediately:</span></p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">place the Marketing Materials in the agreed positions for which the Listing Fee was paid; and</span></p>
+      <p class="cl cl-1"><span class="cn">(ii)</span><span class="ct">where the duration of the IO and/or Negotiated Plan is not based on the number of Customers delivered by the Affiliate, pay the Company a pro-rata repayment of the Listing Fee calculated in proportion to the number of days for which the Affiliate Account was suspended compared with the total number of days of the applicable IO or Negotiated Plan.</span></p>
+      <h2 id="s56" class="h-1">9.4. Fraud as a Breach</h2>
+      <p class="p">Any occurrence of Fraud shall constitute a breach of this Agreement by the Affiliate.</p>
+      <h2 id="s57" class="h-1">9.5. Set-Off of Fraud-Related Payments</h2>
+      <p class="p">The Company reserves the right to set off any amounts already received by the Affiliate which relate to Fraud against any future Affiliate Payments payable to the Affiliate.</p>
+      <h2 id="s58" class="h-0">10. Additional Restrictions</h2>
+      <h2 id="s59" class="h-1">10.1. Prohibited Activities</h2>
+      <p class="p">You shall not, and shall not permit, assist or encourage any third party to:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">alter, redirect, interfere with or otherwise affect the operation or accessibility of any Promoted Site or any part or page thereof;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">copy or imitate, in whole or in part, the look and feel of any Promoted Site;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">acquire or obtain any rights to data relating to Customers;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">register as a Customer or authorize, assist or facilitate any person to register as a Customer, except where such activity consists solely of promoting the Promoted Site in accordance with this Agreement;</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">cause any Promoted Site, or any part or page thereof, to open in a person’s browser other than as a result of that person clicking on the applicable Marketing Materials;</span></p>
+      <p class="cl cl-1"><span class="cn">(f)</span><span class="ct">intercept, redirect or otherwise interfere with traffic to or from the Promoted Sites, including through user-installed software;</span></p>
+      <p class="cl cl-1"><span class="cn">(g)</span><span class="ct">violate the terms of use or applicable policies of any search engine;</span></p>
+      <p class="cl cl-1"><span class="cn">(h)</span><span class="ct">market or promote any Promoted Site in any Prohibited Territory applicable to such Promoted Site;</span></p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">circumvent any restriction designed to prevent a potential Customer located in a Prohibited Territory from becoming a customer of the relevant Promoted Site, or attempt to conceal, disguise or otherwise misrepresent the geographical location of a customer; or</span></p>
+      <p class="cl cl-1"><span class="cn">(j)</span><span class="ct">provide or disclose any Customer details to any third party, whether during the term of this Agreement or at any time following its termination.</span></p>
+      <h2 id="s60" class="h-1">10.2. Protection of Goodwill and Reputation</h2>
+      <p class="p">You shall not use the Marketing Materials in any manner intended to harm, or which could reasonably be expected to harm, the goodwill or reputation of the Company, its Group Companies or the Operators, including by associating them with misleading, false or disparaging content.</p>
+      <h2 id="s61" class="h-1">10.3. Non-Competition with Marketing Efforts</h2>
+      <p class="p">You shall refrain from marketing or promoting the Promoted Sites in any manner that may compete with the marketing efforts of the Company, its Group Companies or the Operator in relation to the Promoted Sites, including by placing Marketing Materials on websites or other locations where the Company, its Group Companies or the Operator advertise the Promoted Sites.</p>
+      <h2 id="s62" class="h-0">11. Intellectual Property Rights</h2>
+      <h2 id="s63" class="h-1">11.1. License to Use Marketing Materials</h2>
+      <p class="p">From Application Approval and throughout the term of this Agreement, subject to your compliance with its terms, the Company grants you a non-exclusive, revocable, non-sublicensable, non-assignable and non-transferable licence to use the Marketing Materials and their content solely for displaying the Marketing Materials on the Affiliate Sites.</p>
+      <h2 id="s64" class="h-1">11.2. Ownership of Marks and Marketing Materials</h2>
+      <p class="p">You acknowledge that the Company, its Group Companies or the Operators, as applicable, own or hold all necessary licences, permits and consents relating to the Intellectual Property Rights in the Marketing Materials and the brands and trademarks associated with the Promoted Sites (collectively and individually, the “Marks”).</p>
+      <p class="p">Any use by you of the Marketing Materials or the Marks shall inure solely to the benefit of the Company, its Group Companies or the Operators, as applicable, and shall not grant you or create in your favour any rights in the Marketing Materials or the Marks.</p>
+      <h2 id="s65" class="h-1">11.3. Ownership and Goodwill</h2>
+      <p class="p">All Intellectual Property Rights in, and any goodwill arising from, the Marketing Materials shall remain the property of the Company, its Group Companies or the Operator, as applicable.</p>
+      <h2 id="s66" class="h-1">11.4. No Imitation or Misrepresentation</h2>
+      <p class="p">The Affiliate Sites shall not resemble the look or feel of the Promoted Sites in any manner, nor shall you create or imply any impression that an Affiliate Site is a Promoted Site or any part thereof.</p>
+      <h2 id="s67" class="h-1">11.5. Restrictions Relating to Marks</h2>
+      <p class="p">You shall not:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">register or apply to register any domain name that incorporates, consists of, or is confusingly similar to any of the Marks;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">bid on keywords or search terms relating to the Marks;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">use metatag keywords on the Affiliate Sites that are identical or similar to the Marks;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">use any sub-domain name that incorporates, consists of, or is confusingly similar to any of the Marks;</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">create, open or operate any social media account using, incorporating or consisting of any of the Marks;</span></p>
+      <p class="cl cl-1"><span class="cn">(f)</span><span class="ct">register or apply to register any trademark in any jurisdiction that incorporates, consists of, or is confusingly similar to any of the Marks; or</span></p>
+      <p class="cl cl-1"><span class="cn">(g)</span><span class="ct">purchase or register any keywords, search terms or other identifiers for use in any search engine, portal, social network, sponsored advertising service or other search or referral service that are identical or similar to the Marks.</span></p>
+      <p class="p">This restriction includes any words similar to the name or domain name of the Promoted Sites and any other websites or applications owned or operated by the Company, any Group Company or any Operator.</p>
+      <h2 id="s68" class="h-1">11.6. Non-Compliance and Transfer of Intellectual Property</h2>
+      <p class="p">If you become aware that you are not in compliance with any requirement of Section 11.5, you must immediately notify the Company.</p>
+      <p class="p">In the event of any such non-compliance, you agree, in accordance with the Company&#x27;s instructions, to transfer to the Company or a company nominated by it, as applicable, the relevant domain name, search term, sub-domain name, Mark and/or other applicable registration, and/or the benefit of any application relating thereto.</p>
+      <p class="p">You shall, in accordance with the Company&#x27;s instructions, maintain and hold the relevant registration, domain name, search term, sub-domain name, Mark and/or application and shall not allow any such registration or application to lapse until the applicable rights have been transferred to the Company or its nominated company.</p>
+      <p class="p">You shall fully cooperate with the Company in connection with such transfer, including by executing all documents requested by the Company and taking all actions reasonably necessary to complete the transfer of the applicable registration, domain name, search term, sub-domain name, Mark and/or other applicable right and/or the benefit of any related application.</p>
+      <p class="p">The obligation to transfer Intellectual Property Rights registered or applied for as contemplated by this Section 11.6 shall also apply to Intellectual Property Rights registered or applied for before the date on which these Terms take legal effect between the parties.</p>
+      <p class="p">The Company may, at its sole discretion, withhold any Affiliate Payments otherwise due to you until the relevant Intellectual Property Rights have been transferred and vested in the Company or its nominated company to the Company&#x27;s satisfaction.</p>
+      <h2 id="s69" class="h-0">12. Representations and Warranties</h2>
+      <p class="p"><strong>12.1. Affiliate Representations and Warranties</strong> You represent and warrant to the Company that:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">all documents and information provided to the Company, including without limitation those submitted through the Application Form, are true, accurate and complete;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">you will promptly comply with all instructions issued by the Company and with the Guidelines, as amended by the Company from time to time;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">you will comply with all Applicable Laws throughout the term of this Agreement, and all marketing and promotion of the Promoted Sites will be conducted in compliance with such Applicable Laws;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">you will comply with the Schedule below, which forms part of this Agreement;</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">you will obtain, maintain and comply with all approvals, permits, certificates, authorisations, licences and consents required for you to perform your obligations under this Agreement;</span></p>
+      <p class="cl cl-1"><span class="cn">(f)</span><span class="ct">you will obtain, maintain and comply with all approvals, permits, certificates, authorisations, licences and consents required under Applicable Laws or by any Regulator;</span></p>
+      <p class="cl cl-1"><span class="cn">(g)</span><span class="ct">you will not provide the Marketing Materials to any third party;</span></p>
+      <p class="cl cl-1"><span class="cn">(h)</span><span class="ct">there is no legal, commercial, contractual or other restriction that prevents, or may prevent, you from fully performing your obligations under this Agreement;</span></p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">if you are an individual rather than a legal entity, you are of Legal Age;</span></p>
+      <p class="cl cl-1"><span class="cn">(j)</span><span class="ct">you have independently assessed the laws applicable to your activities and obligations under this Agreement, including in particular all laws relating to the promotion of online gambling, and have determined that you may enter into and perform this Agreement without violating any Applicable Laws; and</span></p>
+      <p class="cl cl-1"><span class="cn">(k)</span><span class="ct">you will comply with and ensure:</span></p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">that gambling is not a source of crime or disorder, is not associated with crime or disorder, and is not used to support crime;</span></p>
+      <p class="cl cl-1"><span class="cn">(ii)</span><span class="ct">that gambling is conducted in a fair and open manner; and</span></p>
+      <p class="cl cl-1"><span class="cn">(iii)</span><span class="ct">the protection of children and other vulnerable people from being harmed or exploited by gambling.</span></p>
+      <h2 id="s70" class="h-0">13. Duration, Termination and Consequences of Termination</h2>
+      <h2 id="s71" class="h-1">13.1. Duration</h2>
+      <p class="p">This Agreement shall commence on the Agreement of Acceptance and shall continue until terminated in accordance with its terms.</p>
+      <h2 id="s72" class="h-1">13.2. Termination by Either Party</h2>
+      <p class="p">Either party may terminate this Agreement, any IO and/or Negotiated Plan by providing the other party with twenty-four (24) hours’ prior written notice by email.</p>
+      <p class="p">Where you wish to terminate the Agreement, an IO and/or Negotiated Plan, you must send an email to <a href="mailto:affiliates@maxxedpartners.com" target="_blank" rel="noopener">affiliates@maxxedpartners.com</a> with the subject line “Termination”.</p>
+      <p class="p">You may not terminate the Agreement, any IO or any Negotiated Plan while your Account is suspended.</p>
+      <h2 id="s73" class="h-1">13.3. Termination of Affiliate Program Participation</h2>
+      <p class="p">Your participation in the Affiliate Program shall automatically terminate upon termination of this Agreement.</p>
+      <h2 id="s74" class="h-1">13.4. Termination by the Company</h2>
+      <p class="p">The Company may terminate this Agreement, or any IO and/or Negotiated Plan that has not expired or otherwise been terminated, by written notice to you by email if:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">you are in breach of any term of this Agreement, or the Company has reasonable grounds to believe that you are in breach;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">you are in breach of any Applicable Laws, or the Company reasonably believes that you have breached any Applicable Laws;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">you take any action which the Company reasonably believes may expose the Company, any Group Company or any Operator to regulatory repercussions in any jurisdiction; or</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">the Company, any Group Company or any Operator is ordered or required by a Regulator to terminate its relationship with you.</span></p>
+      <h2 id="s75" class="h-1">13.5. Automatic Termination of IOs and Negotiated Plans</h2>
+      <p class="p">Upon termination of this Agreement for any reason, any IO or Negotiated Plan that has not expired or been terminated, including any suspended Negotiated Plan, shall automatically and immediately terminate.</p>
+      <h2 id="s76" class="h-1">13.6. Payments Following Termination under Sections 13.2 or 22</h2>
+      <p class="p">Where this Agreement is terminated pursuant to Section 13.2 or Section 22, the Company shall, subject to the terms of this Agreement, pay you all Commission and Sub Affiliate Fee due as of the effective date of termination.</p>
+      <p class="p">Where an IO and/or Negotiated Plan remains in force, has not been terminated or has not expired, including where the Negotiated Plan is suspended, as of the effective date of termination, and Additional Payments have been agreed in relation to such IO and/or Negotiated Plan:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">where a Fixed Fee is applicable as of the effective date of termination, the Company shall pay a pro-rata portion of the Fixed Fee corresponding to the number of days elapsed from the date on which the applicable Fixed Fee became relevant until the effective date of termination;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">where the Listing Fee has not been paid, the Company shall have no obligation to pay the Listing Fee; and</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">where the Company has paid the Listing Fee, the Affiliate shall immediately pay the Company the applicable Listing Fee Repayment.</span></p>
+      <p class="p">Following payment of the Commission, Sub Affiliate Fee and, where applicable, the Fixed Fee described above, the Company shall have no further liability to make Affiliate Payments to you.</p>
+      <p class="p">The Company may withhold the final payment of Commission, Fixed Fee and Sub Affiliate Fee for up to ninety (90) days to ensure that the correct amounts are paid.</p>
+      <h2 id="s77" class="h-1">13.7. Termination under Sections 3.3, 13.4 or 19.9</h2>
+      <p class="p">If this Agreement is terminated pursuant to Section 3.3, 13.4 or 19.9, the Company shall retain all Affiliate Payments and shall have no liability to pay any Affiliate Payments to you.</p>
+      <p class="p">Where, prior to the effective date of termination, an IO and/or Negotiated Plan has not been terminated or expired, including where the Negotiated Plan is suspended, and the Company has paid a Listing Fee in relation to such IO and/or Negotiated Plan, the Affiliate shall immediately pay the Company the applicable Listing Fee Repayment.</p>
+      <h2 id="s78" class="h-1">13.8. Termination of an IO or Negotiated Plan under Section 13.2</h2>
+      <p class="p">Where an IO and/or Negotiated Plan is terminated pursuant to Section 13.2, Sections 7.2 to 7.4 shall apply, as applicable.</p>
+      <p class="p">Where the terminated IO and/or Negotiated Plan provides for Additional Payments:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">where a Fixed Fee is applicable as of the effective date of termination, the Company shall pay a pro-rata portion of the Fixed Fee corresponding to the number of days elapsed from the date on which the applicable Fixed Fee became relevant until the effective date of termination;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">where the Listing Fee has not been paid, the Company shall have no obligation to pay the Listing Fee; and</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">where the Company has paid the Listing Fee, the Affiliate shall immediately pay the Company the applicable Listing Fee Repayment.</span></p>
+      <p class="p">Following payment of the Fixed Fee described above, the Company shall have no further liability to make any payments in respect of the terminated IO and/or Negotiated Plan.</p>
+      <h2 id="s79" class="h-1">13.9. Termination of an IO or Negotiated Plan under Section 13.4</h2>
+      <p class="p">Where an IO and/or Negotiated Plan is terminated pursuant to Section 13.4, the Company shall retain all Affiliate Payments owed under the applicable IO and/or Negotiated Plan and shall have no obligation to pay Commission in respect of Customers generated under such IO and/or Negotiated Plan.</p>
+      <p class="p">Where the Company has paid a Listing Fee under the terminated IO and/or Negotiated Plan, the Affiliate shall immediately pay the Company the applicable Listing Fee Repayment.</p>
+      <h2 id="s80" class="h-1">13.10. Obligations Following Termination</h2>
+      <p class="p">Immediately upon termination of this Agreement, you shall:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">cease all use of the Marketing Materials and remove all Marketing Materials from the Affiliate Sites;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">return to the Company all Confidential Information in your possession or control, in any form; and</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">cease all marketing and promotion of the Promoted Sites.</span></p>
+      <h2 id="s81" class="h-1">13.11. Termination of Rights and Licences</h2>
+      <p class="p">Upon termination of this Agreement, all rights and licences granted to you under this Agreement shall immediately terminate.</p>
+      <h2 id="s82" class="h-1">13.12. No Payments Following Termination</h2>
+      <p class="p">You shall not accrue any Affiliate Payments following termination of this Agreement.</p>
+      <p class="cl cl-0"><span class="cn">13.10.</span><span class="ct">Immediately following the termination of the Agreement, you must immediately: (a) cease all use of the Marketing Materials and remove all of the Marketing Materials from the Affiliate Sites; (b) return to us any Confidential Information in your control or possession in whatever form; and (c) cease marketing the Promoted Sites.</span></p>
+      <p class="cl cl-0"><span class="cn">13.11.</span><span class="ct">On termination of the Agreement, all rights and licences granted to you in this Agreement shall immediately terminate.</span></p>
+      <p class="cl cl-0"><span class="cn">13.12.</span><span class="ct">For the avoidance of doubt, you will not accrue any Affiliate Payments following the termination of the Agreement.</span></p>
+      <h2 id="s83" class="h-0">14. Indemnification</h2>
+      <p class="p"><strong>14.1. Indemnity</strong> Upon our written demand, you shall indemnify and hold harmless the Company, the Group Companies, the Operator, and each of their respective shareholders, officers, directors, employees, agents, successors and assigns from and against any and all losses, penalties, fines (including, without limitation, those imposed by any Regulator), demands, claims, damages, costs (including, without limitation, legal costs), expenses (including, without limitation, consequential losses and loss of profit) and liabilities suffered or incurred, directly or indirectly, arising out of or in connection with:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">any breach of this Agreement by you, including any breach of your representations, obligations, undertakings, covenants and/or warranties;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">any breach of Applicable Laws by you;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">any claim relating to the Affiliate Sites;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">any claim relating to your marketing or promotion of the Promoted Sites;</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">any claim relating to your right to use the Marketing Materials on the Affiliate Sites;</span></p>
+      <p class="cl cl-1"><span class="cn">(f)</span><span class="ct">any action taken by a Regulator; or</span></p>
+      <p class="cl cl-1"><span class="cn">(g)</span><span class="ct">any act or omission by you.</span></p>
+      <h2 id="s84" class="h-0">15. Confidentiality</h2>
+      <h2 id="s85" class="h-1">15.1. Confidential Information</h2>
+      <p class="p">All information provided to you by us, whether before or during the term of this Agreement, shall constitute our confidential information (“Confidential Information”).</p>
+      <p class="p">You shall use Confidential Information solely for the purpose of performing your obligations under this Agreement and shall not disclose it to any third party, except to your employees, officers, representatives or advisers who need to know such information for the purpose of carrying out your obligations under this Agreement.</p>
+      <p class="p">You shall ensure that any employee, officer, representative or adviser to whom you disclose Confidential Information complies with the obligations set out in this Section 15.</p>
+      <h2 id="s86" class="h-1">15.2. Public Announcements</h2>
+      <p class="p">You shall not make any public announcement or disclosure concerning any aspect of this Agreement or your relationship with us without our prior written approval.</p>
+      <h2 id="s87" class="h-0">16. Disclaimers</h2>
+      <h2 id="s88" class="h-1">16.1. Marketing Materials and Information</h2>
+      <p class="p">Your marketing and advertising of the Promoted Sites is undertaken entirely at your own risk. The Marketing Materials, instructions, policies, Guidelines and/or other content provided to you or made available by us are provided on an “AS IS” basis.</p>
+      <p class="p">To the fullest extent permitted by Applicable Laws, we expressly disclaim all warranties and representations, whether express or implied, relating to the Marketing Materials and any instructions, policies, Guidelines and/or content provided or made available by us, including, without limitation, any warranties of fitness for purpose, merchantability, compliance with Applicable Laws, non-infringement, and any implied warranties arising from a course of performance, dealing or trade usage.</p>
+      <h2 id="s89" class="h-1">16.2. Compliance of Marketing Activities</h2>
+      <p class="p">You are solely responsible for ensuring that your marketing and advertising of the Promoted Sites complies with all Applicable Laws.</p>
+      <p class="p">If you believe, have any doubt, or become aware that any Marketing Materials, instructions, policies, Guidelines and/or content provided or made available by us may not comply with Applicable Laws, your sole and exclusive remedy shall be to immediately cease marketing and advertising the Promoted Sites, including immediately ceasing all use of the relevant Marketing Materials.</p>
+      <h2 id="s90" class="h-1">16.3. Liability for Affiliate Marketing Activities</h2>
+      <p class="p">To the fullest extent permitted by Applicable Laws, we, our Group Companies and/or the Operators shall have no liability whatsoever arising from or relating to your marketing or advertising of the Promoted Sites, your use of the Marketing Materials, or your compliance with or reliance upon any instructions, policies, Guidelines and/or content provided or made available by us.</p>
+      <h2 id="s91" class="h-1">16.4. Affiliate Program, Promoted Sites and Affiliate Program Site</h2>
+      <p class="p">We, our Group Companies and/or the Operators make no express or implied warranties or representations concerning the Affiliate Program, the Promoted Sites or the Affiliate Program Site, including, without limitation, any warranties of fitness for purpose, merchantability, compliance with Applicable Laws, non-infringement, or any implied warranties arising from a course of performance, dealing or trade usage.</p>
+      <p class="p">The Company does not represent or warrant that the operation of the Promoted Sites, Marketing Materials or Affiliate Program Site will be uninterrupted or error-free, and we, our Group Companies and/or the Operators shall have no liability for any consequences arising from interruptions or errors.</p>
+      <h2 id="s92" class="h-0">17. Limitation of Liability</h2>
+      <h2 id="s93" class="h-1">17.1. Excluded Losses</h2>
+      <p class="p">The Company shall not be liable, whether in contract, tort (including negligence), breach of statutory duty or otherwise, for any:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">actual or anticipated indirect, special or consequential loss or damage;</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">loss of opportunity, anticipated savings or wasted expenditure;</span></p>
+      <p class="cl cl-1"><span class="cn">(c)</span><span class="ct">loss of contracts, business, profits or revenues;</span></p>
+      <p class="cl cl-1"><span class="cn">(d)</span><span class="ct">loss of goodwill or reputation; or</span></p>
+      <p class="cl cl-1"><span class="cn">(e)</span><span class="ct">loss of data.</span></p>
+      <h2 id="s94" class="h-1">17.2. Aggregate Liability</h2>
+      <p class="p">To the fullest extent permitted by Applicable Laws, the Company&#x27;s total aggregate liability arising out of or in connection with this Agreement shall not exceed the lower of:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">the total Commission paid to you under this Agreement during the three (3) months preceding the date on which the relevant liability arose; and</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">EUR 10,000.</span></p>
+      <h2 id="s95" class="h-0">18. Personal Data</h2>
+      <h2 id="s96" class="h-1">18.1. Data Protection Agreement</h2>
+      <p class="p">The parties agree to enter into the Data Protection Agreement (“DPA”) in the form set out in Schedule A, which forms an integral part of this Agreement.</p>
+      <h2 id="s97" class="h-1">18.2. Privacy Policy</h2>
+      <p class="p">By participating in the Affiliate Program and using the Affiliate Program Site, you acknowledge and accept the Maxxed Partners Privacy Policy, available at <a href="https://maxxedpartners.com/privacy-policy/?utm_source=chatgpt.com" target="_blank" rel="noopener">Maxxed Partners Privacy Policy</a><a href="https://maxxedpartners.com/privacy-policy/?utm_source=chatgpt.com" target="_blank" rel="noopener">,</a> which forms an inseparable part of this Agreement (the “Privacy Policy”).</p>
+      <p class="p">You should read the Privacy Policy carefully, as it sets out the terms governing our processing of Personal Data that we collect from you or that you voluntarily provide to us.</p>
+      <h2 id="s98" class="h-1">18.3. Compliance with Data Protection Laws</h2>
+      <p class="p">You represent and warrant that you will process Personal Data in compliance with the British Virgin Islands Data Protection Act, 2021, the General Data Protection Regulation (Regulation (EU) 2016/679) (“EU GDPR”), where applicable, and all other applicable data protection and privacy laws.</p>
+      <p class="p">By entering into this Agreement, you shall be deemed to have entered into the Data Protection Addendum set out in Schedule A of this Agreement.</p>
+      <h2 id="s99" class="h-0">19. Sub Affiliates</h2>
+      <h2 id="s100" class="h-1">19.1. Introduction of Sub Affiliates</h2>
+      <p class="p">You may introduce potential Sub Affiliates to the Company.</p>
+      <h2 id="s101" class="h-1">19.2. Sub Affiliate Application and Approval</h2>
+      <p class="p">Each potential Sub Affiliate must complete an Application Form. The Company shall review the Application Form and may, at its sole discretion, accept or reject the potential Sub Affiliate.</p>
+      <h2 id="s102" class="h-1">19.3. Acceptance of Terms</h2>
+      <p class="p">Each Sub Affiliate must accept and comply with the terms and conditions of this Agreement.</p>
+      <h2 id="s103" class="h-1">19.4. Sub Affiliate Commission</h2>
+      <p class="p">Sub Affiliates shall receive Commission from the Company in accordance with the commission scheme agreed between the Company and the relevant Sub Affiliate, subject to the terms of this Agreement.</p>
+      <h2 id="s104" class="h-1">19.5. Sub Affiliate Fee</h2>
+      <p class="p">You may receive a percentage of the Commission paid to a Sub Affiliate where you and the Company have agreed to such payment, and the applicable percentage is recorded in the Back Office (the “Sub Affiliate Fee”).</p>
+      <h2 id="s105" class="h-1">19.6. No Second-Level Sub Affiliate Payments</h2>
+      <p class="p">You shall not be entitled to receive any payment in respect of a Sub Affiliate introduced by a Sub Affiliate whom you have previously introduced.</p>
+      <h2 id="s106" class="h-1">19.7. Prohibited Sub Affiliates</h2>
+      <p class="p">You undertake that:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">if you are an individual, a Sub Affiliate shall not be any of your Relatives; and</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">if you are an entity, a Sub Affiliate shall not be any director, officer or employee of that entity, any member of its group of companies, or any Relative of such individuals.</span></p>
+      <h2 id="s107" class="h-1">19.8. Prohibited Conduct</h2>
+      <p class="p">You shall not:</p>
+      <p class="cl cl-1"><span class="cn">(a)</span><span class="ct">use the Sub Affiliate scheme in any manner whatsoever in bad faith; or</span></p>
+      <p class="cl cl-1"><span class="cn">(b)</span><span class="ct">offer or provide any financial or other incentive to a Sub Affiliate or potential Sub Affiliate for the purpose of becoming a Sub Affiliate.</span></p>
+      <h2 id="s108" class="h-1">19.9. Breach of Sub Affiliate Requirements</h2>
+      <p class="p">If we determine that you have breached Section 19.7 or 19.8, we may terminate the Agreement.</p>
+      <h2 id="s109" class="h-0">20. Amending the Agreement</h2>
+      <p class="cl cl-0"><span class="cn">20.1.</span><span class="ct">We may unilaterally amend the Affiliate Agreement at any time and at our sole discretion by posting an amended Affiliate Agreement on the Affiliate Program Site. Any amendment shall take effect from the date it is posted on the Affiliate Program Site, whether or not you have actually reviewed the relevant changes. Such posting shall constitute sufficient notice of the amendments.</span></p>
+      <p class="cl cl-0"><span class="cn">20.2.</span><span class="ct">Your continued participation in the Affiliate Program following the posting of an amended Affiliate Agreement shall constitute your binding acceptance of such amendments. You should regularly visit the Affiliate Program Site and monitor the terms of this Affiliate Agreement.</span></p>
+      <p class="cl cl-0"><span class="cn">20.3.</span><span class="ct">If you do not agree to be bound by any amendment to the Agreement, your sole recourse shall be to terminate the Agreement in accordance with Section 13.2. This termination right shall be your sole remedy in relation to any amendment made to the Agreement.</span></p>
+      <p class="cl cl-0"><span class="cn">20.4.</span><span class="ct">Notwithstanding the other provisions of this Section 20, an IO may only be amended in writing and signed by authorised representatives of both the Company and the Affiliate.</span></p>
+      <h2 id="s110" class="h-0">21. Suspension</h2>
+      <p class="cl cl-0"><span class="cn">21.1.</span><span class="ct">Without derogating from Section 13.4, we may temporarily suspend your Account at our sole discretion. If we suspend your Account:</span></p>
+      <p class="cl cl-0"><span class="cn">21.1.1.</span><span class="ct">we may withhold all Commission and Sub Affiliate Fee owed to you but not paid prior to the suspension where the Company has a reasonable basis to believe that such amounts are connected to a breach of this Agreement or fraudulent activity.</span></p>
+      <p class="cl cl-0"><span class="cn">21.1.2.</span><span class="ct">No Commission or Sub Affiliate Fee shall be generated during such period of suspension in respect of the specific traffic sources, campaigns, or Customers under investigation. Commission and Sub Affiliate Fee from traffic sources, campaigns, and Customers not subject to the Fraud investigation will continue to be generated and paid in the normal course.;</span></p>
+      <p class="cl cl-0"><span class="cn">21.1.3.</span><span class="ct">if an IO and/or Negotiated Plan is in force at any time during the suspension period, including where the Negotiated Plan is suspended, and any Additional Payments become due and payable, we shall not be liable to pay you any Affiliate Payments; and</span></p>
+      <p class="cl cl-0"><span class="cn">21.1.4.</span><span class="ct">you must immediately cease marketing and promoting the Promoted Sites, including ceasing to use the Marketing Materials, during the suspension period.</span></p>
+      <p class="cl cl-0"><span class="cn">21.2.</span><span class="ct">If we lift the suspension of your Account:</span></p>
+      <p class="cl cl-0"><span class="cn">21.2.1.</span><span class="ct">you may resume using the Marketing Materials to market and promote the Promoted Sites;</span></p>
+      <p class="cl cl-0"><span class="cn">21.2.2.</span><span class="ct">we shall pay you any Commission owed to you but not paid prior to the suspension, provided that such Commission does not relate to any breach of the Agreement;</span></p>
+      <p class="cl cl-0"><span class="cn">21.2.3.</span><span class="ct">we may retain any Commission relating to a breach of the Agreement;</span></p>
+      <p class="cl cl-0"><span class="cn">21.2.4.</span><span class="ct">we shall pay you any Sub Affiliate Fee owed to you but not paid prior to the suspension;</span></p>
+      <p class="cl cl-0"><span class="cn">21.2.5.</span><span class="ct">if an IO and/or Negotiated Plan remains in force following the suspension, the relevant IO and/or Negotiated Plan shall continue on its existing terms following the suspension; and</span></p>
+      <p class="cl cl-0"><span class="cn">21.2.6.</span><span class="ct">if an IO and/or Negotiated Plan was in force at any time during the suspension, including where the Negotiated Plan was suspended, and any Listing Fee has been paid by the Company, upon lifting the suspension you shall immediately place the Marketing Materials in the agreed positions for which the Listing Fee was paid. Furthermore, if the duration of the IO and/or Negotiated Plan is not based on the number of Customers delivered by you, you shall immediately pay the Company a pro-rata repayment amount of the Listing Fee calculated in the same proportion that the number of days for which your Account was suspended bears to the total number of days until the expiration of the applicable IO or Negotiated Plan.</span></p>
+      <p class="cl cl-0"><span class="cn">21.3.</span><span class="ct">We reserve the right to set off any amounts already received by you which relate to a breach of the Agreement against any future Affiliate Payments payable to you.</span></p>
+      <h2 id="s111" class="h-0">22. Force Major</h2>
+      <p class="p">If the Company is prevented or delayed in performing any of its obligations under this Agreement due to Force Majeure, the Company shall have no liability in respect of the performance of any obligations prevented or delayed by such Force Majeure event for the duration of the event.</p>
+      <p class="p">For the purposes of this Agreement, “Force Majeure” means any cause beyond the reasonable control of the Company, including, without limitation, acts of God, war, insurrection, riot, civil disturbance, acts or attempted acts of terrorism, fire, explosion, flood, storm, theft or malicious damage, pandemic, epidemic, strike, lock-out or other industrial dispute (whether involving the workforce of the party so prevented or any other party), third-party injunction, national defence requirements, acts or regulations of national or local governments, including legislation or other regulation restricting, preventing or otherwise prohibiting the provision or availability of internet-based sports betting, casino or poker gaming, inability to obtain essential power, raw materials or labour, or malfunction of machinery or apparatus.</p>
+      <p class="p">Where a Force Majeure event continues for more than 30 days, the Company shall retain the right to terminate this Agreement immediately.</p>
+      <h2 id="s112" class="h-0">23. General</h2>
+      <p class="cl cl-0"><span class="cn">23.1.</span><span class="ct">In the event of any discrepancy between the meanings of translated versions of this Agreement, the English-language version shall prevail.</span></p>
+      <p class="cl cl-0"><span class="cn">23.2.</span><span class="ct">This Agreement constitutes the entire agreement between the parties with respect to its subject matter and cancels and supersedes all previous understandings and agreements, whether oral or written, between the parties relating to the subject matter of this Agreement.</span></p>
+      <p class="cl cl-0"><span class="cn">23.3.</span><span class="ct">You shall not, without our prior written consent, assign, transfer or subcontract all or any of your rights or obligations under this Agreement. We shall be entitled to assign, transfer or subcontract any or all of our rights and obligations under this Agreement to any Group Company without your consent.</span></p>
+      <p class="cl cl-0"><span class="cn">23.4.</span><span class="ct">We shall be entitled to exercise any of our rights or fulfil any of our obligations under this Agreement, including payment obligations, through any Group Company.</span></p>
+      <p class="cl cl-0"><span class="cn">23.5.</span><span class="ct">You and the Company are independent contractors. Nothing in this Agreement shall create any partnership, joint venture, agency, franchise, sales representative or employment relationship between the parties.</span></p>
+      <p class="cl cl-0"><span class="cn">23.6.</span><span class="ct">The Company&#x27;s failure to enforce your strict performance of any provision of this Agreement shall not constitute a waiver of our right to subsequently enforce that provision or any other provision of this Agreement.</span></p>
+      <p class="cl cl-0"><span class="cn">23.7.</span><span class="ct">Other than any Group Company, no person or entity that is not a party to this Agreement shall have any right to enforce any term of this Agreement.</span></p>
+      <p class="cl cl-0"><span class="cn">23.8.</span><span class="ct">If any clause of this Agreement, or any part thereof, is rendered void or unenforceable by a court or authority of competent jurisdiction, all other provisions of the Agreement shall remain in full force and effect and shall not be impaired. With respect to any provision rendered void or unenforceable, the parties shall agree on a replacement provision that is as close as legally permissible to the provision found to be invalid or unenforceable.</span></p>
+      <p class="cl cl-0"><span class="cn">23.9.</span><span class="ct">During the term of the Agreement and thereafter, you shall not, directly or indirectly, make any disparaging, negative, uncomplimentary, derogatory or defamatory statements regarding us, any Group Company, any of their respective business interests, including the Affiliate Program, the Promoted Sites or the Operator.</span></p>
+      <p class="cl cl-0"><span class="cn">23.10.</span><span class="ct">Any provisions of this Agreement which expressly or by their nature are required to survive termination or expiration in order to achieve their purpose shall survive until they are no longer necessary to survive for that purpose. Without limiting the generality of the foregoing, Sections 8.11, 8.13, 8.14, 9.5<strong>, </strong>13.6 (if applicable), 13.7 (if applicable), 13.10, 13.11, 13.12, 14, 15, 16, 17, 21.3 and 23 shall survive termination of this Agreement.</span></p>
+      <p class="cl cl-0"><span class="cn">23.11.</span><span class="ct">This Agreement shall be governed by the laws of the British Virgin Islands, without giving effect to principles of conflict of laws. Any disputes arising out of or relating to this Agreement, including its interpretation or enforcement, shall be subject to the exclusive jurisdiction of the courts of the British Virgin Islands.</span></p>
+      <h2 id="s113" class="h-0">SCHEDULE A</h2>
+      <p class="p"><strong>DATA PROTECTION AGREEMENT</strong> The Company and the Affiliate (the “Partner”) (each a “Party” and together, the “Parties”) have entered into an agreement (the “Agreement”) for the provision of services (the “Services”) and agree to be bound by these Data Protection Terms (the “DPA”).</p>
+      <p class="p">This DPA is entered between the Company and the Partner and supplements the Agreement. This DPA shall become effective as of the Terms Effective Date and shall replace any previously applicable terms relating to the subject matter of this DPA.</p>
+      <p class="p">Where an individual accepts this DPA on behalf of the Partner, such individual represents and warrants that: (a) they have full legal authority to bind the Partner to this DPA; (b) they have read and understood this DPA; and (c) they agree to this DPA on behalf of the Partner. If such an individual does not have the legal authority to bind the Partner, they must not accept this DPA.</p>
+      <h2 id="s114" class="h-0">1. INTRODUCTION</h2>
+      <p class="cl cl-0"><span class="cn">1.1.</span><span class="ct">This DPA sets out the Parties’ agreement regarding the processing of Personal Data in connection with the applicable Data Protection Laws.</span></p>
+      <p class="cl cl-0"><span class="cn">1.2.</span><span class="ct">Any ambiguity or uncertainty arising under this DPA shall be interpreted in a manner that enables the Parties to comply with all applicable Data Protection Laws.</span></p>
+      <p class="cl cl-0"><span class="cn">1.3.</span><span class="ct">To the extent that any Data Protection Laws impose obligations on the Parties that are more stringent than those set out in this DPA, the requirements of such Data Protection Laws shall prevail.</span></p>
+      <h2 id="s115" class="h-0">2. DEFINITIONS AND INTERPRETATION</h2>
+      <p class="cl cl-0"><span class="cn">2.1.</span><span class="ct">In this DPA:</span></p>
+      <p class="cl cl-1"><span class="cn">(i)</span><span class="ct">“Approved Jurisdiction” means a member state of the European Economic Area, or other jurisdiction that may be approved as having adequate legal protections for data by the European Commission currently found here: <a href="https://ec.europa.eu/info/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en" target="_blank" rel="noopener">https://ec.europa.eu/info/law/law-topic/data-protection/international-</a><a href="https://ec.europa.eu/info/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en" target="_blank" rel="noopener">dimension-data-protection/adequacy-decisions_en</a> or by the UK Information Commissioner’s Office, where applicable, currently found here: <a href="https://ico.org.uk/for-organisations/guide-to-data-protection/guide-to-the-general-data-protection-regulation-gdpr/international-transfers/" target="_blank" rel="noopener">https://ico.org.uk/for-organisations/guide-to-data-</a><a href="https://ico.org.uk/for-organisations/guide-to-data-protection/guide-to-the-general-data-protection-regulation-gdpr/international-transfers/" target="_blank" rel="noopener">protection/guide-to-the-general-data-protection-regulation-gdpr/international-transfers/</a><a href="https://ico.org.uk/for-organisations/guide-to-data-protection/guide-to-the-general-data-protection-regulation-gdpr/international-transfers/" target="_blank" rel="noopener">;</a></span></p>
+      <p class="cl cl-1"><span class="cn">(ii)</span><span class="ct">“Data Protection Laws” means, as applicable, any and/or all applicable domestic and foreign laws, rules, directives and regulations, on any local, provincial, state or deferral or national level, pertaining to data privacy, data security and/or the protection of Personal Data, including the Privacy and Electronic Communications Directive 2002/58/EC (and respective local implementing laws) concerning the processing of personal data and the protection of privacy in the electronic communications sector (Directive on privacy and electronic communications (“e-Privacy Directive”)), including any amendments or replacements to them, including the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data (“GDPR”), the Isle of Man Data Protection Act 2018, , US Data Protection Laws, Israel’s Protection of Privacy Law, 5741-1981, as amended by Privacy Protection Bill (Amendment No. 13), and the Protection of Privacy Regulations (Data Security) 5777-2017, and any amendment or replacement to the foregoing;</span></p>
+      <p class="cl cl-1"><span class="cn">(iii)</span><span class="ct">“Data   Subject”   means   an   individual   to   whom   Personal   Data   relates;</span></p>
+      <p class="cl cl-1"><span class="cn">(iv)</span><span class="ct">“Personal Data” means any personal data (as defined under the GDPR) that is processed by a Party under the Agreement in connection with its provision or use (as applicable) of the Services;</span></p>
+      <p class="cl cl-1"><span class="cn">(v)</span><span class="ct">“Security Incident” means any accidental or unlawful destruction, loss, alteration, unauthorized disclosure of, or access to, Personal Data. For the avoidance of doubt, any Personal Data Breach will comprise a Security Incident;</span></p>
+      <p class="cl cl-1"><span class="cn">(vi)</span><span class="ct">“Special Categories of Data” means personal data as defined under Article 9 of the GDPR.</span></p>
+      <p class="cl cl-1"><span class="cn">(vii)</span><span class="ct">“Terms   Effective   Date”   means   the   effective   date   of   the   Agreement;</span></p>
+      <p class="cl cl-1"><span class="cn">(viii)</span><span class="ct">“US Data Protection Laws” means any and all applicable laws, rules, acts, decrees, directives, regulations and binding regulatory guidance, on any state of federal level, pertaining to data privacy, data security and the protection of Personal Data, including, without limitation, in California, Colorado, Connecticut, Utah, Virginia, Texas, Oregon, Florida, Montana, Iowa, Delaware, New Jersey, New Hampshire, Nebraska, Tennessee, Minnesota, Maryland as well as any future laws, amendments or regulations that may be enacted or promulgated governing the data protection within the United States.</span></p>
+      <p class="cl cl-1"><span class="cn">(ix)</span><span class="ct">“Terms Effective Date” means the effective date of the Agreement;</span></p>
+      <p class="cl cl-1"><span class="cn">(x)</span><span class="ct">The terms “controller”, “processing” and “processor” as used in this have the meanings given in the GDPR.</span></p>
+      <p class="p">Any reference to a legal framework, statute or other legislative enactment is a reference to it as amended or re-enacted from time to time.</p>
+      <h2 id="s116" class="h-0">3. APPLICATION OF THIS DPA</h2>
+      <p class="cl cl-0"><span class="cn">3.1.</span><span class="ct">This DPA shall apply only to the extent that both of the following conditions are satisfied:</span></p>
+      <p class="cl cl-0"><span class="cn">3.1.1.</span><span class="ct">the Company processes Personal Data made available by the Partner in connection with the Agreement; and</span></p>
+      <p class="cl cl-0"><span class="cn">3.1.2.</span><span class="ct">The processing of such Personal Data is subject to the Data Protection Laws.</span></p>
+      <p class="cl cl-0"><span class="cn">3.2.</span><span class="ct">This DPA shall apply only to the Services agreed between the Parties under the Agreement, which incorporates this DPA by reference.</span></p>
+      <h2 id="s117" class="h-0">4. ROLES AND RESTRICTIONS ON PROCESSING</h2>
+      <p class="cl cl-0"><span class="cn">4.1.</span><span class="ct">If Partner has access to or otherwise processes Personal Data pursuant to the Agreement, Partner shall:</span></p>
+      <p class="cl cl-0"><span class="cn">4.1.1.</span><span class="ct"><strong>Processing Instructions and Legal Compliance. </strong>Process Personal Data only in accordance with the Company’s documented instructions and on its behalf, and in accordance with the Agreement, this DPA and its related Attachments, unless otherwise required by applicable laws. Where Partner is required by applicable laws to process Personal Data otherwise, Partner shall, to the extent legally permitted, promptly notify the Company of such legal obligation. Partner shall only process or use Personal Data on its systems or facilities to the extent necessary to perform its obligations under the Agreement.</span></p>
+      <p class="cl cl-0"><span class="cn">4.1.2.</span><span class="ct"><strong>Personnel and Confidentiality. </strong>Take reasonable steps to ensure the reliability of its staff and any other person acting under its supervision who may come into contact with, or otherwise have access to or process, Personal Data. Partner shall ensure that all persons authorized to process Personal Data have committed themselves to confidentiality or are subject to an appropriate statutory obligation of confidentiality and are aware of their responsibilities under this DPA and applicable Data Protection Laws. Partner shall not lease, sell or otherwise distribute Personal Data.</span></p>
+      <p class="cl cl-0"><span class="cn">4.1.3.</span><span class="ct"><strong>Requests, Regulatory Matters, and Cooperation. </strong>Promptly, and in any case within the period required by Data Protection Laws, provide full, reasonable cooperation and assistance to the Company in responding to and complying with requests or inquiries from Data Subjects, supervisory authorities, customers or other persons relating to Partner’s processing of Personal Data, including requests to exercise rights under Data Protection Laws, such as the rights of access, rectification, restriction of processing, erasure, data portability, objection to processing and the right not to be subject to automated individual decision-making. Partner shall direct such requests to the Company without undue delay and shall not respond to or act upon them without the Company’s prior written approval, except where and to the extent that such restriction conflicts with Data Protection Laws. Partner shall also provide such information as may be required regarding the services provided by Partner and its processing of Personal Data.</span></p>
+      <p class="cl cl-0"><span class="cn">4.1.4.</span><span class="ct"><strong>Security Incidents and Data Protection Assessments. </strong>Notify the Company without undue delay, and in any event no later than twenty-four (24) hours after becoming aware of a Security Incident. Partner shall provide full, reasonable cooperation and assistance to the Company in ensuring compliance with any notification obligations relating to Security Incidents to supervisory authorities and any communication obligations to Data Subjects, as required under Data Protection Laws. Partner shall also provide full, reasonable cooperation and assistance in ensuring compliance with its obligations, or the obligations of its customers, to carry out data protection impact assessments in relation to the processing of Personal Data and, where applicable, to conduct prior consultation with the relevant supervisory authority.</span></p>
+      <p class="cl cl-0"><span class="cn">4.1.5.</span><span class="ct"><strong>Records and Accuracy. </strong>As required under Data Protection Laws, maintain accurate written records of all processing activities involving Personal Data carried out under the Agreement, including the categories of processing undertaken, and make such records available to the Company and the applicable supervisory authority upon request. Partner shall make all reasonable efforts to ensure that Personal Data in its custody or under its control are accurate and up to date at all times, to the extent Partner has the ability to do so.</span></p>
+      <p class="cl cl-0"><span class="cn">4.1.6.</span><span class="ct"><strong>Investigations and Compelled Disclosure. </strong>Promptly notify the Company of any investigation, litigation, arbitration or other dispute relating to Partner or the processing of Personal Data under the Agreement. Partner shall also promptly notify the Company in writing and provide the Company with an opportunity to intervene in any judicial or administrative process where Partner is required by law, court order, warrant, subpoena or other legal or judicial process to disclose any Personal Data to any person other than the Company.</span></p>
+      <p class="cl cl-0"><span class="cn">4.1.7.</span><span class="ct"><strong>Return or Deletion of Personal Data. </strong>Upon termination of the Agreement, or upon the Company’s written request at any time during the term of the Agreement, Partner shall cease processing any Personal Data received from the Company and, within a reasonable period and at the Company’s request, shall either: (1) return the Personal Data to the Company; or (2) securely and completely destroy or erase all Personal Data in its possession or control, including all copies thereof, unless and solely to the extent that doing so conflicts with applicable laws. Where Partner is legally required to retain any Personal Data, Partner shall notify the Company and shall process such Personal Data only to the extent necessary to comply with its legal obligations. The terms of this DPA shall continue to apply to such Personal Data until it is returned or erased. At the Company’s request, Partner shall provide a certificate confirming its full compliance with the requirements of this clause.</span></p>
+      <h2 id="s118" class="h-0">5. INDEPENDENT CONTROLLERS</h2>
+      <p class="cl cl-0"><span class="cn">5.1.</span><span class="ct">To the extent that the Partner determines the purposes and means of processing Personal Data or is otherwise considered a controller of any Personal Data, each Party shall act as an independent controller of such Personal Data for the purposes of applicable Data Protection Laws and shall comply with its respective obligations under those laws in relation to its processing of Personal Data. Each Party shall provide the other Party with reasonable assistance, having regard to the Personal Data and other information available to it, to enable the other Party to comply with its obligations under applicable Data Protection Laws, including, without limitation, obligations relating to: (i) security; (ii) Security Incident notification; (iii) data protection impact assessments and prior consultation; (iv) responding to Data Subject requests; and (v) responding to queries and requests from supervisory authorities. Where Personal Data is transferred outside the EEA or an Approved Jurisdiction, the Partner shall enter into the applicable module of the Standard Contractual Clauses.</span></p>
+      <h2 id="s119" class="h-0">6. SUB-PROCESSING</h2>
+      <p class="cl cl-0"><span class="cn">6.1.</span><span class="ct">The Partner shall not subcontract any of its obligations under this DPA, in whole or in part, to any other person or entity (each, a “Sub-processor”) without the Company’s prior written approval. The Partner shall notify the Company of any intended addition or replacement of a Sub-processor no later than thirty (30) days before the proposed change. The Company may object to the appointment of any proposed Sub-processor within fourteen (14) days after receiving notice of the proposed appointment, and the Parties shall negotiate in good faith regarding any such objection. If, acting reasonably and in good faith, the Parties are unable to reach an amicable resolution, the Company may terminate the portion of the Agreement that requires the engagement of the relevant Sub-processor.</span></p>
+      <p class="cl cl-0"><span class="cn">6.2.</span><span class="ct">The Partner shall enter into a written agreement with each approved Sub-processor containing data protection obligations that provide at least an equivalent level of protection for Personal Data as those set out in this DPA. The Partner shall not permit any Sub-processor to further sub-process Personal Data or otherwise delegate any part of its processing activities without the Company’s prior written consent, which may be granted or withheld at the Company’s sole discretion. Such written agreement shall expressly grant the Company third-party beneficiary rights to enforce the relevant terms and/or require the Partner to procure that the Sub-processor enters into a data protection agreement directly with the Company.</span></p>
+      <p class="cl cl-0"><span class="cn">6.3.</span><span class="ct">The Partner shall maintain a written security policy providing guidance to its Sub-processors regarding the security, confidentiality, integrity and availability of Personal Data and the systems maintained or used by the Partner for processing Personal Data.</span></p>
+      <p class="cl cl-0"><span class="cn">6.4.</span><span class="ct">The Company may require the Partner to provide full details concerning a proposed Sub-processor’s involvement, including, without limitation, the Sub-processor’s identity, data security record, location of its processing facilities and a description of the proposed access to Personal Data.</span></p>
+      <p class="cl cl-0"><span class="cn">6.5.</span><span class="ct">The Partner shall remain liable for the acts and omissions of its Sub-processors to the same extent that it is liable for its own acts and omissions under this DPA and the applicable Data Protection Laws.</span></p>
+      <h2 id="s120" class="h-0">7. TRANSFER OF PERSONAL DATA</h2>
+      <p class="cl cl-0"><span class="cn">7.1.</span><span class="ct">In performing its obligations under this DPA, either Party may provide Personal Data to the other Party. Each Party shall process Personal Data solely for: (i) the purposes specified in the Agreement; or (ii) such other purposes as the Parties may agree in writing, provided that all such processing strictly complies with: (a) the applicable Data Protection Laws; and (b) the processing Party’s obligations under the Agreement.</span></p>
+      <h2 id="s121" class="h-0">8. SECURITY STANDARDS</h2>
+      <p class="cl cl-0"><span class="cn">8.1.</span><span class="ct">The Parties shall implement and maintain commercially reasonable and appropriate physical, technical and organizational security measures designed to protect Personal Data against accidental or unlawful destruction, accidental loss or alteration, unauthorized disclosure of or access to Personal Data transmitted, stored or otherwise processed, and all other unlawful forms of processing.</span></p>
+      <h2 id="s122" class="h-0">9. GENERAL</h2>
+      <p class="cl cl-0"><span class="cn">9.1.</span><span class="ct">Where this DPA does not expressly address a particular data security or privacy standard or obligation, the Partner shall apply appropriate and generally accepted practices to protect the confidentiality, security, privacy, integrity, availability and accuracy of Personal Data.</span></p>
+      <p class="cl cl-0"><span class="cn">9.2.</span><span class="ct">If the Partner is unable to maintain the level of protection required under this DPA or to comply with its obligations under this DPA or applicable Data Protection Laws, the Partner shall immediately notify the Company and cease processing Personal Data. Any failure to comply with the requirements of this DPA shall constitute a material breach of the Agreement, and the Company shall be entitled to terminate the Agreement immediately without penalty.</span></p>
+      <p class="cl cl-0"><span class="cn">9.3.</span><span class="ct">The Company shall be entitled to require the Partner to promptly provide all information reasonably necessary to demonstrate compliance with this DPA and applicable Data Protection Laws and to conduct audits and/or inspections of the Partner, including its facilities or equipment involved in the processing of Personal Data, for such purpose. The Partner shall permit and reasonably cooperate with any such audit or inspection. Any audit or inspection shall be conducted upon reasonable advance notice to the Partner and during normal business hours, in a manner reasonably designed to minimize disruption to the Partner’s business.</span></p>
+      <p class="cl cl-0"><span class="cn">9.4.</span><span class="ct">The Partner shall indemnify and hold the Company harmless against any costs, charges, damages, expenses or losses incurred as a result of the Partner’s breach of any provision of this DPA. The Partner’s indemnification obligation is conditional upon the Company promptly notifying the Partner of the relevant claim and providing reasonable cooperation and assistance to the Partner in defending such claim.</span></p>
+      <h2 id="s123" class="h-0">10. PRIORITY</h2>
+      <p class="cl cl-0"><span class="cn">10.1.</span><span class="ct">In the event of any conflict or inconsistency between this DPA and any other provision of the Agreement, this DPA shall prevail to the extent of such conflict or inconsistency. Except as expressly amended by this DPA, all other terms of the Agreement shall remain in full force and effect.</span></p>
+      <h2 id="s124" class="h-0">11. CHANGES TO THIS DPA</h2>
+      <p class="cl cl-0"><span class="cn">11.1.</span><span class="ct">No amendment, modification or other change to this DPA shall be valid or binding unless made in writing and signed by both Parties.</span></p>
+      <p class="cl cl-0"><span class="cn">11.2.</span><span class="ct">If any applicable Data Protection Laws are superseded, replaced or amended by new or modified Data Protection Laws, including any applicable decisions or interpretations issued by a competent court or governmental authority, such new or modified Data Protection Laws shall be deemed incorporated into this DPA, and each Party shall promptly comply with such laws in respect of its respective processing activities.</span></p>
+      <p class="p"><em><strong>Annex</strong><strong> </strong><strong>I</strong><strong> </strong><strong>–</strong><strong> </strong><strong>Description</strong><strong> </strong><strong>of</strong><strong> </strong><strong>processing</strong><strong> </strong><strong>activities</strong></em></p>
+      <p class="cl cl-0"><span class="cn">A.</span><span class="ct"><strong>Identification of Parties “Data Exporter”: Partner, “Data Importer”: Company.</strong></span></p>
+      <h2 id="s125" class="h-0">B. Description of Transfer</h2>
+      <p class="p"><strong>Data Subjects</strong> The Personal Data transferred under this DPA relates to the following categories of Data Subjects:</p>
+      <p class="cl cl-0"><span class="cn"></span><span class="ct">End users of the Operator.</span></p>
+      <h2 id="s126" class="h-0">Categories of Personal Data</h2>
+      <p class="p">The Personal Data transferred may include:</p>
+      <p class="cl cl-0"><span class="cn"></span><span class="ct">User reference IDs;</span></p>
+      <p class="cl cl-0"><span class="cn"></span><span class="ct">Session information; and</span></p>
+      <p class="cl cl-0"><span class="cn"></span><span class="ct">Related statistics.</span></p>
+      <h2 id="s127" class="h-0">Special Categories of Personal Data</h2>
+      <p class="p">No special categories of Personal Data are transferred or processed.</p>
+      <h2 id="s128" class="h-0">Frequency of Transfer</h2>
+      <p class="p">The transfer of Personal Data is continuous.</p>
+      <h2 id="s129" class="h-0">Nature of Processing</h2>
+      <p class="p">The processing of Personal Data may include:</p>
+      <p class="cl cl-0"><span class="cn"></span><span class="ct">Collection; and</span></p>
+      <p class="cl cl-0"><span class="cn"></span><span class="ct">Analysis.</span></p>
+      <h2 id="s130" class="h-0">The purposes of the Transfer and Further Processing</h2>
+      <p class="p">Personal Data is transferred and further processed for the purposes defined in the Agreement.</p>
+      <h2 id="s131" class="h-0">Retention Period</h2>
+      <p class="p">Personal Data shall be retained for the duration of the Agreement, unless otherwise required or permitted under applicable Data Protection Laws.</p>
+      <h2 id="s132" class="h-0">ANNEXE II – TECHNICAL AND ORGANIZATIONAL MEASURES TO ENSURE THE SECURITY OF PERSONAL DATA</h2>
+      <p class="p">The Data Importer shall implement and maintain appropriate technical and organizational measures designed to ensure a level of security appropriate to the nature, scope, context and purposes of the processing and the risks to the rights and freedoms of natural persons. Such measures shall include, where applicable, the following:</p>
+      <h2 id="s133" class="h-0">1. Security Measures and Incident Response</h2>
+      <p class="p">Implement and maintain current and appropriate technical and organizational measures to protect Personal Data against accidental, unauthorized or unlawful processing and against accidental loss, destruction, damage, alteration, disclosure or access. The Data Importer shall maintain an incident response plan designed to enable an immediate and appropriate response to any system breach or Security Incident.</p>
+      <h2 id="s134" class="h-0">2. Security and Penetration Testing</h2>
+      <p class="p">Obtain and maintain, where applicable, third-party attestations relating to security testing or penetration testing of software used to process Personal Data.</p>
+      <h2 id="s135" class="h-0">3. Risk-Based Security</h2>
+      <p class="p">Maintain security measures proportionate to the potential harm resulting from unauthorized or unlawful processing, accidental loss, destruction, damage, denial of service, alteration or disclosure of Personal Data, taking into account the nature of the Personal Data processed.</p>
+      <h2 id="s136" class="h-0">4. Confidentiality, Personnel Integrity and Training</h2>
+      <p class="p">Require the Company’s employees, agents and other persons to whom access to Personal Data is provided to maintain the confidentiality of such Personal Data. The Data Importer shall take reasonable steps to ensure the integrity of personnel with access to Personal Data and shall provide annual training to its staff and subcontractors regarding the security requirements set out in this Annex.</p>
+      <h2 id="s137" class="h-0">5. Confidentiality, Integrity, Availability and Resilience</h2>
+      <p class="p">Maintain appropriate measures designed to ensure the ongoing confidentiality, integrity, availability and resilience of the Company’s systems and services.</p>
+      <h2 id="s138" class="h-0">6. Testing and Continuous Improvement</h2>
+      <p class="p">Maintain a process for regularly testing, assessing and evaluating the effectiveness of technical and organizational measures implemented to ensure the security of Personal Data. The Data Importer shall regularly test such measures to validate their appropriateness and effectiveness and shall implement corrective actions where deficiencies are identified.</p>
+      <h2 id="s139" class="h-0">7. Access Logging and Monitoring</h2>
+      <p class="p">Log access by individuals to, and activities performed on, systems and facilities containing the Company’s Personal Data. Upon the Company’s request, and subject to Applicable Laws, the Data Importer shall provide a report identifying authorized users, their associated privileges, account status and relevant activity history.</p>
+      <h2 id="s140" class="h-0">8. Authentication and Access Controls</h2>
+      <p class="p">Protect user accounts and access to Personal Data through multi-factor authentication, using at least two different authentication factors, such as a password together with a security token or certificate.</p>
+      <p class="p">Access to Personal Data shall be restricted to authorized personnel and limited to the minimum level necessary to perform obligations under this DPA. The Data Importer shall conduct access reviews whenever an individual’s scope of responsibility changes or any other change occurs that may affect personnel access to Personal Data.</p>
+      <h2 id="s141" class="h-0">9. Encryption and Pseudonymization</h2>
+      <p class="p">Store and transmit Personal Data using strong cryptographic protections consistent with industry best practices and pseudonymize Personal Data where appropriate.</p>
+      <h2 id="s142" class="h-0">10. Information Security Program</h2>
+      <p class="p">Maintain an information security policy and related security programs covering, at a minimum, security management, secure networks and systems, including firewall configuration, physical security and vulnerability management, in accordance with industry best practices.</p>
+      <h2 id="s143" class="h-0">11. Secure Disposal of Storage Media</h2>
+      <p class="p">Ensure that any storage media, including magnetic, optical, non-volatile solid-state, paper or other media capable of retaining information containing Personal Data, is securely erased or destroyed before being repurposed or disposed of.</p>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap foot-row">
+      <p class="foot-legal">The official affiliate program for Maxxed.io. 18+ only. Please gamble responsibly.</p>
+      <a class="btn" id="registerCta" href="https://ro-affiliate.maxxedpartners.com/registration" target="_blank" rel="noopener">Become a partner</a>
+    </div>
+  </footer>
+
+  <script>
+  /* 143 entries shouldn't sit on top of the text on a phone */
+  (function () {
+    var toc = document.getElementById('toc');
+    if (toc && window.matchMedia('(max-width: 1000px)').matches) toc.open = false;
+  })();
+
+  /* highlight the section currently in view in the contents rail */
+  (function () {
+    var links = [].slice.call(document.querySelectorAll('.toc a'));
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var heads = [].slice.call(document.querySelectorAll('.doc h2[id]'));
+    if (!heads.length || !('IntersectionObserver' in window)) return;
+    var current = null;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var a = map[e.target.id];
+        if (!a || a === current) return;
+        if (current) current.classList.remove('is-current');
+        a.classList.add('is-current');
+        current = a;
+        /* keep the active item visible in the rail without scrolling the page */
+        var rail = document.querySelector('.toc-links');
+        if (rail && rail.scrollHeight > rail.clientHeight) {
+          var top = a.offsetTop - rail.clientHeight / 2;
+          rail.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+    }, { rootMargin: '-80px 0px -70% 0px' });
+    heads.forEach(function (h) { io.observe(h); });
+  })();
+  </script>
+</body>
+</html>
