@@ -446,6 +446,8 @@
   .apply-cta { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 640px; margin-inline: auto; }
   .apply-cta .lead { margin-inline: auto; }
   .btn-lg { margin-top: 32px; padding: 18px 40px; font-size: 14px; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .cta-row .btn-lg { margin-top: 32px; }
   /* ── Big copy / open contact buttons ── */
   .contact-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: clamp(32px, 5vw, 48px); }
   .chip {
@@ -624,6 +626,7 @@
           <p class="hero-tag" data-cms="hero_tagline">Maxxed Partners is the official affiliate program for Maxxed.io, built around crypto, performance, and long-term partnerships.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#apply" data-cms="cta_label">Become a partner</a>
+            <a class="btn btn-ghost js-login" href="https://ro-affiliate.maxxedpartners.com/login" target="_blank" rel="noopener">Log in</a>
           </div>
         </div>
         <div class="hero-media">
@@ -900,7 +903,10 @@
         <span class="eyebrow" style="display:inline-flex;align-items:center;gap:12px;margin-bottom:20px;"><span class="dot"></span>Become a partner</span>
         <div class="display-xl">Apply in<br><span class="green">2 minutes</span></div>
         <p class="lead" style="margin-top:24px;max-width:46ch;" data-cms="apply_line">Tell us about your traffic. We'll review and get back to you within 24 hours.</p>
-        <a class="btn btn-primary btn-lg" id="registerCta" href="#" target="_blank" rel="noopener">Become a partner</a>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg js-register" id="registerCta" href="https://ro-affiliate.maxxedpartners.com/registration" target="_blank" rel="noopener">Become a partner</a>
+          <a class="btn btn-ghost btn-lg js-login" href="https://ro-affiliate.maxxedpartners.com/login" target="_blank" rel="noopener">Log in</a>
+        </div>
         <div class="contact-chips">
           <button type="button" class="chip" id="emailChip" data-copy-button data-copy-email
                   aria-label="Copy email to clipboard">
@@ -950,6 +956,7 @@
       <a class="link" href="#commission">Commission</a>
       <a class="link" href="#mediakit">Media kit</a>
       <a class="link" href="#faq">FAQ</a>
+      <a class="btn btn-ghost js-login" href="https://ro-affiliate.maxxedpartners.com/login" target="_blank" rel="noopener">Log in</a>
       <a class="btn btn-primary" href="#apply">Apply</a>
     </div>
   </nav>
@@ -1001,7 +1008,8 @@
     function applyCopy(map) {
       Object.keys(map).forEach(function (key) {
         var val = map[key]; if (val == null) return; val = String(val);
-        if (key === 'registration_url') { if (val) setHref('registerCta', val); return; }
+        if (key === 'registration_url') { if (val) setHrefAll('.js-register', val); return; }
+        if (key === 'login_url') { if (val) setHrefAll('.js-login', val); return; }
         if (key === 'terms_url') { if (val) setHref('termsLink', val); return; }
         if (key === 'contact_email' && val.trim()) {
           var ec = document.getElementById('emailChip');
@@ -1021,6 +1029,7 @@
       });
     }
     function setHref(id, url) { var el = document.getElementById(id); if (el) el.setAttribute('href', url); }
+    function setHrefAll(sel, url) { document.querySelectorAll(sel).forEach(function (el) { el.setAttribute('href', url); }); }
 
     function avatarEl(url, name) {
       var el = document.createElement('span'); el.className = 'cslider-av';
