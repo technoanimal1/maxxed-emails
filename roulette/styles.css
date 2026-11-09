@@ -1363,6 +1363,8 @@ img { display: block; }
     height: calc(var(--top-h) + var(--safe-t));
     padding: var(--safe-t) var(--pad-x) 0;
     gap: 10px;
+    background: transparent; /* the video runs underneath; its top gradient keeps this readable */
+    border-bottom: 0;
   }
   .topbar__logo { width: 88px; height: 19px; }
   .topbar__title,
@@ -1388,6 +1390,7 @@ img { display: block; }
     grid-template-rows: minmax(var(--video-min), 1fr) auto auto auto;
     grid-template-areas: "video video video" "table table table" "bal chat fab" "controls controls controls";
     background: linear-gradient(180deg, var(--bg) 0%, #050608 100%);
+    overflow: visible;
   }
   .left,
   .stage,
@@ -1413,10 +1416,27 @@ img { display: block; }
     left: auto;
     top: auto;
     width: 100%;
-    /* top half of the screen, from just under the top bar; never zoomed */
-    height: calc(50dvh - var(--top-h) - var(--safe-t));
-    min-height: var(--video-min);
+    /* from the very top of the screen (behind the top bar) to the middle; never zoomed */
+    margin-top: calc(-1 * (var(--top-h) + var(--safe-t)));
+    height: 50dvh;
+    min-height: calc(var(--video-min) + var(--top-h));
   }
+  /* dark gradient over the video: strong at the top for the bar and history,
+     a light dim through the middle, fading into the table area at the bottom */
+  .body__bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(4, 6, 9, 0.92) 0%,
+      rgba(4, 6, 9, 0.6) 14%,
+      rgba(4, 6, 9, 0.22) 32%,
+      rgba(4, 6, 9, 0.22) 62%,
+      rgba(10, 13, 20, 0.7) 86%,
+      var(--bg) 100%);
+  }
+  .left__fade { display: none; }
   /* crop centred on the wheel so it lines up with the BETS OPEN tab */
   /* wheel stays lined up under the BETS OPEN tab as the table slides */
   .body__media { object-position: calc(51% + var(--board-x)) 45%; }
