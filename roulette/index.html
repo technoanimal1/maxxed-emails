@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Social Roulette · Brasa Live</title>
+  <meta name="theme-color" content="#151515" />
+  <link rel="preload" href="./assets/img/table-bg.jpg" as="image" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="screen">
+
+      <!-- ───────────── Top bar ───────────── -->
+      <header class="topbar">
+        <img class="topbar__logo" src="./assets/img/logo-betano.svg" width="110.812" height="24" alt="Betano" />
+        <span class="divider" aria-hidden="true"></span>
+        <h1 class="topbar__title">Social Roulette</h1>
+        <span class="pill"><img src="./assets/icons/room.svg" width="16" height="16" alt="" />Room BR-01</span>
+        <span class="pill pill--live"><img src="./assets/icons/live-dot.svg" width="8" height="8" alt="" />LIVE</span>
+        <span class="topbar__spacer"></span>
+        <span class="topbar__powered">Powered by</span>
+        <span class="brasa" aria-label="Brasa Live">
+          <img class="brasa__word" src="./assets/img/brasa.svg" width="60.077" height="11.25" alt="" />
+          <img class="brasa__live" src="./assets/img/brasa-live.svg" width="33.971" height="14.127" alt="" />
+        </span>
+        <span class="pill pill--highlight">DEMO</span>
+        <nav class="topbar__icons" aria-label="Game options">
+          <button class="icon-btn" id="btnSound" type="button" aria-pressed="true" title="Sound"><img src="./assets/icons/volume.svg" width="20" height="20" alt="Sound" /></button>
+          <button class="icon-btn" data-popover="settings" type="button" title="Settings"><img src="./assets/icons/settings.svg" width="20" height="20" alt="Settings" /></button>
+          <button class="icon-btn" data-popover="history" type="button" title="History"><img src="./assets/icons/history.svg" width="20" height="20" alt="History" /></button>
+          <button class="icon-btn" data-popover="help" type="button" title="How to play"><img src="./assets/icons/help.svg" width="20" height="20" alt="Help" /></button>
+          <button class="icon-btn" id="btnFullscreen" type="button" title="Full screen"><img src="./assets/icons/fullscreen.svg" width="20" height="20" alt="Full screen" /></button>
+        </nav>
+      </header>
+
+      <!-- ───────────── Body ───────────── -->
+      <main class="body">
+        <div class="body__bg" aria-hidden="true"><img src="./assets/img/table-bg.jpg" alt="" /></div>
+
+        <section class="left">
+          <div class="left__fade" aria-hidden="true"></div>
+
+          <!-- reactions drifting next to the wheel -->
+          <span class="react react--red   is-bob" style="--x:1004px;--y:224.46px;--box:70.691px;--rot:-43.66deg">👎</span>
+          <span class="react react--grey  is-bob" style="--x:1029.91px;--y:296.37px;--box:62.741px;--rot:-17.53deg">🥲</span>
+          <span class="react react--sm react--dim is-bob" style="--x:1036px;--y:182.46px;--box:42.519px;--rot:5.07deg;--o:.5">👎</span>
+          <span class="react react--sm react--red is-bob" style="--x:1008.54px;--y:137px;--box:49.439px;--rot:-18.07deg;--o:.2">👎</span>
+
+          <div class="stage">
+            <div class="dock">
+              <div class="dock__center">
+                <div class="history" aria-label="Last results">
+                  <div class="history__track" id="historyTrack"></div>
+                  <span class="history__fade" aria-hidden="true"></span>
+                  <span class="history__inset" aria-hidden="true"></span>
+                </div>
+
+                <div class="controls">
+                  <div class="controls__group">
+                    <button class="round-btn" id="btnRebet" type="button" title="Rebet last round"><img src="./assets/icons/rebet.svg" width="24" height="24" alt="Rebet" /></button>
+                    <button class="round-btn round-btn--text" id="btnDouble" type="button" title="Double all bets"><span>X2</span></button>
+                  </div>
+                  <div class="chips">
+                    <button class="chips__arrow" id="chipPrev" type="button" aria-label="Previous chip"><img src="./assets/icons/arrow-left.svg" width="24" height="24" alt="" /></button>
+                    <div class="chips__rack" id="chipRack" role="radiogroup" aria-label="Chip value"></div>
+                    <button class="chips__arrow" id="chipNext" type="button" aria-label="Next chip"><img src="./assets/icons/arrow-right.svg" width="24" height="24" alt="" /></button>
+                  </div>
+                  <div class="controls__group">
+                    <button class="round-btn" id="btnUndo" type="button" title="Undo"><img src="./assets/icons/undo.svg" width="24" height="24" alt="Undo" /></button>
+                    <button class="round-btn" id="btnClear" type="button" title="Clear bets"><img src="./assets/icons/trash.svg" width="24" height="24" alt="Clear" /></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="glass balance" id="balanceBar">
+                <div class="stat">
+                  <span class="stat__label">Demo balance</span>
+                  <span class="stat__value" id="balance">1,000 cr</span>
+                </div>
+                <span class="glass__divider" aria-hidden="true"></span>
+                <div class="stat">
+                  <span class="stat__label">Your bet</span>
+                  <span class="stat__value" id="totalBet">0 cr</span>
+                </div>
+              </div>
+
+              <button class="glass autoplay" type="button" disabled>
+                <span class="stat">
+                  <span class="stat__label">Not Available</span>
+                  <span class="stat__value">Autoplay</span>
+                </span>
+              </button>
+            </div>
+
+            <span class="react react--grey is-bob" style="--x:1066px;--y:492px;--box:62.741px;--rot:-17.53deg">🥲</span>
+            <span class="react react--grey is-bob" style="--x:1063.08px;--y:404.08px;--box:68.573px;--rot:30.88deg">🥲</span>
+
+            <span class="pill pill--round" id="roundPill">Round #10482</span>
+
+            <article class="party">
+              <div class="party__avatars" aria-hidden="true">
+                <div class="party__cluster">
+                  <div class="avatar avatar--1">
+                    <div class="avatar__disc">
+                      <img class="avatar__bg" src="./assets/img/avatar-bg-1.svg" alt="" />
+                      <div class="avatar__crop"><img src="./assets/img/avatars-a.webp" alt="" /></div>
+                    </div>
+                  </div>
+                  <div class="avatar avatar--2">
+                    <div class="avatar__disc">
+                      <img class="avatar__bg" src="./assets/img/avatar-bg-2.svg" alt="" />
+                      <div class="avatar__crop"><img src="./assets/img/avatars-a.webp" alt="" /></div>
+                    </div>
+                  </div>
+                  <div class="avatar avatar--3">
+                    <img class="avatar__bg" src="./assets/img/avatar-bg-3.svg" alt="" />
+                    <div class="avatar__crop"><img src="./assets/img/avatars-a.webp" alt="" /></div>
+                  </div>
+                </div>
+              </div>
+              <div class="party__copy">
+                <h2 class="party__title">New spin party</h2>
+                <p class="party__desc">Enjoy social tournament with and tournaments</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="status" id="status" data-phase="open" role="status" aria-live="polite">
+            <span class="status__label" id="statusLabel">BETS OPEN</span>
+            <span class="status__timer" id="statusTimer" aria-hidden="true"></span>
+          </div>
+
+          <!-- tucked behind the bet grid, as in the design -->
+          <span class="react react--red is-bob" style="--x:954px;--y:476px;--box:70.691px;--rot:-43.66deg">👎</span>
+          <span class="react react--sm react--dim is-bob" style="--x:986px;--y:434px;--box:42.519px;--rot:5.07deg;--o:.5">👎</span>
+          <span class="react react--sm react--red is-bob" style="--x:958.54px;--y:388.54px;--box:49.439px;--rot:-18.07deg;--o:.2">👎</span>
+
+          <div class="fx" id="fxLayer" aria-hidden="true"></div>
+        </section>
+
+        <!-- ───────────── Betting grid ───────────── -->
+        <section class="board" id="board" aria-label="Betting table">
+          <img class="board__frame" src="./assets/img/grid-frame.svg" width="720.604" height="244" alt="" />
+          <div class="board__grid">
+            <button class="cell cell--zero" type="button" data-bet="n:0" aria-label="Straight up 0">
+              <img class="cell--zero__shape" src="./assets/img/zero-cell.svg" alt="" />
+              <span class="cell__num">0</span>
+              <span class="stake"></span>
+            </button>
+
+            <div class="board__mid">
+              <div class="outside">
+                <button class="out out--tl" type="button" data-bet="doz:1"><span class="out__label">1st</span><span class="out__rule out__rule--bottom"></span><span class="stake"></span></button>
+                <button class="out" type="button" data-bet="doz:2"><span class="out__label">2nd</span><span class="out__rule out__rule--bottom"></span><span class="stake"></span></button>
+                <button class="out out--tr" type="button" data-bet="doz:3"><span class="out__label">3rd</span><span class="out__rule out__rule--bottom"></span><span class="stake"></span></button>
+              </div>
+
+              <div class="numbers" id="numbers"></div>
+
+              <div class="outside outside--bottom">
+                <div class="out-pair out--bl">
+                  <button class="out out--half" type="button" data-bet="low"><span class="out__label">1 to 18</span><span class="stake"></span></button>
+                  <button class="out out--half" type="button" data-bet="even"><span class="out__label">EVEN</span><span class="stake"></span></button>
+                  <span class="out__rule out__rule--top"></span>
+                </div>
+                <div class="out-pair">
+                  <button class="out out--half out--color" type="button" data-bet="red">
+                    <span class="diamond"><img src="./assets/img/diamond-red.svg" alt="" /></span><span class="out__label">Red</span><span class="stake"></span>
+                  </button>
+                  <button class="out out--half out--color" type="button" data-bet="black">
+                    <span class="out__label">Black</span><span class="diamond"><img src="./assets/img/diamond-black.svg" alt="" /></span><span class="stake"></span>
+                  </button>
+                  <span class="out__rule out__rule--top"></span>
+                </div>
+                <div class="out-pair out--br">
+                  <button class="out out--half" type="button" data-bet="odd"><span class="out__label">ODD</span><span class="stake"></span></button>
+                  <button class="out out--half" type="button" data-bet="high"><span class="out__label">19 to 36</span><span class="stake"></span></button>
+                  <span class="out__rule out__rule--top"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="columns">
+              <button class="cell cell--col cell--col-top" type="button" data-bet="col:3" aria-label="Column 3, pays 2 to 1"><span class="cell__num cell__num--sm">2:1</span><span class="stake"></span></button>
+              <button class="cell cell--col" type="button" data-bet="col:2" aria-label="Column 2, pays 2 to 1"><span class="cell__num cell__num--sm">2:1</span><span class="stake"></span></button>
+              <button class="cell cell--col cell--col-bottom" type="button" data-bet="col:1" aria-label="Column 1, pays 2 to 1"><span class="cell__num cell__num--sm">2:1</span><span class="stake"></span></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ───────────── Chat ───────────── -->
+        <aside class="chat" aria-label="Table chat">
+          <div class="chat__messages" id="chatMessages" aria-live="polite">
+            <div class="msg msg--me">
+              <div class="msg__meta"><span>Me</span><img src="./assets/img/dot-sep.svg" width="3" height="3" alt="" /><span>10:33</span></div>
+              <p class="msg__text">Hey, is anyone at the table? Ready to spin some luck?</p>
+              <div class="msg__reactions" aria-label="Reactions">
+                <span class="mini-react mini-react--add">+</span>
+                <span class="mini-react mini-react--fire">🔥</span>
+                <span class="mini-react mini-react--clown">🤡</span>
+              </div>
+            </div>
+            <div class="msg msg--host">
+              <p class="msg__text">I've got a winning strategy for you, my friend!</p>
+            </div>
+          </div>
+
+          <div class="chat__panel">
+            <div class="host">
+              <div class="host__avatar">
+                <img class="host__ring" src="./assets/img/avatar-bg-chat.svg" width="40" height="40" alt="" />
+                <div class="host__crop"><img src="./assets/img/avatars-b.webp" alt="" /></div>
+              </div>
+              <div class="host__meta">
+                <span class="host__name">Rafaela</span>
+                <span class="host__place">Sao Paolo</span>
+              </div>
+            </div>
+
+            <div class="segmented" role="tablist">
+              <button class="segmented__item is-active" role="tab" aria-selected="true" data-tab="chat" type="button">Chat</button>
+              <button class="segmented__item" role="tab" aria-selected="false" data-tab="voice" type="button">Voice</button>
+              <button class="segmented__item" role="tab" aria-selected="false" data-tab="stickers" type="button">Stickers</button>
+            </div>
+
+            <form class="composer" id="composer" autocomplete="off">
+              <label class="composer__field" id="composerField">
+                <input id="chatInput" type="text" maxlength="120" placeholder="Write a message…" aria-label="Write a message" />
+              </label>
+              <div class="stickers" id="stickers" hidden>
+                <button type="button" data-emoji="🔥">🔥</button>
+                <button type="button" data-emoji="🤡">🤡</button>
+                <button type="button" data-emoji="🥲">🥲</button>
+                <button type="button" data-emoji="👎">👎</button>
+                <button type="button" data-emoji="🎉">🎉</button>
+                <button type="button" data-emoji="💰">💰</button>
+              </div>
+              <button class="composer__mic" id="micBtn" type="button" aria-pressed="false" title="Voice chat"><img src="./assets/icons/mic.svg" width="20" height="20" alt="Microphone" /></button>
+              <img class="composer__glow" src="./assets/img/mic-glow.svg" alt="" aria-hidden="true" />
+            </form>
+          </div>
+        </aside>
+
+        <!-- ───────────── Racetrack ───────────── -->
+        <button class="switch" id="btnRacetrack" type="button" aria-pressed="true">
+          <span class="switch__icon"><img src="./assets/icons/switch.svg" alt="" /></span>
+          <span class="switch__label">Switch to Racetrack</span>
+        </button>
+
+        <div class="racetrack" id="racetrack" aria-label="Racetrack">
+          <img class="racetrack__art" src="./assets/img/racetrack.svg" width="302" height="76" alt="" />
+          <div class="racetrack__hits" id="raceHits"></div>
+        </div>
+
+        <div class="popover glass" id="popover" role="dialog" aria-modal="false" hidden>
+          <div class="popover__head"><h3 id="popoverTitle"></h3><button type="button" class="popover__close" id="popoverClose" aria-label="Close">×</button></div>
+          <div class="popover__body" id="popoverBody"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
