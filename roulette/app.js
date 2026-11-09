@@ -414,25 +414,60 @@
     buildVerticalTrack();
   }
 
-  // portrait racetrack: the same track stood upright, numbers kept readable. Clockwise:
-  // top cap 8 23 10 5 → right side 24…35 → bottom cap 3 26 0 → left side 32…30
+  // portrait racetrack: the original rounded track stood upright (SVG), numbers kept upright.
+  // Clockwise = wheel order: top cap 8 23 10 5 → right side 24…35 → bottom cap 3 26 0 → left side 32…30
   function buildVerticalTrack() {
-    const cell = (n, style = "") => `<button class="race-hit vt-cell vt--${colorOf(n)}" type="button" data-race="${n}" aria-label="${n} and its neighbours" style="${style}">${n}</button>`;
-    const right = [24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35];
-    const left = [30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32];
-    const html = [
-      `<div class="vt-cap vt-cap--top">${[8, 23, 10, 5].map((n) => cell(n)).join("")}</div>`,
-      ...left.map((n, i) => cell(n, `grid-column:1;grid-row:${i + 2}`)),
-      ...right.map((n, i) => cell(n, `grid-column:3;grid-row:${i + 2}`)),
-      `<div class="vt-cap vt-cap--bottom">${[0, 26, 3].map((n) => cell(n)).join("")}</div>`,
-    ];
-    // sections down the middle, top to bottom
-    const spans = [[2, 6], [6, 10], [10, 14], [14, 17]];
-    RACE_SECTIONS.forEach((s, i) => {
-      const label = ["Tiers", "Orphelins", "Voisins", "Zero"][i];
-      html.push(`<button class="race-sec vt-sec${i === 3 ? " vt-sec--zero" : ""}" type="button" data-section="${i}" title="${s.name}" aria-label="${s.name}" style="grid-column:2;grid-row:${spans[i][0]} / ${spans[i][1]}">${label}</button>`);
-    });
-    $("#vtrack").innerHTML = html.join("");
+    const W = 172, H = 387, T = 34;          // track size and ring thickness (SVG units)
+    const rx = W / 2, ry = 46;               // rounded ends (semi-ellipses)
+    const rxIn = rx - T, ryIn = ry - 22;     // inner edge of the ring
+    const cx = W / 2, topCy = ry, botCy = H - ry;
+    const ch = (botCy - topCy) / 15;         // height of a straight-side cell
+    const f = (v) => +v.toFixed(2);
+    const pt = (cy, a, rX, rY, dir) => [f(cx + rX * Math.cos(a)), f(cy - dir * rY * Math.sin(a))];
+    // a curved wedge of a rounded end; dir 1 = top end, -1 = bottom end
+    const wedge = (cy, a0, a1, dir) => {
+      const [x1, y1] = pt(cy, a0, rx, ry, dir), [x2, y2] = pt(cy, a1, rx, ry, dir);
+      const [x3, y3] = pt(cy, a1, rxIn, ryIn, dir), [x4, y4] = pt(cy, a0, rxIn, ryIn, dir);
+      const sw = dir === 1 ? 1 : 0;
+      return `M${x1} ${y1}A${rx} ${ry} 0 0 ${sw} ${x2} ${y2}L${x3} ${y3}A${rxIn} ${ryIn} 0 0 ${1 - sw} ${x4} ${y4}Z`;
+    };
+    const cell = (n, d, tx, ty) =>
+      `<g class="race-hit vt-cell vt--${colorOf(n)}" data-race="${n}" role="button" aria-label="${n} and its neighbours"><path d="${d}"/><text x="${f(tx)}" y="${f(ty)}">${n}</text></g>`;
+    const capCells = (nums, cy, dir) => nums.map((n, i) => {
+      const step = Math.PI / nums.length;
+      const a0 = Math.PI - i * step, a1 = Math.PI - (i + 1) * step, am = (a0 + a1) / 2;
+      const [tx, ty] = pt(cy, am, (rx + rxIn) / 2, (ry + ryIn) / 2, dir);
+      return cell(n, wedge(cy, a0, a1, dir), tx, ty);
+    }).join("");
+    const side = (nums, x0) => nums.map((n, i) => {
+      const y0 = topCy + i * ch;
+      return cell(n, `M${x0} ${f(y0)}h${T}v${f(ch)}h${-T}Z`, x0 + T / 2, y0 + ch / 2);
+    }).join("");
+    // whole track and its inner field, both rounded
+    const stadium = (x0, w, rX, rY) =>
+      `M${x0} ${topCy}A${rX} ${rY} 0 0 1 ${x0 + w} ${topCy}V${botCy}A${rX} ${rY} 0 0 1 ${x0} ${botCy}Z`;
+    const yAt = (k) => f(topCy + k * ch);
+    const secs = [
+      ["Tiers", topCy - ryIn, yAt(4)],
+      ["Orphelins", yAt(4), yAt(8)],
+      ["Voisins", yAt(8), yAt(12)],
+      ["Zero", yAt(12), botCy + ryIn],
+    ].map(([label, y0, y1], i) => {
+      const mid = f((y0 + y1) / 2);
+      const pill = i === 3 ? `<rect class="vt-pill" x="${T + 6}" y="${f(y0 + 5)}" width="${W - 2 * T - 12}" height="${f(y1 - y0 - 12)}" rx="18"/>` : "";
+      return `<g class="race-sec vt-sec" data-section="${i}" role="button" aria-label="${RACE_SECTIONS[i].name}"><rect class="vt-sec__hit" x="${T}" y="${f(y0)}" width="${W - 2 * T}" height="${f(y1 - y0)}"/>${pill}<text x="${cx}" y="${mid}">${label}</text></g>`;
+    }).join("");
+    const rules = [4, 8, 12].map((k) => `<line class="vt-rule" x1="${T + 8}" x2="${W - T - 8}" y1="${yAt(k)}" y2="${yAt(k)}"/>`).join("");
+    $("#vtrack").innerHTML = `<svg viewBox="-1 -1 ${W + 2} ${H + 2}" aria-label="Racetrack">
+      <path class="vt-base" d="${stadium(0, W, rx, ry)}"/>
+      <path class="vt-field" d="${stadium(T, W - 2 * T, rxIn, ryIn)}"/>
+      ${capCells([8, 23, 10, 5], topCy, 1)}
+      ${side([30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32], 0)}
+      ${side([24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35], W - T)}
+      ${capCells([0, 26, 3], botCy, -1)}
+      ${rules}${secs}
+      <path class="vt-outline" d="${stadium(0, W, rx, ry)}"/>
+    </svg>`;
   }
 
   function renderHistory(fresh = false) {
