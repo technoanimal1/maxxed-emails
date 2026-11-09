@@ -22,12 +22,15 @@
     [25, 160, 64], [2, 176, 64], [21, 192, 64], [4, 208, 64], [19, 225, 64], [15, 241, 64], [32, 259, 64],
     [3, 278, 14], [26, 287, 35], [0, 278, 56], [5, 13, 11], [10, 2, 25], [23, 2, 45], [8, 13, 59],
   ];
+  // classic French "announced" bets: [bet key, chips on it]
   const RACE_SECTIONS = [
-    { name: "Tiers", left: 18, width: 70, numbers: [27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33] },
-    { name: "Orphelins", left: 99, width: 58, numbers: [1, 20, 14, 31, 9, 17, 34, 6] },
-    { name: "Voisins", left: 164, width: 58, numbers: [22, 18, 29, 7, 28, 12, 35, 3, 26, 0, 32, 15, 19, 4, 21, 2, 25] },
-    { name: "Zero", left: 224, width: 60, numbers: [12, 35, 3, 26, 0, 32, 15] },
+    { name: "Tiers du cylindre", left: 18, width: 70, bets: [["sp:5-8", 1], ["sp:10-11", 1], ["sp:13-16", 1], ["sp:23-24", 1], ["sp:27-30", 1], ["sp:33-36", 1]] },
+    { name: "Orphelins", left: 99, width: 58, bets: [["n:1", 1], ["sp:6-9", 1], ["sp:14-17", 1], ["sp:17-20", 1], ["sp:31-34", 1]] },
+    { name: "Voisins du zéro", left: 164, width: 58, bets: [["tr:0-2-3", 2], ["sp:4-7", 1], ["sp:12-15", 1], ["sp:18-21", 1], ["sp:19-22", 1], ["co:25-26-28-29", 2], ["sp:32-35", 1]] },
+    { name: "Jeu zéro", left: 224, width: 60, bets: [["sp:0-3", 1], ["sp:12-15", 1], ["n:26", 1], ["sp:32-35", 1]] },
   ];
+  // European wheel order, used for neighbour bets
+  const WHEEL = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 
   const BETTING_MS = 15000;
   const CLOSED_MS = 2500;
@@ -48,6 +51,7 @@
     music: localStorage.getItem("sr.music") !== "off",
     muted: localStorage.getItem("sr.muted") === "on",
     force: null, // next result, used by the motion demo panel
+    neighbours: Math.min(9, Math.max(1, +localStorage.getItem("sr.neighbours") || 2)),
   };
   const M = window.Motion || null; // motion layer (motion.js); everything works without it
   const DEMO = new URLSearchParams(location.search).has("demo");
@@ -69,8 +73,13 @@
     return buf[0] % max;
   };
 
+  // inside bets carry their numbers in the key, e.g. "sp:17-20", "co:16-17-19-20"
+  const INSIDE = { sp: "Split", st: "Street", tr: "Trio", co: "Corner", ff: "First four", sl: "Six line" };
+  const PAYOUT = { n: 35, sp: 17, st: 11, tr: 11, co: 8, ff: 8, sl: 5, col: 2, doz: 2 };
+  const betKey = (type, nums) => `${type}:${[...nums].sort((a, b) => a - b).join("-")}`;
   function covered(key) {
     const [type, arg] = key.split(":");
+    if (INSIDE[type]) return arg.split("-").map(Number);
     const all = Array.from({ length: 36 }, (_, i) => i + 1);
     switch (type) {
       case "n": return [+arg];
@@ -85,7 +94,12 @@
       default: return [];
     }
   }
-  const payoutOf = (key) => (key.startsWith("n:") ? 35 : key.startsWith("col:") || key.startsWith("doz:") ? 2 : 1);
+  const payoutOf = (key) => PAYOUT[key.split(":")[0]] ?? 1;
+  const sectionNumbers = (i) => [...new Set(RACE_SECTIONS[i].bets.flatMap(([k]) => covered(k)))];
+  function neighbours(n, count = state.neighbours) {
+    const i = WHEEL.indexOf(n);
+    return Array.from({ length: count * 2 + 1 }, (_, k) => WHEEL[(i + k - count + WHEEL.length) % WHEEL.length]);
+  }
 
   /* ----------------------------------------------------------------- sound */
   let audio;
@@ -293,7 +307,69 @@
       }).join("");
       return `<div class="numbers__row">${cells}</div>`;
     });
-    $("#numbers").innerHTML = rows.join("");
+    $("#numbers").innerHTML = rows.join("") + `<div class="inside">${desktopSpots()}</div>`;
+  }
+
+  const spot = (type, nums, style, cls = "hs") =>
+    `<button class="${cls}" type="button" data-bet="${betKey(type, nums)}" aria-label="${INSIDE[type]} ${[...nums].sort((a, b) => a - b).join(", ")}" style="${style}"><span class="stake"></span></button>`;
+
+  // inside bets on the landscape table: splits on every shared edge, corners where four
+  // numbers meet, streets / six lines on the bottom edge, and the zero combinations
+  function desktopSpots() {
+    const P = 50.945; // cell pitch
+    const S = 48.264; // cell size
+    const G = 2.681; // gap
+    const H = 150.154; // height of the 3 rows
+    const off = [3, 2, 1];
+    const num = (r, c) => c * 3 + off[r];
+    const at = (cx, cy, w, h) => `left:${(cx - w / 2).toFixed(2)}px;top:${(cy - h / 2).toFixed(2)}px;width:${w}px;height:${h}px`;
+    const out = [];
+    for (let r = 0; r < 3; r++) {
+      out.push(spot("sp", [0, num(r, 0)], at(-G / 2, r * P + S / 2, 14, 30)));
+      for (let c = 0; c < 12; c++) {
+        if (c < 11) out.push(spot("sp", [num(r, c), num(r, c + 1)], at((c + 1) * P - G / 2, r * P + S / 2, 14, 30)));
+        if (r < 2) out.push(spot("sp", [num(r, c), num(r + 1, c)], at(c * P + S / 2, (r + 1) * P - G / 2, 30, 14)));
+      }
+    }
+    for (let c = 0; c < 12; c++) {
+      const base = c * 3 + 1;
+      out.push(spot("st", [base, base + 1, base + 2], at(c * P + S / 2, H + G / 2, 30, 14)));
+    }
+    // corners and six lines last so they sit on top of the splits/streets they overlap
+    for (let r = 0; r < 2; r++) {
+      for (let c = 0; c < 11; c++) out.push(spot("co", [num(r, c), num(r, c + 1), num(r + 1, c), num(r + 1, c + 1)], at((c + 1) * P - G / 2, (r + 1) * P - G / 2, 16, 16)));
+    }
+    for (let c = 0; c < 11; c++) {
+      const base = c * 3 + 1;
+      out.push(spot("sl", [base, base + 1, base + 2, base + 3, base + 4, base + 5], at((c + 1) * P - G / 2, H + G / 2, 16, 14)));
+    }
+    out.push(spot("tr", [0, 2, 3], at(-G / 2, P - G / 2, 16, 16)));
+    out.push(spot("tr", [0, 1, 2], at(-G / 2, 2 * P - G / 2, 16, 16)));
+    out.push(spot("ff", [0, 1, 2, 3], at(-G / 2, H + G / 2, 16, 14)));
+    return out.join("");
+  }
+
+  // the same bets on the portrait table, placed as grid items on the cell they hang off
+  function mobileSpots() {
+    const cell = (n) => `grid-row:${1 + Math.ceil(n / 3)};grid-column:${3 + ((n - 1) % 3)}`;
+    const m = (type, nums, anchor, dirs) => spot(type, nums, cell(anchor), `hs hs-m ${dirs}`);
+    const out = [];
+    for (let n = 1; n <= 36; n++) {
+      const col = (n - 1) % 3; // 0 left · 1 middle · 2 right
+      if (col < 2) out.push(m("sp", [n, n + 1], n, "hs-e hs-tall"));
+      if (n <= 33) out.push(m("sp", [n, n + 3], n, "hs-b hs-wide"));
+      if (col === 0) out.push(m("st", [n, n + 1, n + 2], n, "hs-s hs-tall"));
+      if (n <= 3) out.push(m("sp", [0, n], n, "hs-t hs-wide"));
+    }
+    for (let n = 1; n <= 36; n++) {
+      const col = (n - 1) % 3;
+      if (col < 2 && n <= 32) out.push(m("co", [n, n + 1, n + 3, n + 4], n, "hs-e hs-b hs-dot"));
+      if (col === 0 && n <= 31) out.push(m("sl", [n, n + 1, n + 2, n + 3, n + 4, n + 5], n, "hs-s hs-b hs-dot"));
+    }
+    out.push(m("tr", [0, 1, 2], 1, "hs-e hs-t hs-dot"));
+    out.push(m("tr", [0, 2, 3], 2, "hs-e hs-t hs-dot"));
+    out.push(m("ff", [0, 1, 2, 3], 1, "hs-s hs-t hs-dot"));
+    return out.join("");
   }
 
   // portrait table: zero on top, 12 rows of 3 numbers, outside bets down the left, 2:1 at the bottom
@@ -323,15 +399,16 @@
       html.push(`<button class="mb-col${cls}" type="button" data-bet="col:${c}" style="grid-row:14;grid-column:${2 + c}" aria-label="Column ${c}, pays 2 to 1"><span class="out__label">2:1</span>${stake}</button>`);
     });
     html.push(`<span class="mb-corner" style="grid-row:14" aria-hidden="true"></span>`);
+    html.push(mobileSpots());
     $("#mboard").innerHTML = `<div class="mb-grid">${html.join("")}</div>`;
   }
 
   function buildRacetrack() {
     const hits = RACE_NUMBERS.map(
-      ([n, x, y]) => `<button class="race-hit" type="button" data-race="${n}" aria-label="Racetrack ${n}" style="left:${x - 1}px;top:${y - 6}px;width:17px;height:18px"></button>`
+      ([n, x, y]) => `<button class="race-hit" type="button" data-race="${n}" aria-label="${n} and its neighbours" style="left:${x - 1}px;top:${y - 6}px;width:17px;height:18px"></button>`
     );
     const secs = RACE_SECTIONS.map(
-      (s, i) => `<button class="race-sec" type="button" data-section="${i}" aria-label="${s.name} (one chip on each of ${s.numbers.length} numbers)" title="${s.name}" style="left:${s.left}px;width:${s.width}px"></button>`
+      (s, i) => `<button class="race-sec" type="button" data-section="${i}" aria-label="${s.name}: ${s.bets.reduce((t, [, c]) => t + c, 0)} chips" title="${s.name}" style="left:${s.left}px;width:${s.width}px"></button>`
     );
     $("#raceHits").innerHTML = secs.join("") + hits.join("");
   }
@@ -391,6 +468,15 @@
   }
 
   const chipValue = () => CHIPS[state.chipIndex].value;
+  const placeSection = (i) => place(RACE_SECTIONS[i].bets.map(([key, chips]) => [key, chipValue() * chips]));
+
+  function setNeighbours(count) {
+    state.neighbours = Math.min(9, Math.max(1, count));
+    localStorage.setItem("sr.neighbours", state.neighbours);
+    $("#nbCount").textContent = state.neighbours;
+    $('#neighbours [data-n="-1"]').disabled = state.neighbours === 1;
+    $('#neighbours [data-n="1"]').disabled = state.neighbours === 9;
+  }
 
   function onBoardClick(e) {
     const target = e.target.closest("[data-bet]");
@@ -411,6 +497,14 @@
     const board = $("#board");
     board.addEventListener("click", onBoardClick);
     $("#mboard").addEventListener("click", onBoardClick);
+    $("#mboard").addEventListener("mouseover", (e) => {
+      const t = e.target.closest(".hs");
+      if (t) highlight(covered(t.dataset.bet), true);
+    });
+    $("#mboard").addEventListener("mouseout", (e) => {
+      const t = e.target.closest(".hs");
+      if (t) highlight(covered(t.dataset.bet), false);
+    });
     // hovering an outside bet previews which numbers it covers
     board.addEventListener("mouseover", (e) => {
       const t = e.target.closest("[data-bet]");
@@ -425,20 +519,20 @@
     race.addEventListener("click", (e) => {
       const hit = e.target.closest(".race-hit");
       const sec = e.target.closest(".race-sec");
-      if (hit) place([[`n:${hit.dataset.race}`, chipValue()]]);
-      if (sec) place(RACE_SECTIONS[+sec.dataset.section].numbers.map((n) => [`n:${n}`, chipValue()]));
+      if (hit) place(neighbours(+hit.dataset.race).map((n) => [`n:${n}`, chipValue()]));
+      if (sec) placeSection(+sec.dataset.section);
     });
     race.addEventListener("mouseover", (e) => {
       const sec = e.target.closest(".race-sec");
       const hit = e.target.closest(".race-hit");
-      if (sec) highlight(RACE_SECTIONS[+sec.dataset.section].numbers, true);
-      if (hit) highlight([+hit.dataset.race], true);
+      if (sec) highlight(sectionNumbers(+sec.dataset.section), true);
+      if (hit) highlight(neighbours(+hit.dataset.race), true);
     });
     race.addEventListener("mouseout", (e) => {
       const sec = e.target.closest(".race-sec");
       const hit = e.target.closest(".race-hit");
-      if (sec) highlight(RACE_SECTIONS[+sec.dataset.section].numbers, false);
-      if (hit) highlight([+hit.dataset.race], false);
+      if (sec) highlight(sectionNumbers(+sec.dataset.section), false);
+      if (hit) highlight(neighbours(+hit.dataset.race), false);
     });
 
     $("#btnUndo").addEventListener("click", () => {
@@ -535,7 +629,11 @@
     setStatus("result", `<span class="status__ball status__ball--${color}">${n}</span>${color === "zero" ? "ZERO" : color.toUpperCase()}`);
 
     // light up the winning number and every outside bet that pays
-    $$("[data-bet]").forEach((el) => el.classList.toggle("is-win", covered(el.dataset.bet).includes(n)));
+    $$("[data-bet]").forEach((el) => {
+      const k = el.dataset.bet;
+      const spotBet = el.classList.contains("hs");
+      el.classList.toggle("is-win", covered(k).includes(n) && (!spotBet || keys.includes(k)));
+    });
     $$(".race-hit").forEach((el) => el.classList.toggle("is-win", +el.dataset.race === n));
 
     renderStakes();
@@ -618,11 +716,12 @@
       `<div class="msg__meta"><span>${escapeHTML(author || "Me")}</span><img src="./assets/img/dot-sep.svg" width="3" height="3" alt=""><span>${timeNow()}</span></div>`;
     el.innerHTML = `${meta}<p class="msg__text">${escapeHTML(text)}</p>`;
     box.appendChild(el);
+    fadeLater(el);
     // older bubbles slide off the top under a fade (desktop) or scroll (mobile sheet)
     while (box.children.length > 40) box.firstElementChild.remove();
     box.classList.toggle("is-overflow", box.scrollHeight > box.clientHeight + 1);
     box.scrollTop = box.scrollHeight;
-    if (kind !== "me" && isMobile() && !chatOpen()) {
+    if (kind === "host" && isMobile() && !chatOpen()) {
       toast(el);
       unread += 1;
       const badge = $("#chatBadge");
@@ -630,6 +729,32 @@
       badge.hidden = false;
       M?.badgePop(badge);
     }
+  }
+
+  // desktop live feed: a message stays ~4s, then fades and collapses away (CSS)
+  const MSG_LIFE = 4000;
+  function fadeLater(el, delay = MSG_LIFE) {
+    setTimeout(() => {
+      el.classList.add("is-faded");
+      const box = $("#chatMessages");
+      setTimeout(() => box.classList.toggle("is-overflow", box.scrollHeight > box.clientHeight + 1), 800);
+    }, delay);
+  }
+
+  // other players chatting at the table
+  const PLAYERS = ["Lucas", "Mariana", "Pedro", "Ana", "João", "Bia", "Gabriel", "Camila", "Thiago", "Larissa", "Rafa", "Diego"];
+  const CHATTER = [
+    "Red again, I can feel it 🔴", "17 has to come back 😅", "Going all in on black!", "Nice spin Rafaela 👏",
+    "Who's on zero with me? 🟢", "Third dozen gang 🙌", "Voisins every round", "That was so close 😩",
+    "Corner 25-29, trust me", "Let's gooo 🔥", "Splitting 17/20 this time", "Boa noite, mesa! 🇧🇷",
+    "Odd numbers all night", "Took a break, I'm back 😎", "Neighbours of 32 🍀", "Can't stop won't stop",
+    "Six line 1-6 hit last time!", "Good luck everyone 🍀", "Black is due…", "Haha the clown emoji 🤡",
+  ];
+  function chatter() {
+    setTimeout(() => {
+      if (!document.hidden) addMessage("other", CHATTER[randInt(CHATTER.length)], PLAYERS[randInt(PLAYERS.length)]);
+      chatter();
+    }, 800 + Math.random() * 700);
   }
 
   /* mobile: chat lives in a bottom sheet; new messages pop over the video */
@@ -744,10 +869,17 @@
       title: "How to play",
       body: `<p style="margin:0 0 10px">Pick a chip, tap the table to place it, and wait for the dealer to spin. Bets close when the timer runs out.</p>
         <table>
-          <tr><td>Straight up (single number)</td><td>35 : 1</td></tr>
-          <tr><td>Column (2:1) · Dozen (1st/2nd/3rd)</td><td>2 : 1</td></tr>
-          <tr><td>Red / Black · Even / Odd · 1–18 / 19–36</td><td>1 : 1</td></tr>
-          <tr><td>Racetrack section</td><td>1 chip per number</td></tr>
+          <tr><td>Straight up · tap a number</td><td>35 : 1</td></tr>
+          <tr><td>Split · line between 2 numbers</td><td>17 : 1</td></tr>
+          <tr><td>Street · outer edge of a row (3)</td><td>11 : 1</td></tr>
+          <tr><td>Trio · 0-1-2 or 0-2-3</td><td>11 : 1</td></tr>
+          <tr><td>Corner · where 4 numbers meet</td><td>8 : 1</td></tr>
+          <tr><td>First four · 0-1-2-3</td><td>8 : 1</td></tr>
+          <tr><td>Six line · two streets (6)</td><td>5 : 1</td></tr>
+          <tr><td>Column (2:1) · Dozen</td><td>2 : 1</td></tr>
+          <tr><td>Red/Black · Even/Odd · 1–18/19–36</td><td>1 : 1</td></tr>
+          <tr><td>Racetrack number · neighbours</td><td>number ± N on the wheel</td></tr>
+          <tr><td>Voisins · Tiers · Orphelins · Jeu zéro</td><td>classic chip layouts</td></tr>
         </table>`,
     }),
     settings: () => ({
@@ -797,6 +929,11 @@
       else document.documentElement.requestFullscreen?.().catch(() => {});
     });
     $("#btnRacetrack").addEventListener("click", () => (isMobile() ? toggleRaceView() : toggleRacetrack()));
+    $("#neighbours").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-n]");
+      if (b) setNeighbours(state.neighbours + +b.dataset.n);
+    });
+    setNeighbours(state.neighbours);
   }
 
   // top-bar speaker = master mute for music + sound effects
@@ -921,6 +1058,9 @@
   requestAnimationFrame(tick);
   ambient();
   M?.intro();
+  // the two opening messages from the design fade like the rest, then the table starts chatting
+  $$("#chatMessages .msg").forEach((el, i) => fadeLater(el, 4500 + i * 700));
+  setTimeout(chatter, 2500);
 
   // browsers only allow audio after a user gesture
   const startAudio = () => Music.unlock();
@@ -932,6 +1072,7 @@
   // test/recording hook: jump to the last seconds of the betting window
   if (DEMO || new URLSearchParams(location.search).has("reel")) {
     window.__skip = () => { if (state.phase === "open") state.phaseEnds = performance.now() + 4200; };
+    window.__forceNext = (n) => { state.force = n; };
   }
 
   function buildDemo() {
@@ -959,7 +1100,12 @@
         const keys = isMobile() ? ["n:8", "n:23", "odd", "doz:3"] : ["n:8", "n:23", "odd", "doz:3", "col:1"];
         for (const k of keys) { place([[k, chipValue()]]); await wait(260); }
       }],
-      ["Racetrack section bet (cascade)", () => { ensureOpen(); place(RACE_SECTIONS[3].numbers.map((n) => [`n:${n}`, 10])); }],
+      ["Racetrack: Voisins du zéro", () => { ensureOpen(); placeSection(2); }],
+      ["Racetrack: neighbours of 17", () => { ensureOpen(); place(neighbours(17).map((n) => [`n:${n}`, chipValue()])); }],
+      ["Inside bets: split, street, corner, six line", async () => {
+        ensureOpen();
+        for (const k of ["sp:17-20", "st:13-14-15", "co:25-26-28-29", "sl:1-2-3-4-5-6", "tr:0-1-2"]) { place([[k, chipValue()]]); await wait(300); }
+      }],
       ["Select chip (flip)", () => selectChip(state.chipIndex + 1)],
       ["Undo last chip", () => $("#btnUndo").click()],
       ["Clear table (chips slide off)", () => { ensureBets(); setTimeout(() => $("#btnClear").click(), 700); }],

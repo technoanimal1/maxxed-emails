@@ -67,7 +67,33 @@ GSAP fails to load.
 **Motion demo:** open the page with `?demo` (e.g. `/roulette?demo`) for a panel that triggers
 each animation on demand, including a forced win and a forced loss.
 
-Payouts: straight up 35:1 · column/dozen 2:1 · red/black, even/odd, 1–18/19–36 1:1.
+## Every bet type
+
+| Bet | Where to tap | Pays |
+| --- | --- | --- |
+| Straight up | a number | 35:1 |
+| Split | the line between two numbers (incl. 0-1, 0-2, 0-3) | 17:1 |
+| Street | the outer edge of a row of three | 11:1 |
+| Trio | where 0 meets 1-2 or 2-3 | 11:1 |
+| Corner | where four numbers meet | 8:1 |
+| First four | the outer corner of 0-1-2-3 | 8:1 |
+| Six line | where two streets meet on the outer edge | 5:1 |
+| Column / Dozen | 2:1 boxes · 1st/2nd/3rd 12 | 2:1 |
+| Red/Black · Even/Odd · 1–18/19–36 | the outside boxes | 1:1 |
+| Neighbours | a number on the racetrack: it plus N each side on the wheel (− / + sets N, 1–9) | 35:1 per number |
+| Voisins du zéro | racetrack section: 0/2/3 trio ×2, splits 4/7, 12/15, 18/21, 19/22, 32/35, corner 25-29 ×2 (9 chips) | per bet |
+| Tiers du cylindre | splits 5/8, 10/11, 13/16, 23/24, 27/30, 33/36 (6 chips) | per bet |
+| Orphelins | 1, splits 6/9, 14/17, 17/20, 31/34 (5 chips) | per bet |
+| Jeu zéro | splits 0/3, 12/15, 32/35, straight 26 (4 chips) | per bet |
+
+Hovering any spot lights up exactly the numbers it covers. Inside-bet spots are invisible
+until hovered, so the table still matches the design.
+
+## Chat
+
+On desktop the chat is a live feed: up to 4–5 messages at a time, each fading out after ~4s.
+Other players at the table chat too (simulated, like the reactions). On phones the bottom
+sheet keeps the full history, and only the host's messages pop up over the video.
 Results use `crypto.getRandomValues` in the browser. This is a **demo**: no real money and no server.
 
 ## Layout
