@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Social Roulette · Brasa Live</title>
   <meta name="theme-color" content="#151515" />
+  <script>
+    // Served at /roulette (no trailing slash) the relative asset paths would resolve
+    // against the site root; anchor them to this folder instead.
+    (function () {
+      var p = location.pathname;
+      if (!/\/$|\.html$/.test(p)) {
+        var base = document.createElement("base");
+        base.href = p + "/";
+        document.head.appendChild(base);
+      }
+    })();
+  </script>
   <link rel="preload" href="./assets/img/table-bg.jpg" as="image" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
