@@ -32,9 +32,10 @@
   // European wheel order, used for neighbour bets
   const WHEEL = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 
-  const BETTING_MS = 15000;
-  const CLOSED_MS = 2500;
-  const RESULT_MS = 4500;
+  /* The round is driven by the live video (assets/video/live-round.*, a 29.5s loop):
+     the dealer launches the ball at 0s, bets close while it circles, the ball settles
+     in 24 at ~25.4s and the result is called at 25.7s. Times are in video seconds. */
+  const ROUND = { length: 29.5, closeAt: 14.9, resultAt: 25.7, result: 24 };
 
   /* ----------------------------------------------------------------- state */
   const state = {
@@ -46,7 +47,6 @@
     round: 10482,
     results: [12, 9, 27, 10, 0, 11, 22, 0, 35, 36, 1, 9, 9],
     phase: "open",
-    phaseEnds: 0,
     sound: localStorage.getItem("sr.sfx") !== "off",
     music: localStorage.getItem("sr.music") !== "off",
     muted: localStorage.getItem("sr.muted") === "on",
@@ -584,7 +584,6 @@
 
   function openBetting() {
     state.phase = "open";
-    state.phaseEnds = performance.now() + BETTING_MS;
     $$(".is-win").forEach((el) => el.classList.remove("is-win"));
     setStatus("open", "BETS OPEN");
     lock(false);
@@ -592,12 +591,12 @@
     document.documentElement.classList.remove("is-spin");
     M?.betsOpen();
     document.documentElement.classList.remove("was-spin");
-    M ? M.resultArc($("#resultArc"), false) : ($("#resultArc").hidden = true);
+    // the result arc lingers a moment into the new round, then clears
+    setTimeout(() => { if (state.phase === "open") M ? M.resultArc($("#resultArc"), false) : ($("#resultArc").hidden = true); }, 1600);
   }
 
   function closeBetting() {
     state.phase = "closed";
-    state.phaseEnds = performance.now() + CLOSED_MS;
     setStatus("closed", "NO MORE BETS");
     lock(true);
     renderStakes();
@@ -607,8 +606,7 @@
   }
 
   function settle() {
-    const n = state.force ?? randInt(37);
-    state.force = null;
+    const n = ROUND.result; // what the ball does in the video
     const color = colorOf(n);
     const staked = totalBet();
     let won = 0;
@@ -629,7 +627,6 @@
     renderHistory(true);
 
     state.phase = "result";
-    state.phaseEnds = performance.now() + RESULT_MS;
     setStatus("result", `<span class="status__ball status__ball--${color}">${n}</span>${color === "zero" ? "ZERO" : color.toUpperCase()}`);
 
     // light up the winning number and every outside bet that pays
@@ -656,11 +653,38 @@
     hostLine(n, color, won);
   }
 
+  // result arc: a slice of the wheel, the winning pocket in the middle, its wheel
+  // neighbours either side and the ball resting in it
   function showResultArc(n) {
     const i = WHEEL.indexOf(n);
-    const tile = (x, cls) => `<span class="ra-tile ${cls} ra-tile--${colorOf(x)}">${x}</span>`;
+    const left = WHEEL[(i + WHEEL.length - 1) % WHEEL.length];
+    const right = WHEEL[(i + 1) % WHEEL.length];
+    const cx = 150, cy = 215, r0 = 118, r1 = 200;
+    const rad = (d) => (d * Math.PI) / 180;
+    const xy = (r, d) => [+(cx + r * Math.sin(rad(d))).toFixed(1), +(cy - r * Math.cos(rad(d))).toFixed(1)];
+    const sector = (a0, a1) => {
+      const [x1, y1] = xy(r1, a0), [x2, y2] = xy(r1, a1), [x3, y3] = xy(r0, a1), [x4, y4] = xy(r0, a0);
+      return `M${x1} ${y1} A${r1} ${r1} 0 0 1 ${x2} ${y2} L${x3} ${y3} A${r0} ${r0} 0 0 0 ${x4} ${y4}Z`;
+    };
+    const fill = (x) => ({ red: "url(#raRed)", black: "url(#raBlack)", zero: "url(#raGreen)" })[colorOf(x)];
+    const num = (x, d, size, cls, r = 159) => {
+      const [tx, ty] = xy(r, d);
+      return `<text class="ra-num ${cls}" x="${tx}" y="${ty}" font-size="${size}" transform="rotate(${d} ${tx} ${ty})">${x}</text>`;
+    };
     const el = $("#resultArc");
-    el.innerHTML = tile(WHEEL[(i + WHEEL.length - 1) % WHEEL.length], "ra-side ra-left") + tile(n, "ra-main") + tile(WHEEL[(i + 1) % WHEEL.length], "ra-side ra-right");
+    el.setAttribute("aria-label", `Result ${n}`);
+    el.innerHTML = `<svg viewBox="-6 8 312 140" role="img" aria-hidden="true">
+      <defs>
+        <linearGradient id="raRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8393c"/><stop offset="1" stop-color="#8e1317"/></linearGradient>
+        <linearGradient id="raBlack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d3136"/><stop offset="1" stop-color="#0b0d0f"/></linearGradient>
+        <linearGradient id="raGreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1fcf74"/><stop offset="1" stop-color="#067538"/></linearGradient>
+        <radialGradient id="raBall" cx="0.35" cy="0.3" r="0.75"><stop offset="0" stop-color="#ffffff"/><stop offset="0.6" stop-color="#dfe2e6"/><stop offset="1" stop-color="#8b9198"/></radialGradient>
+      </defs>
+      <g class="ra-l"><path d="${sector(-50, -20)}" fill="${fill(left)}" class="ra-seg"/>${num(left, -35, 36, "ra-side")}</g>
+      <g class="ra-r"><path d="${sector(20, 50)}" fill="${fill(right)}" class="ra-seg"/>${num(right, 35, 36, "ra-side")}</g>
+      <g class="ra-c"><path d="${sector(-20, 20)}" fill="${fill(n)}" class="ra-seg ra-win"/>${num(n, 0, 46, "ra-main", 170)}</g>
+      <circle class="ra-ball" cx="150" cy="${cy - r0 - 12}" r="12" fill="url(#raBall)"/>
+    </svg>`;
     M ? M.resultArc(el, true) : (el.hidden = false);
   }
 
@@ -671,22 +695,49 @@
     openBetting();
   }
 
+  const video = () => $(".body__media");
+  let clockBase = performance.now(); // fallback clock origin (keeps running if the video stalls)
+  let lastT = 0;
+  const fallbackTime = () => (((performance.now() - clockBase) / 1000) % ROUND.length + ROUND.length) % ROUND.length;
+  function roundTime() {
+    const v = video();
+    if (v && !v.paused && v.readyState >= 3) {
+      clockBase = performance.now() - v.currentTime * 1000;
+      return v.currentTime;
+    }
+    return fallbackTime();
+  }
+  function seekRound(t) {
+    clockBase = performance.now() - t * 1000;
+    const v = video();
+    try { if (v) v.currentTime = t; } catch (_) { /* not seekable yet */ }
+  }
+  // when the video comes back after a stall or a hidden tab, put it back in step with the round
+  video()?.addEventListener("playing", () => {
+    const v = video();
+    const t = fallbackTime();
+    if (Math.abs(v.currentTime - t) > 1) v.currentTime = t;
+  });
+
   function tick() {
-    const now = performance.now();
-    const left = Math.max(0, state.phaseEnds - now);
+    const t = roundTime();
+    // the loop wrapped (or we skipped back): a new round begins
+    if (t + 2 < lastT && state.phase !== "open") nextRound();
+    lastT = t;
     const timer = $("#statusTimer");
     if (state.phase === "open") {
-      timer.style.setProperty("--p", (left / BETTING_MS).toFixed(4));
+      const left = Math.max(0, ROUND.closeAt - t) * 1000;
+      timer.style.setProperty("--p", (left / (ROUND.closeAt * 1000)).toFixed(4));
       const secs = Math.ceil(left / 1000);
       const label = secs <= 5 ? `BETS OPEN · ${secs}` : "BETS OPEN";
       if ($("#statusLabel").textContent !== label) {
         $("#statusLabel").textContent = label;
         if (secs <= 5) { M?.countdown(); blip(1500, 0.03, "sine", 0.03); }
       }
-      if (left === 0) closeBetting();
+      if (t >= ROUND.closeAt) closeBetting();
     } else {
       timer.style.setProperty("--p", 0);
-      if (left === 0) state.phase === "closed" ? settle() : nextRound();
+      if (state.phase === "closed" && t >= ROUND.resultAt) settle();
     }
     requestAnimationFrame(tick);
   }
@@ -1076,7 +1127,7 @@
   setTimeout(chatter, 2500);
 
   // browsers only allow audio after a user gesture
-  const startAudio = () => Music.unlock();
+  const startAudio = () => { Music.unlock(); video()?.play().catch(() => {}); };
   ["pointerdown", "keydown"].forEach((t) => document.addEventListener(t, startAudio, { once: true }));
   document.addEventListener("visibilitychange", () => Music.sync());
 
@@ -1084,27 +1135,29 @@
   if (DEMO) buildDemo();
   // test/recording hook: jump to the last seconds of the betting window
   if (DEMO || new URLSearchParams(location.search).has("reel")) {
-    window.__skip = () => { if (state.phase === "open") state.phaseEnds = performance.now() + 4200; };
-    window.__forceNext = (n) => { state.force = n; };
+    window.__skip = () => { if (state.phase === "open") seekRound(ROUND.closeAt - 4.2); };
+    window.__toResult = () => { if (state.phase === "closed") seekRound(ROUND.resultAt - 1.5); };
   }
 
   function buildDemo() {
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-    const ensureOpen = () => { if (state.phase !== "open") nextRound(); };
+    const ensureOpen = () => { if (state.phase !== "open") seekRound(0.2); };
     const ensureBets = () => {
       ensureOpen();
       if (!state.bets.size) place([["n:17", chipValue()], ["red", chipValue()], ["doz:2", chipValue()], ["col:2", chipValue()]]);
     };
+    // the ball always lands on 24 in the video, so a win or a loss is set up with the bets
     const runResult = async (win) => {
-      ensureBets();
-      await wait(650);
-      const all = Array.from({ length: 37 }, (_, i) => i);
-      const hits = (n) => [...state.bets.keys()].filter((k) => covered(k).includes(n)).length;
-      const pool = all.filter((n) => (win ? hits(n) > 0 : hits(n) === 0));
-      const n = win ? pool.sort((a, b) => hits(b) - hits(a))[0] : (pool.includes(0) ? 0 : pool[randInt(pool.length)]);
-      state.force = n ?? randInt(37);
-      closeBetting();
-      state.phaseEnds = performance.now() + 1300;
+      ensureOpen();
+      await wait(300);
+      if (!state.bets.size) {
+        const keys = win ? ["n:24", "black", "doz:2", "col:3"] : ["n:17", "red", "doz:1"];
+        for (const k of keys) { place([[k, chipValue()]]); await wait(180); }
+      }
+      await wait(600);
+      seekRound(ROUND.closeAt - 1.5); // jump to the end of betting
+      await wait(2400);
+      seekRound(ROUND.resultAt - 2); // skip most of the spin for the demo
     };
     const demos = [
       ["Intro: table builds in", () => M?.intro()],

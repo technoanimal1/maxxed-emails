@@ -300,10 +300,13 @@
     if (!on()) { el.hidden = !show; return; }
     if (show) {
       el.hidden = false;
-      const [left, main, right] = el.children;
+      const q = (s) => el.querySelector(s);
+      // the slice rises, the neighbours swing out from behind the winner, the ball drops in
       g.timeline()
-        .fromTo(main, { scale: 0.3, y: 30, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.55, ease: "back.out(2.2)" })
-        .fromTo([left, right], { opacity: 0, x: (i) => (i ? -30 : 30), rotation: 0 }, { opacity: 0.92, x: 0, rotation: (i) => (i ? 16 : -16), duration: 0.45, ease: "back.out(1.8)", clearProps: "transform" }, 0.18);
+        .fromTo(el, { opacity: 0, y: 18, scale: 0.82, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.8)" })
+        .fromTo(q(".ra-l"), { rotation: 30, opacity: 0, svgOrigin: "150 215" }, { rotation: 0, opacity: 1, svgOrigin: "150 215", duration: 0.55, ease: "back.out(1.6)" }, 0.12)
+        .fromTo(q(".ra-r"), { rotation: -30, opacity: 0, svgOrigin: "150 215" }, { rotation: 0, opacity: 1, svgOrigin: "150 215", duration: 0.55, ease: "back.out(1.6)" }, 0.12)
+        .fromTo(q(".ra-ball"), { y: -46, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "bounce.out" }, 0.3);
     } else if (!el.hidden) {
       g.to(el, { opacity: 0, scale: 0.85, y: -10, duration: 0.3, ease: "power2.in", onComplete: () => { el.hidden = true; g.set(el, { clearProps: "all" }); } });
     }

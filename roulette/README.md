@@ -35,9 +35,22 @@ For Git auto-deploys, set the project's **Root Directory** to `roulette`.
 
 ## Live video, music and motion
 
-- **Live table video** (`assets/video/live-table.mp4` + `.webm` fallback): the dealer clip,
-  re-cut so its last 0.8s crossfades into its start, so the 4.3s loop has no visible jump.
-  Muted (browsers only autoplay muted video); the poster frame shows while it loads.
+- **Live round video** (`assets/video/live-round.mp4` + `.webm` fallback): one full 29.5s
+  spin, re-cut so the end crossfades into the start. Muted (browsers only autoplay muted
+  video); the poster frame shows while it loads. **The round is timed by the video itself:**
+
+  | Video time | Game |
+  | --- | --- |
+  | 0s | dealer launches the ball: bets open (≈15s to bet while it circles) |
+  | 14.9s | no more bets (just before the ball starts bouncing) |
+  | 25.7s | ball has settled in **24**: result, payouts, result arc |
+  | 29.5s | loop → next round |
+
+  These live in `ROUND` at the top of `app.js` (`closeAt`, `resultAt`, `result`); change them
+  if the video changes. If the video stalls or can't autoplay, a fallback clock keeps the
+  rounds going and re-syncs the video when it plays again.
+- **Result arc:** a slice of the wheel over the video: the winning pocket in the middle, its
+  two wheel neighbours either side, the ball resting in it.
 - **Background music** (`assets/audio/casino-jazz-loop.m4a`): the supplied lounge-jazz track,
   trimmed and crossfaded into a seamless 78s loop. It starts on the first tap/click (browser
   rule), fades in, dips under wins, pauses when the tab is hidden. The speaker icon mutes
@@ -127,7 +140,7 @@ styles.css        all styling (Figma tokens at the top in :root)
 app.js            game logic: bets, rounds, payouts, chat, racetrack, music, demo panel
 motion.js         every animation (GSAP)
 vendor/           GSAP core, Flip, MotionPath (self-hosted)
-assets/video      live table loop + poster
+assets/video      live round video + poster
 assets/audio      background music loop
 assets/img        logos, avatar sprite sheets, grid frame, racetrack
 assets/icons      top bar + control icons (exported from Figma)

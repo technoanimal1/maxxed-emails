@@ -1109,61 +1109,40 @@ img { display: block; }
   html.is-spin { --board-k: 0.58; }
   .mb-grid { width: max-content; margin: 0 auto; }
   html.is-spin .mboard .hs { pointer-events: none; }
+}
 
-  /* result card: winning number fanned between its two wheel neighbours */
+/* ----- result arc: a slice of the wheel over the live video ------------------- */
+.result-arc {
+  position: absolute;
+  left: 566.8px; /* centred on the wheel / BETS OPEN tab (716.8px) */
+  top: 196px;
+  width: 300px;
+  height: 135px;
+  z-index: 6;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.55));
+}
+.result-arc[hidden] { display: none !important; }
+.result-arc svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.ra-seg { stroke: rgba(255, 255, 255, 0.14); stroke-width: 1.5; }
+.ra-win { stroke: rgba(224, 202, 58, 0.9); stroke-width: 2; }
+.ra-num { font-family: var(--f-num); font-weight: 800; fill: #fff; text-anchor: middle; dominant-baseline: central; }
+.ra-side { fill-opacity: 0.78; }
+@media (max-aspect-ratio: 1/1) {
   .result-arc {
+    position: relative;
+    left: auto;
+    top: auto;
     grid-area: video;
     align-self: center;
     justify-self: center;
-    display: flex;
-    align-items: flex-end;
-    gap: 0;
-    margin-top: -18px;
+    width: min(74vw, 300px);
+    height: auto;
+    aspect-ratio: 312 / 140;
+    margin-top: -10px;
     z-index: 4;
-    pointer-events: none;
-  }
-  .result-arc[hidden] { display: none !important; }
-  .ra-tile {
-    display: grid;
-    place-items: center;
-    width: 46px;
-    height: 54px;
-    font: 800 22px/1 var(--f-num);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
-  }
-  .ra-tile--red { background: linear-gradient(180deg, #e2403f, #a3191a); }
-  .ra-tile--black { background: linear-gradient(180deg, #2a2f35, #0b0e11); }
-  .ra-tile--zero { background: linear-gradient(180deg, #19c46b, #087a3c); }
-  .ra-side { opacity: 0.92; font-size: 18px; }
-  .ra-left { border-radius: 14px 4px 4px 14px; transform: rotate(-16deg) translate(6px, 8px); transform-origin: 100% 100%; }
-  .ra-right { border-radius: 4px 14px 14px 4px; transform: rotate(16deg) translate(-6px, 8px); transform-origin: 0 100%; }
-  .ra-main {
-    position: relative;
-    z-index: 1;
-    width: 64px;
-    height: 74px;
-    font-size: 34px;
-    border-radius: 12px;
-    border: 2px solid var(--gold);
-    box-shadow: 0 0 0 3px rgba(224, 202, 58, 0.25), 0 0 26px rgba(224, 202, 58, 0.55), 0 14px 30px rgba(0, 0, 0, 0.55);
-  }
-  .ra-main::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -9px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    transform: translateX(-50%);
-    background: radial-gradient(circle at 35% 30%, #fff, #cfd3d8 60%, #8d939a);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   }
 }
-.result-arc { display: none; }
-@media (max-aspect-ratio: 1/1) { .result-arc { display: flex; } }
 
 /* ----- mobile-only pieces (hidden in the desktop / landscape stage) -------- */
 .mboard,
@@ -1298,7 +1277,7 @@ img { display: block; }
     width: 100%;
     height: 100%;
   }
-  .win-pop { left: 50%; top: calc(50% + 58px); translate: -50% 0; font-size: 26px; } /* just below the result card */
+  .win-pop { left: 50%; top: calc(50% + 72px); translate: -50% 0; font-size: 26px; } /* just below the result card */
   .fx { z-index: 5; }
   @keyframes win-pop {
     0% { opacity: 0; transform: translateY(10px) scale(0.8); }
