@@ -1125,8 +1125,8 @@ img { display: block; }
 }
 .result-arc[hidden] { display: none !important; }
 .result-arc svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.ra-seg { stroke: rgba(255, 255, 255, 0.14); stroke-width: 1.5; }
-.ra-win { stroke: rgba(224, 202, 58, 0.9); stroke-width: 2; }
+.ra-seg { paint-order: stroke fill; }
+.ra-ring { fill: none; stroke: rgba(224, 202, 58, 0.95); stroke-linejoin: round; }
 .ra-num { font-family: var(--f-num); font-weight: 800; fill: #fff; text-anchor: middle; dominant-baseline: central; }
 .ra-side { fill-opacity: 0.78; }
 @media (max-aspect-ratio: 1/1) {
@@ -1135,12 +1135,12 @@ img { display: block; }
     left: auto;
     top: auto;
     grid-area: video;
-    align-self: center;
+    align-self: end;
     justify-self: center;
     width: min(52vw, 210px);
     height: auto;
     aspect-ratio: 312 / 140;
-    margin-top: -10px;
+    margin-bottom: 38px; /* just above the result tab */
     z-index: 4;
   }
 }
@@ -1459,7 +1459,7 @@ img { display: block; }
     width: 100%;
     height: 100%;
   }
-  .win-pop { left: 50%; top: calc(50% + 86px); translate: -50% 0; font-size: 24px; } /* below the result card (it rises ~50px as it fades) */
+  .win-pop { left: 50%; top: calc(100% - 172px); translate: -50% 0; font-size: 24px; } /* above the result card (it rises as it fades) */
   .fx { z-index: 5; }
   @keyframes win-pop {
     0% { opacity: 0; transform: translateY(10px) scale(0.8); }

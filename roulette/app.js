@@ -689,6 +689,19 @@
       return `M${x1} ${y1} A${r1} ${r1} 0 0 1 ${x2} ${y2} L${x3} ${y3} A${r0} ${r0} 0 0 0 ${x4} ${y4}Z`;
     };
     const fill = (x) => ({ red: "url(#raRed)", black: "url(#raBlack)", zero: "url(#raGreen)" })[colorOf(x)];
+    // inset by the corner radius (6px) and a 1.6deg gap, then stroke 12px with round joins
+    const R = 6;
+    const insetSector = (a0, a1) => {
+      const g0 = a0 + 1.6 + (R / 159) * (180 / Math.PI), g1 = a1 - 1.6 - (R / 159) * (180 / Math.PI);
+      const ri = r0 + R, ro = r1 - R;
+      const [x1, y1] = xy(ro, g0), [x2, y2] = xy(ro, g1), [x3, y3] = xy(ri, g1), [x4, y4] = xy(ri, g0);
+      return `M${x1} ${y1} A${ro} ${ro} 0 0 1 ${x2} ${y2} L${x3} ${y3} A${ri} ${ri} 0 0 0 ${x4} ${y4}Z`;
+    };
+    const seg = (a0, a1, paint, win = false) => {
+      const d = insetSector(a0, a1);
+      const ring = win ? `<path d="${d}" class="ra-ring" stroke-width="${R * 2 + 4}"/>` : "";
+      return `${ring}<path d="${d}" fill="${paint}" stroke="${paint}" stroke-width="${R * 2}" stroke-linejoin="round" class="ra-seg"/>`;
+    };
     const num = (x, d, size, cls, r = 159) => {
       const [tx, ty] = xy(r, d);
       return `<text class="ra-num ${cls}" x="${tx}" y="${ty}" font-size="${size}" transform="rotate(${d} ${tx} ${ty})">${x}</text>`;
@@ -702,9 +715,9 @@
         <linearGradient id="raGreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1fcf74"/><stop offset="1" stop-color="#067538"/></linearGradient>
         <radialGradient id="raBall" cx="0.35" cy="0.3" r="0.75"><stop offset="0" stop-color="#ffffff"/><stop offset="0.6" stop-color="#dfe2e6"/><stop offset="1" stop-color="#8b9198"/></radialGradient>
       </defs>
-      <g class="ra-l"><path d="${sector(-50, -20)}" fill="${fill(left)}" class="ra-seg"/>${num(left, -35, 36, "ra-side")}</g>
-      <g class="ra-r"><path d="${sector(20, 50)}" fill="${fill(right)}" class="ra-seg"/>${num(right, 35, 36, "ra-side")}</g>
-      <g class="ra-c"><path d="${sector(-20, 20)}" fill="${fill(n)}" class="ra-seg ra-win"/>${num(n, 0, 46, "ra-main", 170)}</g>
+      <g class="ra-l">${seg(-50, -20, fill(left))}${num(left, -35, 36, "ra-side")}</g>
+      <g class="ra-r">${seg(20, 50, fill(right))}${num(right, 35, 36, "ra-side")}</g>
+      <g class="ra-c">${seg(-20, 20, fill(n), true)}${num(n, 0, 46, "ra-main", 170)}</g>
       <circle class="ra-ball" cx="150" cy="${cy - r0 - 12}" r="12" fill="url(#raBall)"/>
     </svg>`;
     M ? M.resultArc(el, true) : (el.hidden = false);
