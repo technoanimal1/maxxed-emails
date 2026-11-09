@@ -1440,8 +1440,8 @@ img { display: block; }
     grid-area: video;
     align-self: start;
     justify-self: start;
-    width: min(60vw, 280px);
-    margin: 46px 0 0 var(--pad-x);
+    width: calc(100% - 2 * var(--pad-x)); /* full width on phones */
+    margin: 50px 0 0 var(--pad-x);
     z-index: 2;
   }
 
@@ -1468,7 +1468,7 @@ img { display: block; }
     gap: 0;
   }
   .party.is-collapsed .party__copy { display: none; }
-  .party.is-collapsed .party__avatars { zoom: 0.5; }
+  .party.is-collapsed .party__avatars { zoom: 0.4; } /* small enough to clear the full-width history bar */
 
   .status {
     grid-area: video;
@@ -1747,7 +1747,7 @@ img { display: block; }
 }
 /* short screens (small phones, or Safari with its bars showing): compact chrome */
 @media (max-aspect-ratio: 1/1) and (max-height: 720px) {
-  :root { --top-h: 44px; --dock-h: 130px; --video-min: 100px; }
+  :root { --top-h: 44px; --dock-h: 130px; --video-min: 110px; }
   .topbar__logo { width: 76px; height: 16.5px; }
   .balance, .switch, .chat-fab { margin-top: 6px; }
   .controls { padding-top: 6px; padding-bottom: calc(6px + var(--safe-b)); }
@@ -1756,7 +1756,7 @@ img { display: block; }
   .round-btn img { width: 18px; height: 18px; }
   .round-btn--text span { font-size: 12px; }
   .chips__rack { zoom: 0.9; }
-  .history { margin-top: 42px; }
+  .history { margin-top: 46px; }
   .party:not(.is-collapsed) .party__desc { display: none; }
 }
 /* tablets upright: roomier rows and type */

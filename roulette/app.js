@@ -437,7 +437,7 @@
 
   function renderHistory(fresh = false) {
     $("#historyTrack").innerHTML = state.results
-      .slice(0, 16)
+      .slice(0, 24)
       .map((n, i) => `<span class="num num--${colorOf(n)}${fresh && i === 0 ? " is-new" : ""}">${n}</span>`)
       .join("");
     if (fresh) M?.historyIn($("#historyTrack"));
