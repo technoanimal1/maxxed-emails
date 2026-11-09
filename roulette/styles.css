@@ -207,8 +207,18 @@ img { display: block; }
   overflow: hidden;
   overflow: clip;
 }
-.body__bg { position: absolute; left: -103px; top: -176px; width: 1605px; height: 865px; overflow: hidden; pointer-events: none; }
-.body__bg img { position: absolute; left: 0; top: 0.05%; width: 100%; height: 94.89%; max-width: none; }
+/* live dealer stream: full width, lifted so the wheel sits just above the betting table */
+.body__bg { position: absolute; left: 0; top: -40px; width: 1440px; height: 610px; overflow: hidden; pointer-events: none; background: #0a0d14; }
+.body__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+}
 
 .left {
   position: absolute;
@@ -370,6 +380,9 @@ img { display: block; }
   transition: border-color 0.3s;
 }
 .status__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font: 800 14px/1 var(--f-num);
   letter-spacing: -0.28px;
   color: var(--tab, var(--gold));
@@ -1086,20 +1099,14 @@ img { display: block; }
     width: 100%;
     height: 100%;
   }
-  .body__bg img {
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 58% 30%;
-  }
+  .body__media { object-position: 42% 45%; }
   .left__fade {
     grid-area: video;
     align-self: end;
     left: auto;
     bottom: auto;
     width: 100%;
-    height: 55%;
+    height: 32%;
   }
   .fx {
     grid-area: video;
@@ -1430,7 +1437,6 @@ img { display: block; }
 
 /* narrow phones: keep the top bar to the essentials */
 @media (max-aspect-ratio: 1/1) and (max-width: 479px) {
-  .topbar [data-popover="settings"],
   #btnFullscreen { display: none; }
 }
 /* very narrow phones (≤ 350px): shrink the chip rack a touch */
@@ -1456,6 +1462,99 @@ img { display: block; }
 @media (max-aspect-ratio: 1/1) and (min-width: 600px) {
   :root { --row-max: 40px; --out: 52px; }
   .party__avatars { zoom: 0.85; }
+}
+
+/* ==========================================================================
+   Motion layer support (motion.js adds html.has-motion when GSAP is running)
+   ========================================================================== */
+.fly-layer { position: absolute; inset: 0; z-index: 70; pointer-events: none; overflow: hidden; }
+.fly-chip { position: absolute; left: 0; top: 0; margin: 0; will-change: transform; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5)); }
+.burst-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 18px rgba(224, 202, 58, 0.7), inset 0 0 12px rgba(224, 202, 58, 0.5);
+}
+.spark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffe785;
+  box-shadow: 0 0 8px 2px rgba(255, 214, 90, 0.8);
+}
+
+/* GSAP takes over these, so switch off the CSS fallbacks */
+html.has-motion .stake .chip,
+html.has-motion .num.is-new,
+html.has-motion .popover { animation: none; }
+html.has-motion .racetrack { transition: none; }
+
+.now-playing { margin: 0 0 6px; font-size: 11px; line-height: 1.45; color: var(--text-muted); }
+
+/* ----- motion demo panel (open the page with ?demo) ------------------------ */
+.demo-panel {
+  position: fixed;
+  left: 12px;
+  top: 50%;
+  z-index: 1000;
+  width: 236px;
+  max-height: calc(100dvh - 24px);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  background: rgba(12, 12, 14, 0.88);
+  border: 1px solid rgba(224, 202, 58, 0.45);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font: 500 12px/1.3 var(--f-sans);
+  color: var(--text);
+  overflow: hidden;
+}
+.demo-panel__toggle {
+  flex: none;
+  padding: 10px 14px;
+  border: 0;
+  background: rgba(224, 202, 58, 0.14);
+  color: var(--gold);
+  font: 700 12px/1 var(--f-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+.demo-panel__toggle::after { content: "–"; float: right; }
+.demo-panel__list { display: flex; flex-direction: column; gap: 2px; padding: 6px; overflow-y: auto; }
+.demo-panel__list button {
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.demo-panel__list button:hover { background: rgba(255, 255, 255, 0.08); }
+.demo-panel__list button:active { background: rgba(224, 202, 58, 0.2); }
+.demo-panel.is-closed { width: auto; }
+.demo-panel.is-closed .demo-panel__list { display: none; }
+.demo-panel.is-closed .demo-panel__toggle::after { content: "+"; margin-left: 10px; }
+
+@media (max-aspect-ratio: 1/1) {
+  .demo-panel { left: 8px; right: 8px; top: auto; bottom: calc(150px + env(safe-area-inset-bottom, 0px)); width: auto; max-height: 46dvh; transform: none; }
+  .demo-panel.is-closed { right: auto; }
+  html.has-motion .chat { transition: none; }
+  /* history lives on the video in portrait, so its icon gives way to settings */
+  .topbar [data-popover="history"] { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

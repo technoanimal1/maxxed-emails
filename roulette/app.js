@@ -44,8 +44,13 @@
     results: [12, 9, 27, 10, 0, 11, 22, 0, 35, 36, 1, 9, 9],
     phase: "open",
     phaseEnds: 0,
-    sound: true,
+    sound: localStorage.getItem("sr.sfx") !== "off",
+    music: localStorage.getItem("sr.music") !== "off",
+    muted: localStorage.getItem("sr.muted") === "on",
+    force: null, // next result, used by the motion demo panel
   };
+  const M = window.Motion || null; // motion layer (motion.js); everything works without it
+  const DEMO = new URLSearchParams(location.search).has("demo");
 
   /* portrait phones/tablets get the re-flowed layout (see styles.css) */
   const portrait = window.matchMedia("(max-aspect-ratio: 1/1)");
@@ -84,10 +89,11 @@
 
   /* ----------------------------------------------------------------- sound */
   let audio;
+  const ctx = () => (audio = audio || new (window.AudioContext || window.webkitAudioContext)());
   function blip(freq = 900, dur = 0.06, type = "triangle", gain = 0.05) {
-    if (!state.sound) return;
+    if (!state.sound || state.muted) return;
     try {
-      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      ctx();
       const o = audio.createOscillator();
       const g = audio.createGain();
       o.type = type;
@@ -99,6 +105,77 @@
       o.stop(audio.currentTime + dur);
     } catch (_) { /* audio unavailable */ }
   }
+
+  /* ----------------------------------------------------------------- music
+     Casino lounge jazz, cut into a seamless 78s loop (the end crossfades into
+     the start). Starts on the first tap/click (browser autoplay rules), fades
+     in and out, ducks under wins, pauses when the tab is hidden. Routed
+     through Web Audio so fades also work on iOS, where <audio>.volume is
+     read-only. */
+  const Music = (() => {
+    const TRACKS = [{ src: "./assets/audio/casino-jazz-loop.m4a", title: "Casino lounge jazz" }];
+    const LEVEL = 0.32;
+    let el;
+    let gain;
+    let idx = 0;
+    let playing = false;
+    let unlocked = false;
+
+    function ensure() {
+      if (el) return;
+      el = new Audio();
+      el.preload = "auto";
+      el.src = TRACKS[idx].src;
+      el.loop = TRACKS.length === 1;
+      el.addEventListener("ended", next);
+      try {
+        const src = ctx().createMediaElementSource(el);
+        gain = ctx().createGain();
+        gain.gain.value = 0;
+        src.connect(gain).connect(ctx().destination);
+      } catch (_) {
+        gain = null;
+      }
+    }
+    function fade(to, secs) {
+      if (!el) return;
+      if (gain) {
+        const t = ctx().currentTime;
+        gain.gain.cancelScheduledValues(t);
+        gain.gain.setValueAtTime(gain.gain.value, t);
+        gain.gain.linearRampToValueAtTime(to, t + secs);
+      } else {
+        el.volume = Math.min(1, to);
+      }
+    }
+    const wanted = () => unlocked && state.music && !state.muted && !document.hidden;
+    function play() {
+      if (!wanted()) return;
+      ensure();
+      ctx().resume?.();
+      el.play().then(() => { playing = true; fade(LEVEL, 2.5); }).catch(() => {});
+    }
+    function pause() {
+      if (!el || !playing) return;
+      playing = false;
+      fade(0, 0.8);
+      setTimeout(() => { if (!playing) el.pause(); }, 850);
+    }
+    function next() {
+      idx = (idx + 1) % TRACKS.length;
+      el.src = TRACKS[idx].src;
+      if (wanted()) el.play().then(() => fade(LEVEL, 2.5)).catch(() => {});
+    }
+    function duck() {
+      if (!playing) return;
+      fade(LEVEL * 0.35, 0.25);
+      setTimeout(() => playing && fade(LEVEL, 1.6), 1800);
+    }
+    const sync = () => (wanted() ? play() : pause());
+    const nowPlaying = () => TRACKS[idx].title;
+    const unlock = () => { unlocked = true; sync(); };
+    return { sync, duck, nowPlaying, unlock };
+  })();
 
   /* ------------------------------------------------------------ chip markup */
   const ANGLES = [0, 45, 90, 135, 180, 225, 270, 315];
@@ -130,7 +207,10 @@
       el.classList.toggle("is-active", idx === state.chipIndex);
       el.setAttribute("aria-checked", idx === state.chipIndex);
     });
-    if (!silent) blip(1200, 0.04);
+    if (!silent) {
+      blip(1200, 0.04);
+      M?.chipSelect($$(".chip-slot")[state.chipIndex]);
+    }
   }
 
   function buildNumbers() {
@@ -189,6 +269,7 @@
       .slice(0, 16)
       .map((n, i) => `<span class="num num--${colorOf(n)}${fresh && i === 0 ? " is-new" : ""}">${n}</span>`)
       .join("");
+    if (fresh) M?.historyIn($("#historyTrack"));
   }
 
   function renderStakes() {
@@ -219,6 +300,7 @@
     void bar.offsetWidth;
     bar.classList.add("is-short");
     bar.addEventListener("animationend", () => bar.classList.remove("is-short"), { once: true });
+    M?.shake(bar);
     blip(180, 0.15, "sawtooth", 0.04);
   }
 
@@ -229,6 +311,7 @@
     state.undo.push(snapshot());
     entries.forEach(([key, amt]) => state.bets.set(key, (state.bets.get(key) || 0) + amt));
     renderStakes();
+    M?.chipFly(entries.map(([key]) => key));
     blip(760 + Math.random() * 200, 0.05);
     return true;
   }
@@ -286,15 +369,21 @@
 
     $("#btnUndo").addEventListener("click", () => {
       if (state.phase !== "open" || !state.undo.length) return;
-      state.bets = state.undo.pop();
+      const prev = state.undo.pop();
+      const changed = [...state.bets.keys()].filter((k) => prev.get(k) !== state.bets.get(k));
+      const gone = M ? M.collect(changed) : [];
+      state.bets = prev;
       renderStakes();
+      M?.sweep(gone, -1);
       blip(520, 0.05);
     });
     $("#btnClear").addEventListener("click", () => {
       if (state.phase !== "open" || !state.bets.size) return;
       state.undo.push(snapshot());
+      const gone = M ? M.collect([...state.bets.keys()]) : [];
       state.bets.clear();
       renderStakes();
+      M?.sweep(gone);
       blip(340, 0.08);
     });
     $("#btnDouble").addEventListener("click", () => {
@@ -311,10 +400,12 @@
   }
 
   /* ---------------------------------------------------------------- rounds */
-  function setStatus(phase, html) {
-    const el = $("#status");
-    el.dataset.phase = phase;
-    $("#statusLabel").innerHTML = html;
+  function setStatus(phase, html, animate = true) {
+    const apply = () => {
+      $("#status").dataset.phase = phase;
+      $("#statusLabel").innerHTML = html;
+    };
+    animate && M ? M.statusSwap(apply) : apply();
   }
 
   function lock(locked) {
@@ -330,6 +421,7 @@
     setStatus("open", "BETS OPEN");
     lock(false);
     renderStakes();
+    M?.betsOpen();
   }
 
   function closeBetting() {
@@ -338,17 +430,24 @@
     setStatus("closed", "NO MORE BETS");
     lock(true);
     renderStakes();
+    M?.betsClosed();
     blip(440, 0.18, "sine", 0.06);
   }
 
   function settle() {
-    const n = randInt(37);
+    const n = state.force ?? randInt(37);
+    state.force = null;
     const color = colorOf(n);
     const staked = totalBet();
     let won = 0;
     for (const [key, amt] of state.bets) {
       if (covered(key).includes(n)) won += amt * (payoutOf(key) + 1);
     }
+    const keys = [...state.bets.keys()];
+    const winKeys = keys.filter((k) => covered(k).includes(n));
+    const winClones = M ? M.collect(winKeys) : [];
+    const loseClones = M ? M.collect(keys.filter((k) => !winKeys.includes(k))) : [];
+    const shownBefore = state.wallet - staked;
     state.wallet = state.wallet - staked + won;
     if (staked) state.lastBets = snapshot();
     state.bets.clear();
@@ -366,7 +465,12 @@
     $$(".race-hit").forEach((el) => el.classList.toggle("is-win", +el.dataset.race === n));
 
     renderStakes();
+    M?.resultFocus();
+    M?.winBurst(n);
+    M?.settleChips(winClones, loseClones, $("#balance"));
+    if (M && won > 0) M.countUp($("#balance"), shownBefore, state.wallet, fmt);
     if (won > 0) {
+      Music.duck();
       winPop(`+${fmt(won)}`);
       blip(660, 0.12, "sine", 0.07);
       setTimeout(() => blip(990, 0.2, "sine", 0.07), 120);
@@ -389,7 +493,10 @@
       timer.style.setProperty("--p", (left / BETTING_MS).toFixed(4));
       const secs = Math.ceil(left / 1000);
       const label = secs <= 5 ? `BETS OPEN · ${secs}` : "BETS OPEN";
-      if ($("#statusLabel").textContent !== label) $("#statusLabel").textContent = label;
+      if ($("#statusLabel").textContent !== label) {
+        $("#statusLabel").textContent = label;
+        if (secs <= 5) { M?.countdown(); blip(1500, 0.03, "sine", 0.03); }
+      }
       if (left === 0) closeBetting();
     } else {
       timer.style.setProperty("--p", 0);
@@ -413,11 +520,11 @@
     el.className = `react react--${tone} fly`;
     el.textContent = emoji;
     const fx = $("#fxLayer");
-    let x = opts.x ?? 1010 + Math.random() * 90;
-    let y = opts.y ?? 560;
+    let x = opts.x ?? 990 + Math.random() * 120;
+    let y = opts.y ?? 520 + Math.random() * 80;
     if (isMobile()) {
-      x = fx.clientWidth - 76 - Math.random() * 40;
-      y = fx.clientHeight - 64;
+      x = fx.clientWidth - 70 - Math.random() * 70;
+      y = fx.clientHeight - 56 - Math.random() * 24;
     }
     el.style.cssText = `--x:${x}px;--y:${y}px;--box:50px;--rot:${(Math.random() * 60 - 30).toFixed(1)}deg;--dx:${(Math.random() * 40 - 20).toFixed(0)}px;--dur:${(2.8 + Math.random()).toFixed(2)}s`;
     $("#fxLayer").appendChild(el);
@@ -446,6 +553,7 @@
       const badge = $("#chatBadge");
       badge.textContent = unread > 9 ? "9+" : unread;
       badge.hidden = false;
+      M?.badgePop(badge);
     }
   }
 
@@ -458,14 +566,28 @@
     t.classList.add("toast");
     const box = $("#toasts");
     box.appendChild(t);
+    M?.toastIn(t);
     while (box.children.length > 2) box.firstElementChild.remove();
     t.addEventListener("animationend", (e) => { if (e.animationName === "toast") t.remove(); });
   }
 
   function setChat(open) {
+    const sheet = $("#chat");
+    const backdrop = $("#sheetBackdrop");
+    if (!open && chatOpen() && M?.enabled && isMobile()) {
+      M.sheetClose(sheet, backdrop, () => {
+        $("#app").classList.remove("is-chat");
+        backdrop.hidden = true;
+      });
+      $("#chatFab").setAttribute("aria-expanded", false);
+      if (document.activeElement === $("#chatInput")) $("#chatInput").blur();
+      return;
+    }
+    const wasOpen = chatOpen();
     $("#app").classList.toggle("is-chat", open);
-    $("#sheetBackdrop").hidden = !open;
+    backdrop.hidden = !open;
     $("#chatFab").setAttribute("aria-expanded", open);
+    if (open && !wasOpen && isMobile()) M?.sheetOpen(sheet, backdrop);
     if (open) {
       unread = 0;
       $("#chatBadge").hidden = true;
@@ -495,6 +617,7 @@
     $("#chatFab").addEventListener("click", () => setChat(!chatOpen()));
     $("#chatClose").addEventListener("click", () => setChat(false));
     $("#sheetBackdrop").addEventListener("click", () => setChat(false));
+    M?.sheetDrag($("#chat"), $("#chatClose"), () => setChat(false));
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && chatOpen()) setChat(false); });
 
     form.addEventListener("submit", (e) => {
@@ -554,7 +677,9 @@
     }),
     settings: () => ({
       title: "Settings",
-      body: `<label>Sound effects <input type="checkbox" data-setting="sound" ${state.sound ? "checked" : ""}></label>
+      body: `<label>Music <input type="checkbox" data-setting="music" ${state.music ? "checked" : ""}></label>
+        <p class="now-playing">♪ ${Music.nowPlaying()} · looping</p>
+        <label>Sound effects <input type="checkbox" data-setting="sound" ${state.sound ? "checked" : ""}></label>
         <label>Show racetrack <input type="checkbox" data-setting="racetrack" ${$("#racetrack").classList.contains("is-hidden") ? "" : "checked"}></label>`,
     }),
   };
@@ -562,7 +687,11 @@
   function wireTopbar() {
     const pop = $("#popover");
     let openKey = null;
-    const close = () => { pop.hidden = true; openKey = null; };
+    const close = () => {
+      if (pop.hidden) return;
+      openKey = null;
+      M ? M.popoverClose(pop, () => (pop.hidden = true)) : (pop.hidden = true);
+    };
 
     $$("[data-popover]").forEach((btn) =>
       btn.addEventListener("click", (e) => {
@@ -574,6 +703,7 @@
         $("#popoverBody").innerHTML = body;
         pop.hidden = false;
         openKey = key;
+        M?.popoverOpen(pop, btn);
       })
     );
     $("#popoverClose").addEventListener("click", close);
@@ -581,11 +711,12 @@
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
     pop.addEventListener("change", (e) => {
       const s = e.target.dataset.setting;
-      if (s === "sound") setSound(e.target.checked);
+      if (s === "sound") { state.sound = e.target.checked; localStorage.setItem("sr.sfx", state.sound ? "on" : "off"); }
+      if (s === "music") { state.music = e.target.checked; localStorage.setItem("sr.music", state.music ? "on" : "off"); Music.sync(); }
       if (s === "racetrack") toggleRacetrack(e.target.checked);
     });
 
-    $("#btnSound").addEventListener("click", () => setSound(!state.sound));
+    $("#btnSound").addEventListener("click", () => setMuted(!state.muted));
     $("#btnFullscreen").addEventListener("click", () => {
       if (document.fullscreenElement) document.exitFullscreen?.();
       else document.documentElement.requestFullscreen?.().catch(() => {});
@@ -593,15 +724,20 @@
     $("#btnRacetrack").addEventListener("click", () => (isMobile() ? toggleRaceView() : toggleRacetrack()));
   }
 
-  function setSound(on) {
-    state.sound = on;
-    $("#btnSound").setAttribute("aria-pressed", on);
+  // top-bar speaker = master mute for music + sound effects
+  function setMuted(muted) {
+    state.muted = muted;
+    localStorage.setItem("sr.muted", muted ? "on" : "off");
+    $("#btnSound").setAttribute("aria-pressed", !muted);
+    Music.sync();
   }
 
   function toggleRaceView(force) {
     const app = $("#app");
     const show = force ?? !app.classList.contains("is-race");
-    app.classList.toggle("is-race", show);
+    const change = () => app.classList.toggle("is-race", show);
+    if (force === undefined && M) M.flipView(show ? $("#mboard") : $("#racetrack"), show ? $("#racetrack") : $("#mboard"), change);
+    else change();
     $("#btnRacetrack").setAttribute("aria-pressed", show);
     $("#btnRacetrack .switch__label").textContent = show ? "Table" : "Racetrack";
     fitRacetrack();
@@ -620,7 +756,9 @@
   function toggleRacetrack(force) {
     const track = $("#racetrack");
     const show = force ?? track.classList.contains("is-hidden");
+    const was = !track.classList.contains("is-hidden");
     track.classList.toggle("is-hidden", !show);
+    if (was !== show) M?.racetrackToggle(track, show);
     $("#btnRacetrack").setAttribute("aria-pressed", show);
     $("#btnRacetrack .switch__label").textContent = show ? "Switch to Racetrack" : "Show Racetrack";
   }
@@ -651,7 +789,9 @@
       label.textContent = $("#app").classList.contains("is-race") ? "Table" : "Racetrack";
     } else {
       $("#app").classList.remove("is-race");
-      setChat(false);
+      $("#app").classList.remove("is-chat");
+      $("#sheetBackdrop").hidden = true;
+      $("#chat").style.transform = ""; // drop any drawer offset left by the portrait sheet
       toggleRacetrack(!$("#racetrack").classList.contains("is-hidden"));
     }
     fit();
@@ -660,7 +800,10 @@
   // the party card introduces itself, then tucks away to its avatars (tap to reopen)
   function wireParty() {
     const card = $(".party");
-    const collapse = () => card.classList.add("is-collapsed");
+    const collapse = () => {
+      if (card.classList.contains("is-collapsed")) return;
+      M && isMobile() ? M.partyMorph(card, () => card.classList.add("is-collapsed")) : card.classList.add("is-collapsed");
+    };
     // on short screens the card would hide the dealer, so it starts tucked away
     const roomy = !isMobile() || $(".body__bg").clientHeight >= 170;
     if (!roomy) collapse();
@@ -668,18 +811,19 @@
     card.addEventListener("click", () => {
       if (!isMobile()) return;
       clearTimeout(timer);
-      card.classList.toggle("is-collapsed");
+      M ? M.partyMorph(card, () => card.classList.toggle("is-collapsed")) : card.classList.toggle("is-collapsed");
       if (!card.classList.contains("is-collapsed")) timer = setTimeout(collapse, 6000);
     });
   }
 
   /* -------------------------------------------- ambient table reactions */
   function ambient() {
-    const pool = ["🥲", "👎", "🔥", "🤡", "🎉"];
+    // a lively stream of reactions from the table (about 5x the original rate)
+    const pool = ["🥲", "👎", "🔥", "🤡", "🎉", "😍", "🍀", "👏"];
     setTimeout(() => {
-      if (!document.hidden) floatEmoji(pool[randInt(pool.length)]);
+      if (!document.hidden && document.querySelectorAll(".react.fly").length < 12) floatEmoji(pool[randInt(pool.length)]);
       ambient();
-    }, 5000 + Math.random() * 6000);
+    }, 1000 + Math.random() * 1200);
   }
 
   /* ----------------------------------------------------------------- boot */
@@ -697,7 +841,82 @@
   wireParty();
   onLayoutChange();
   selectChip(state.chipIndex, true);
+  setMuted(state.muted);
   openBetting();
   requestAnimationFrame(tick);
   ambient();
+  M?.intro();
+
+  // browsers only allow audio after a user gesture
+  const startAudio = () => Music.unlock();
+  ["pointerdown", "keydown"].forEach((t) => document.addEventListener(t, startAudio, { once: true }));
+  document.addEventListener("visibilitychange", () => Music.sync());
+
+  /* -------------------------------------------- motion demo panel (?demo) */
+  if (DEMO) buildDemo();
+  // test/recording hook: jump to the last seconds of the betting window
+  if (DEMO || new URLSearchParams(location.search).has("reel")) {
+    window.__skip = () => { if (state.phase === "open") state.phaseEnds = performance.now() + 4200; };
+  }
+
+  function buildDemo() {
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const ensureOpen = () => { if (state.phase !== "open") nextRound(); };
+    const ensureBets = () => {
+      ensureOpen();
+      if (!state.bets.size) place([["n:17", chipValue()], ["red", chipValue()], ["doz:2", chipValue()], ["col:2", chipValue()]]);
+    };
+    const runResult = async (win) => {
+      ensureBets();
+      await wait(650);
+      const all = Array.from({ length: 37 }, (_, i) => i);
+      const hits = (n) => [...state.bets.keys()].filter((k) => covered(k).includes(n)).length;
+      const pool = all.filter((n) => (win ? hits(n) > 0 : hits(n) === 0));
+      const n = win ? pool.sort((a, b) => hits(b) - hits(a))[0] : (pool.includes(0) ? 0 : pool[randInt(pool.length)]);
+      state.force = n ?? randInt(37);
+      closeBetting();
+      state.phaseEnds = performance.now() + 1300;
+    };
+    const demos = [
+      ["Intro: table builds in", () => M?.intro()],
+      ["Place chips (fly from rack)", async () => {
+        ensureOpen();
+        const keys = isMobile() ? ["n:8", "n:23", "odd", "doz:3"] : ["n:8", "n:23", "odd", "doz:3", "col:1"];
+        for (const k of keys) { place([[k, chipValue()]]); await wait(260); }
+      }],
+      ["Racetrack section bet (cascade)", () => { ensureOpen(); place(RACE_SECTIONS[3].numbers.map((n) => [`n:${n}`, 10])); }],
+      ["Select chip (flip)", () => selectChip(state.chipIndex + 1)],
+      ["Undo last chip", () => $("#btnUndo").click()],
+      ["Clear table (chips slide off)", () => { ensureBets(); setTimeout(() => $("#btnClear").click(), 700); }],
+      ["Bets close: table tilts away", () => M?.betsClosed()],
+      ["Bets open: table springs back", () => M?.betsOpen()],
+      ["Countdown pulse", () => M?.countdown()],
+      ["Full round: WIN", () => runResult(true)],
+      ["Full round: LOSE", () => runResult(false)],
+      ["History: new number drops in", () => { state.results.unshift(randInt(37)); renderHistory(true); }],
+      ["Chat drawer (portrait) / chat message", () => {
+        if (isMobile()) setChat(!chatOpen());
+        else addMessage("other", "Let's go, red!", "Lucas");
+      }],
+      ["Chat toast + unread badge", () => { if (isMobile() && chatOpen()) setChat(false); addMessage("host", "Welcome to the table! Place your bets 🍀"); }],
+      ["Settings popover", () => $('[data-popover="settings"]').click()],
+      ["Party card morph (portrait)", () => $(".party").click()],
+      ["Table ↔ racetrack switch", () => $("#btnRacetrack").click()],
+      ["Reaction bubble", () => floatEmoji(["🔥", "🎉", "🥲", "🤡"][randInt(4)])],
+    ];
+    const panel = document.createElement("aside");
+    panel.className = "demo-panel";
+    panel.innerHTML = `<button class="demo-panel__toggle" type="button" aria-expanded="true">Motion demo</button>
+      <div class="demo-panel__list">${demos.map(([label], i) => `<button type="button" data-demo="${i}">${label}</button>`).join("")}</div>`;
+    document.body.appendChild(panel);
+    panel.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-demo]");
+      if (b) { e.stopPropagation(); demos[+b.dataset.demo][1](); }
+      if (e.target.closest(".demo-panel__toggle")) {
+        const open = panel.classList.toggle("is-closed");
+        e.target.setAttribute("aria-expanded", !open);
+      }
+    });
+    if (isMobile()) panel.classList.add("is-closed");
+  }
 })();

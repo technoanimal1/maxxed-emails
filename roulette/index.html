@@ -17,7 +17,7 @@
       }
     })();
   </script>
-  <link rel="preload" href="./assets/img/table-bg.jpg" as="image" />
+  <link rel="preload" href="./assets/video/live-table-poster.jpg" as="image" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -49,16 +49,15 @@
 
       <!-- ───────────── Body ───────────── -->
       <main class="body">
-        <div class="body__bg" aria-hidden="true"><img src="./assets/img/table-bg.jpg" alt="" /></div>
+        <div class="body__bg" aria-hidden="true">
+          <video class="body__media" poster="./assets/video/live-table-poster.jpg" autoplay muted loop playsinline disablepictureinpicture preload="auto">
+            <source src="./assets/video/live-table.mp4" type="video/mp4" />
+            <source src="./assets/video/live-table.webm" type="video/webm" />
+          </video>
+        </div>
 
         <section class="left">
           <div class="left__fade" aria-hidden="true"></div>
-
-          <!-- reactions drifting next to the wheel -->
-          <span class="react react--red   is-bob" style="--x:1004px;--y:224.46px;--box:70.691px;--rot:-43.66deg">👎</span>
-          <span class="react react--grey  is-bob" style="--x:1029.91px;--y:296.37px;--box:62.741px;--rot:-17.53deg">🥲</span>
-          <span class="react react--sm react--dim is-bob" style="--x:1036px;--y:182.46px;--box:42.519px;--rot:5.07deg;--o:.5">👎</span>
-          <span class="react react--sm react--red is-bob" style="--x:1008.54px;--y:137px;--box:49.439px;--rot:-18.07deg;--o:.2">👎</span>
 
           <div class="stage">
             <div class="dock">
@@ -106,9 +105,6 @@
               </button>
             </div>
 
-            <span class="react react--grey is-bob" style="--x:1066px;--y:492px;--box:62.741px;--rot:-17.53deg">🥲</span>
-            <span class="react react--grey is-bob" style="--x:1063.08px;--y:404.08px;--box:68.573px;--rot:30.88deg">🥲</span>
-
             <span class="pill pill--round" id="roundPill">Round #10482</span>
 
             <article class="party">
@@ -143,11 +139,6 @@
             <span class="status__label" id="statusLabel">BETS OPEN</span>
             <span class="status__timer" id="statusTimer" aria-hidden="true"></span>
           </div>
-
-          <!-- tucked behind the bet grid, as in the design -->
-          <span class="react react--red is-bob" style="--x:954px;--y:476px;--box:70.691px;--rot:-43.66deg">👎</span>
-          <span class="react react--sm react--dim is-bob" style="--x:986px;--y:434px;--box:42.519px;--rot:5.07deg;--o:.5">👎</span>
-          <span class="react react--sm react--red is-bob" style="--x:958.54px;--y:388.54px;--box:49.439px;--rot:-18.07deg;--o:.2">👎</span>
 
           <div class="fx" id="fxLayer" aria-hidden="true"></div>
         </section>
@@ -289,6 +280,10 @@
     </div>
   </div>
 
+  <script src="./vendor/gsap.min.js"></script>
+  <script src="./vendor/Flip.min.js"></script>
+  <script src="./vendor/MotionPathPlugin.min.js"></script>
+  <script src="./motion.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
