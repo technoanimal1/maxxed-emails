@@ -201,7 +201,8 @@
       root.classList.remove("was-spin");
       boardSize(0.58, 1, "back.out(1.2)");
     }
-    g.to(boardSurface(), { rotationX: 0, y: 0, scale: 1, filter: "brightness(1) saturate(1)", duration: 0.9, ease: "back.out(1.5)", clearProps: "transform,filter" });
+    // portrait tables are positioned by CSS (--board-x) while they grow, so leave their transform alone
+    if (!portrait.matches) g.to(boardSurface(), { rotationX: 0, y: 0, scale: 1, filter: "brightness(1) saturate(1)", duration: 0.9, ease: "back.out(1.5)", clearProps: "transform,filter" });
     g.to(".body__media", { scale: 1, duration: 1.4, ease: "power2.inOut", clearProps: "transform" });
     g.to([".controls", ".racetrack"], { opacity: 1, duration: 0.4, clearProps: "opacity" });
   }

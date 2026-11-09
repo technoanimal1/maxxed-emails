@@ -1214,6 +1214,74 @@ img { display: block; }
   .vtrack .race-sec:hover { background: rgba(255, 255, 255, 0.06); }
 }
 
+/* ----- portrait: on-screen chat + reactions beside the table ---------------- */
+.side-feed { display: none; }
+@media (max-aspect-ratio: 1/1) {
+  :root {
+    /* full-size table width (rows at --row-full) and its mini (spinning) width */
+    --board-w-full: calc(var(--row-full) * 7.21 + 18px);
+    /* the side column fits beside the table, and beside the mini table when it centres */
+    --chat-w: min(240px, calc((100vw - var(--board-w-full) * 0.58) / 2 - var(--pad-x) - 6px));
+    /* while betting the table slides right just enough to clear the side column;
+       it glides back to centre as it shrinks for the spin (--side-k: 1 → 0) */
+    --board-w: calc(2 * var(--out) + 3 * var(--col) + 4 * var(--gap) + 10px);
+    --side-k: calc((var(--board-k) - 0.58) / 0.42);
+    --board-x: calc(var(--side-k) * max(0px, var(--pad-x) + var(--chat-w) + 8px - (100vw - var(--board-w)) / 2));
+  }
+  .mb-grid { transform: translateX(var(--board-x)); }
+  .status { transform: translateX(var(--board-x)); }
+  .racetrack, .neighbours { translate: var(--board-x) 0; }
+
+  .side-feed {
+    grid-row: video-start / table-end;
+    grid-column: 1;
+    justify-self: start;
+    align-self: stretch;
+    width: var(--chat-w);
+    margin: 84px 0 4px var(--pad-x);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .side-feed__emojis { position: absolute; left: 0; right: 0; top: 0; bottom: 48%; overflow: hidden; }
+  .side-feed__chat { display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; }
+
+  .feed-msg {
+    font: 400 11px/1.3 var(--f-ui);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 8px rgba(0, 0, 0, 0.6);
+    overflow-wrap: anywhere;
+    animation: feed-life 4.2s ease forwards;
+  }
+  .feed-msg b { font-weight: 700; color: var(--text-muted); margin-right: 2px; }
+  .feed-msg--host b { color: var(--gold); }
+  .feed-msg--me b { color: #7ee2a0; }
+  @keyframes feed-life {
+    0% { opacity: 0; transform: translateY(8px); }
+    8%, 82% { opacity: 1; transform: none; }
+    100% { opacity: 0; transform: translateY(-4px); }
+  }
+
+  .emo {
+    position: absolute;
+    bottom: 0;
+    font: 20px/1 var(--f-emoji);
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+    animation: emo-rise var(--dur, 3s) cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+  @keyframes emo-rise {
+    0% { opacity: 0; transform: translate(0, 0) scale(calc(var(--s) * 0.5)) rotate(0deg); }
+    12% { opacity: 1; transform: translate(calc(var(--dx) * 0.2), -18px) scale(var(--s)) rotate(calc(var(--rot) * 0.3)); }
+    70% { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--dx), -210px) scale(calc(var(--s) * 0.9)) rotate(var(--rot)); }
+  }
+  /* host toasts are replaced by the side feed */
+  .toasts { display: none; }
+}
+
 /* ----- mobile-only pieces (hidden in the desktop / landscape stage) -------- */
 .mboard,
 .toasts,
@@ -1330,7 +1398,8 @@ img { display: block; }
     height: 100%;
   }
   /* crop centred on the wheel so it lines up with the BETS OPEN tab */
-  .body__media { object-position: 51% 45%; }
+  /* wheel stays lined up under the BETS OPEN tab as the table slides */
+  .body__media { object-position: calc(51% + var(--board-x)) 45%; }
   .left__fade {
     grid-row: video-start / table-end;
     grid-column: 1;
@@ -1407,7 +1476,6 @@ img { display: block; }
     justify-self: center;
     left: auto;
     top: auto;
-    transform: none;
     width: 156px;
     margin-bottom: -1px;
     z-index: 2;
@@ -1524,7 +1592,6 @@ img { display: block; }
     top: auto;
     align-self: center;
     justify-self: center;
-    translate: none;
   }
   .app.is-race .mboard { visibility: hidden; }
   .app.is-race .racetrack { display: block; opacity: 1; pointer-events: auto; }

@@ -774,6 +774,7 @@
   }
 
   function floatEmoji(emoji, opts = {}) {
+    if (isMobile()) return sideEmoji(emoji);
     const el = document.createElement("span");
     const tone = { "👎": "red", "🤡": "red", "🔥": "red" }[emoji] || "grey";
     el.className = `react react--${tone} fly`;
@@ -790,6 +791,32 @@
     el.addEventListener("animationend", () => el.remove());
   }
 
+  // portrait reactions: small, no bubble, drifting up the side column and fading
+  function sideEmoji(emoji) {
+    const box = $("#sideEmojis");
+    if (!box || box.children.length > 14) return;
+    const el = document.createElement("span");
+    el.className = "emo";
+    el.textContent = emoji;
+    const w = box.clientWidth || 100;
+    el.style.cssText = `left:${Math.round(Math.random() * Math.max(10, w - 26))}px;--dx:${(Math.random() * 30 - 15).toFixed(0)}px;--rot:${(Math.random() * 40 - 20).toFixed(0)}deg;--dur:${(2.6 + Math.random() * 1.2).toFixed(2)}s;--s:${(0.85 + Math.random() * 0.35).toFixed(2)}`;
+    box.appendChild(el);
+    el.addEventListener("animationend", () => el.remove());
+  }
+
+  // portrait live chat: compact lines beside the table, each gone after ~4s
+  function sideChat(kind, text, author) {
+    const box = $("#sideChat");
+    if (!box) return;
+    const el = document.createElement("div");
+    el.className = `feed-msg feed-msg--${kind}`;
+    const name = kind === "host" ? "Rafaela" : author || "Me";
+    el.innerHTML = `<b>${escapeHTML(name)}</b> ${escapeHTML(text)}`;
+    box.appendChild(el);
+    while (box.children.length > 5) box.firstElementChild.remove();
+    el.addEventListener("animationend", (e) => { if (e.animationName === "feed-life") el.remove(); });
+  }
+
   /* ------------------------------------------------------------------ chat */
   const timeNow = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   const escapeHTML = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -801,6 +828,7 @@
     const meta = kind === "host" ? "" :
       `<div class="msg__meta"><span>${escapeHTML(author || "Me")}</span><img src="./assets/img/dot-sep.svg" width="3" height="3" alt=""><span>${timeNow()}</span></div>`;
     el.innerHTML = `${meta}<p class="msg__text">${escapeHTML(text)}</p>`;
+    sideChat(kind, text, author);
     box.appendChild(el);
     fadeLater(el);
     // older bubbles slide off the top under a fade (desktop) or scroll (mobile sheet)
@@ -808,7 +836,6 @@
     box.classList.toggle("is-overflow", box.scrollHeight > box.clientHeight + 1);
     box.scrollTop = box.scrollHeight;
     if (kind === "host" && isMobile() && !chatOpen()) {
-      toast(el);
       unread += 1;
       const badge = $("#chatBadge");
       badge.textContent = unread > 9 ? "9+" : unread;
