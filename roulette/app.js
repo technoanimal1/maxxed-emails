@@ -589,7 +589,10 @@
     setStatus("open", "BETS OPEN");
     lock(false);
     renderStakes();
+    document.documentElement.classList.remove("is-spin");
     M?.betsOpen();
+    document.documentElement.classList.remove("was-spin");
+    M ? M.resultArc($("#resultArc"), false) : ($("#resultArc").hidden = true);
   }
 
   function closeBetting() {
@@ -598,6 +601,7 @@
     setStatus("closed", "NO MORE BETS");
     lock(true);
     renderStakes();
+    document.documentElement.classList.add("is-spin", "was-spin");
     M?.betsClosed();
     blip(440, 0.18, "sine", 0.06);
   }
@@ -637,6 +641,7 @@
     $$(".race-hit").forEach((el) => el.classList.toggle("is-win", +el.dataset.race === n));
 
     renderStakes();
+    showResultArc(n);
     M?.resultFocus();
     M?.winBurst(n);
     M?.settleChips(winClones, loseClones, $("#balance"));
@@ -649,6 +654,14 @@
       chipRiffle(Math.min(10, 3 + winClones.length * 2), 0.045, M?.enabled ? 1.15 : 0.3);
     }
     hostLine(n, color, won);
+  }
+
+  function showResultArc(n) {
+    const i = WHEEL.indexOf(n);
+    const tile = (x, cls) => `<span class="ra-tile ${cls} ra-tile--${colorOf(x)}">${x}</span>`;
+    const el = $("#resultArc");
+    el.innerHTML = tile(WHEEL[(i + WHEEL.length - 1) % WHEEL.length], "ra-side ra-left") + tile(n, "ra-main") + tile(WHEEL[(i + 1) % WHEEL.length], "ra-side ra-right");
+    M ? M.resultArc(el, true) : (el.hidden = false);
   }
 
   function nextRound() {

@@ -166,9 +166,22 @@
   /* ===================================================== BETS CLOSE / OPEN
      No more bets: the table tilts back and dims like it's being pushed away,
      the camera creeps in on the wheel. Bets open: the table springs back. */
+  // portrait: the table shrinks to a mini table while the video grows and zooms in on
+  // the wheel, then expands back for the next round. --board-k drives the real layout
+  // (rows, columns, type), so the video area genuinely gets taller as the table shrinks.
+  const root = document.documentElement;
+  function boardSize(from, to, ease) {
+    g.fromTo(root, { "--board-k": from }, { "--board-k": to, duration: 0.85, ease, onComplete: () => root.style.removeProperty("--board-k") });
+  }
+
   function betsClosed() {
     if (!on()) return;
     const mobile = portrait.matches;
+    if (mobile) {
+      boardSize(1, 0.58, "power3.inOut");
+      g.to([".controls", ".racetrack"], { opacity: 0.45, duration: 0.4 });
+      return;
+    }
     g.to(boardSurface(), { rotationX: mobile ? 12 : 18, y: mobile ? 10 : 16, scale: 0.965, filter: "brightness(0.55) saturate(0.7)", transformPerspective: 1000, transformOrigin: "50% 100%", duration: 0.75, ease: "power2.inOut" });
     g.to(".body__media", { scale: 1.08, transformOrigin: mobile ? "58% 55%" : "50% 62%", duration: 3, ease: "sine.inOut" });
     g.to([".controls", ".racetrack"], { opacity: 0.45, duration: 0.4 });
@@ -176,12 +189,16 @@
 
   // result: lift the table halfway back so the winning highlights read clearly
   function resultFocus() {
-    if (!on()) return;
+    if (!on() || portrait.matches) return;
     g.to(boardSurface(), { rotationX: 6, y: 6, scale: 0.985, filter: "brightness(1) saturate(1)", duration: 0.5, ease: "power2.out" });
   }
 
   function betsOpen() {
     if (!on()) return;
+    if (portrait.matches && root.classList.contains("was-spin")) {
+      root.classList.remove("was-spin");
+      boardSize(0.58, 1, "back.out(1.2)");
+    }
     g.to(boardSurface(), { rotationX: 0, y: 0, scale: 1, filter: "brightness(1) saturate(1)", duration: 0.9, ease: "back.out(1.5)", clearProps: "transform,filter" });
     g.to(".body__media", { scale: 1, duration: 1.4, ease: "power2.inOut", clearProps: "transform" });
     g.to([".controls", ".racetrack"], { opacity: 1, duration: 0.4, clearProps: "opacity" });
@@ -272,6 +289,22 @@
     const o = { v: from };
     el.textContent = format(from);
     g.to(o, { v: to, duration: 1, delay, ease: "power2.out", onUpdate: () => (el.textContent = format(Math.round(o.v))) });
+  }
+
+  /* ======================================================== RESULT CARD
+     Portrait: the winning number pops in over the wheel and its two wheel
+     neighbours fan out either side. */
+  function resultArc(el, show) {
+    if (!on()) { el.hidden = !show; return; }
+    if (show) {
+      el.hidden = false;
+      const [left, main, right] = el.children;
+      g.timeline()
+        .fromTo(main, { scale: 0.3, y: 30, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.55, ease: "back.out(2.2)" })
+        .fromTo([left, right], { opacity: 0, x: (i) => (i ? -30 : 30), rotation: 0 }, { opacity: 0.92, x: 0, rotation: (i) => (i ? 16 : -16), duration: 0.45, ease: "back.out(1.8)", clearProps: "transform" }, 0.18);
+    } else if (!el.hidden) {
+      g.to(el, { opacity: 0, scale: 0.85, y: -10, duration: 0.3, ease: "power2.in", onComplete: () => { el.hidden = true; g.set(el, { clearProps: "all" }); } });
+    }
   }
 
   /* ============================================================= HISTORY
@@ -401,7 +434,7 @@
   window.Motion = {
     get enabled() { return on(); },
     intro, chipSelect, chipFly, collect, sweep, betsClosed, resultFocus, betsOpen, statusSwap, countdown,
-    winBurst, settleChips, countUp, historyIn, sheetOpen, sheetClose, sheetDrag, popoverOpen,
+    winBurst, settleChips, countUp, historyIn, resultArc, sheetOpen, sheetClose, sheetDrag, popoverOpen,
     popoverClose, partyMorph, racetrackToggle, flipView, toastIn, badgePop, shake,
   };
 })();
