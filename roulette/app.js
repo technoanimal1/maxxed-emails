@@ -411,6 +411,28 @@
       (s, i) => `<button class="race-sec" type="button" data-section="${i}" aria-label="${s.name}: ${s.bets.reduce((t, [, c]) => t + c, 0)} chips" title="${s.name}" style="left:${s.left}px;width:${s.width}px"></button>`
     );
     $("#raceHits").innerHTML = secs.join("") + hits.join("");
+    buildVerticalTrack();
+  }
+
+  // portrait racetrack: the same track stood upright, numbers kept readable. Clockwise:
+  // top cap 8 23 10 5 → right side 24…35 → bottom cap 3 26 0 → left side 32…30
+  function buildVerticalTrack() {
+    const cell = (n, style = "") => `<button class="race-hit vt-cell vt--${colorOf(n)}" type="button" data-race="${n}" aria-label="${n} and its neighbours" style="${style}">${n}</button>`;
+    const right = [24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35];
+    const left = [30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32];
+    const html = [
+      `<div class="vt-cap vt-cap--top">${[8, 23, 10, 5].map((n) => cell(n)).join("")}</div>`,
+      ...left.map((n, i) => cell(n, `grid-column:1;grid-row:${i + 2}`)),
+      ...right.map((n, i) => cell(n, `grid-column:3;grid-row:${i + 2}`)),
+      `<div class="vt-cap vt-cap--bottom">${[0, 26, 3].map((n) => cell(n)).join("")}</div>`,
+    ];
+    // sections down the middle, top to bottom
+    const spans = [[2, 6], [6, 10], [10, 14], [14, 17]];
+    RACE_SECTIONS.forEach((s, i) => {
+      const label = ["Tiers", "Orphelins", "Voisins", "Zero"][i];
+      html.push(`<button class="race-sec vt-sec${i === 3 ? " vt-sec--zero" : ""}" type="button" data-section="${i}" title="${s.name}" aria-label="${s.name}" style="grid-column:2;grid-row:${spans[i][0]} / ${spans[i][1]}">${label}</button>`);
+    });
+    $("#vtrack").innerHTML = html.join("");
   }
 
   function renderHistory(fresh = false) {
@@ -1021,12 +1043,7 @@
 
   // portrait: scale the racetrack to fill the space the table normally takes
   function fitRacetrack() {
-    const track = $("#racetrack");
-    if (!isMobile()) { track.style.zoom = ""; return; }
-    const area = $("#mboard");
-    const w = area.clientWidth - 24;
-    const h = area.clientHeight - 16;
-    track.style.zoom = Math.max(1, Math.min(w / 302, h / 76, 2.4)).toFixed(3);
+    $("#racetrack").style.zoom = "";
   }
 
   function toggleRacetrack(force) {

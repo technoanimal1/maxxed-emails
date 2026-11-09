@@ -1144,6 +1144,76 @@ img { display: block; }
   }
 }
 
+/* ----- portrait racetrack: stood upright, numbers readable ------------------- */
+.vtrack { display: none; }
+@media (max-aspect-ratio: 1/1) {
+  .racetrack {
+    width: auto;
+    height: auto;
+  }
+  .app.is-race .racetrack { align-self: start; }
+  .racetrack__art,
+  .racetrack__hits { display: none; }
+  .vtrack {
+    --vt-h: calc(var(--zero-row) + 13 * var(--row) + 13 * var(--gap) + 10px - 44px); /* table height, minus room for the neighbours control */
+    --vt-u: calc((var(--vt-h) - 8px) / 17.6);
+    display: grid;
+    grid-template-columns: calc(var(--vt-u) * 1.55) calc(var(--vt-u) * 4.4) calc(var(--vt-u) * 1.55);
+    grid-template-rows: calc(var(--vt-u) * 1.3) repeat(15, var(--vt-u)) calc(var(--vt-u) * 1.3);
+    gap: 0;
+    height: var(--vt-h);
+    padding: 4px;
+    border-radius: calc(var(--vt-u) * 1.4); /* rounded ends without clipping the corner numbers */
+    background: #0f131c;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+  }
+  .vtrack .race-hit,
+  .vtrack .race-sec { position: relative; left: auto; top: auto; width: auto; height: auto; }
+  .vt-cell {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0.75px solid #21292e;
+    border-radius: 0;
+    font: 700 clamp(9px, calc(var(--vt-u) * 0.5), 13px)/1 var(--f-sans);
+    color: #fff;
+    cursor: pointer;
+  }
+  .vt--red { background: #ef426c; border-color: #ff6288; }
+  .vt--black { background: #0e1419; }
+  .vt--zero { background: #3fa000; border-color: #5cbc32; }
+  .vt-cap { display: flex; grid-column: 1 / -1; }
+  .vt-cap--top { grid-row: 1; }
+  .vt-cap--bottom { grid-row: 17; }
+  .vt-cap .vt-cell { flex: 1 0 0; }
+  .vt-cap--top .vt-cell:first-child { border-top-left-radius: calc(var(--vt-u) * 1.1); }
+  .vt-cap--top .vt-cell:last-child { border-top-right-radius: calc(var(--vt-u) * 1.1); }
+  .vt-cap--bottom .vt-cell:first-child { border-bottom-left-radius: calc(var(--vt-u) * 1.1); }
+  .vt-cap--bottom .vt-cell:last-child { border-bottom-right-radius: calc(var(--vt-u) * 1.1); }
+  .vt-sec {
+    display: grid;
+    place-items: center;
+    margin: 3px 4px;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0;
+    background: none;
+    font: 600 clamp(9px, calc(var(--vt-u) * 0.48), 12px)/1 var(--f-ui);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #e6e9ee;
+    cursor: pointer;
+  }
+  .vt-sec--zero { border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; }
+  .vtrack .race-hit:hover,
+  .vtrack .race-hit.is-covered { box-shadow: inset 0 0 0 2px rgba(224, 202, 58, 0.9); filter: brightness(1.15); }
+  .vtrack .race-hit.is-win { box-shadow: inset 0 0 0 2px var(--gold), 0 0 12px rgba(224, 202, 58, 0.7); z-index: 1; }
+  .vtrack .race-sec:hover { background: rgba(255, 255, 255, 0.06); }
+}
+
 /* ----- mobile-only pieces (hidden in the desktop / landscape stage) -------- */
 .mboard,
 .toasts,
