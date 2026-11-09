@@ -850,6 +850,16 @@
     el.addEventListener("animationend", () => el.remove());
   }
 
+  // a memoji sticker you send: same flight as emoji stickers, but the image from the avatar sheet
+  function stickerImgFly(style, from) {
+    const r = from.getBoundingClientRect();
+    const el = document.createElement("span");
+    el.className = "sticker sticker--img";
+    el.style.cssText = `${style};left:${r.left + r.width / 2}px;top:${r.top}px;--dx:${(Math.random() * 60 - 30).toFixed(0)}px;--rot:${(Math.random() * 30 - 15).toFixed(0)}deg;--dur:${(2.6 + Math.random() * 0.6).toFixed(2)}s`;
+    document.body.appendChild(el);
+    el.addEventListener("animationend", () => el.remove());
+  }
+
   // portrait reactions: small, no bubble, drifting up the side column and fading
   function sideEmoji(emoji) {
     const box = $("#sideEmojis");
@@ -994,13 +1004,95 @@
     const qemojis = $("#qchatEmojis");
     const qtoggle = $("#qchatEmoji");
     const setEmojis = (open) => { qemojis.hidden = !open; qtoggle.setAttribute("aria-expanded", open); };
+    // active state: a full-width composer card with emojis, stickers, voice and send
+    const app = $("#app");
+    const panel = $("#qchatPanel");
+    const send = $("#qchatSend");
+    const composing = () => app.classList.contains("is-composing");
+    const STICKERS = [...Array(9).keys()].map((i) => ["a", i]).concat([...Array(9).keys()].map((i) => ["b", i]));
+    const EMOJIS = ["🔥", "😍", "🎉", "🍀", "👏", "🥲", "🤡", "😎", "💰", "🙌", "😱", "🤞", "❤️", "👀", "🥳", "😂"];
+    const stickerStyle = ([sheet, i]) => `background-image:url(./assets/img/avatars-${sheet}.webp);background-position:${(i % 3) * 50}% ${Math.floor(i / 3) * 50}%`;
+    let tool = null;
+    let rec = null;
+
+    const updateSend = () => { send.disabled = !(qinput.value.trim() || rec); };
+    function setTool(next) {
+      tool = tool === next ? null : next;
+      $$(".qchat__tool[data-tool]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.tool === tool || (b.dataset.tool === "voice" && !!rec)));
+      if (tool === "emoji") panel.innerHTML = `<div class="qchat__grid qchat__grid--emoji">${EMOJIS.map((e) => `<button type="button" data-emoji="${e}">${e}</button>`).join("")}</div>`;
+      if (tool === "stickers") panel.innerHTML = `<div class="qchat__grid qchat__grid--stickers">${STICKERS.map((s, k) => `<button type="button" data-sticker="${k}" aria-label="Sticker ${k + 1}"><span style="${stickerStyle(s)}"></span></button>`).join("")}</div>`;
+      panel.hidden = !tool;
+    }
+    function startVoice() {
+      rec = { t0: performance.now() };
+      qinput.hidden = true;
+      $("#qchatRec").hidden = false;
+      rec.timer = setInterval(() => {
+        const s = Math.floor((performance.now() - rec.t0) / 1000);
+        $("#qchatRecTime").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+      }, 250);
+      setTool(null);
+      $('.qchat__mic').setAttribute("aria-pressed", true);
+      updateSend();
+      blip(880, 0.06);
+    }
+    function stopVoice(post) {
+      if (!rec) return;
+      clearInterval(rec.timer);
+      const s = Math.max(1, Math.round((performance.now() - rec.t0) / 1000));
+      rec = null;
+      qinput.hidden = false;
+      $("#qchatRec").hidden = true;
+      $("#qchatRecTime").textContent = "0:00";
+      $('.qchat__mic').setAttribute("aria-pressed", false);
+      if (post) { addMessage("me", `🎤 Voice message · ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`); blip(1000, 0.04); }
+      updateSend();
+    }
+    function setComposing(on) {
+      if (on && !isMobile()) return;
+      app.classList.toggle("is-composing", on);
+      $("#qchatBackdrop").hidden = !on;
+      if (on) { setEmojis(false); return; }
+      setTool(null);
+      stopVoice(false);
+      qinput.blur();
+    }
+    qinput.addEventListener("focus", () => setComposing(true));
+    qinput.addEventListener("input", updateSend);
+    qchat.addEventListener("click", (e) => {
+      if (!composing() && !e.target.closest(".qchat__emoji, .qchat__emojis")) qinput.focus();
+    });
+    $("#qchatBackdrop").addEventListener("click", () => setComposing(false));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && composing()) setComposing(false); });
+    $(".qchat__bar").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-tool]");
+      if (!b) return;
+      if (b.dataset.tool === "voice") return rec ? stopVoice(true) : startVoice();
+      setTool(b.dataset.tool);
+    });
+    panel.addEventListener("click", (e) => {
+      const em = e.target.closest("[data-emoji]");
+      const st = e.target.closest("[data-sticker]");
+      if (em) { stickerFly(em.dataset.emoji, em); blip(1300, 0.05); }
+      if (st) { stickerImgFly(stickerStyle(STICKERS[+st.dataset.sticker]), st); sideChat("me", "sent a sticker"); blip(1200, 0.05); }
+    });
+    // keep the composer just above the on-screen keyboard
+    const vv = window.visualViewport;
+    if (vv) {
+      const kb = () => document.documentElement.style.setProperty("--kb", `${Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop))}px`);
+      vv.addEventListener("resize", kb);
+      vv.addEventListener("scroll", kb);
+    }
+
     qchat.addEventListener("submit", (e) => {
       e.preventDefault();
+      if (rec) return stopVoice(true);
       const text = qinput.value.trim();
       if (!text) return;
       addMessage("me", text);
       qinput.value = "";
-      qinput.blur();
+      updateSend();
+      setComposing(false);
       blip(1000, 0.04);
     });
     qtoggle.addEventListener("click", (e) => { e.stopPropagation(); setEmojis(qemojis.hidden); });
