@@ -1030,7 +1030,7 @@
       M && isMobile() ? M.partyMorph(card, () => card.classList.add("is-collapsed")) : card.classList.add("is-collapsed");
     };
     // on short screens the card would hide the dealer, so it starts tucked away
-    const roomy = !isMobile() || $(".body__bg").clientHeight >= 170;
+    const roomy = !isMobile() || $("#fxLayer").clientHeight >= 170;
     if (!roomy) collapse();
     let timer = roomy ? setTimeout(collapse, 6000) : 0;
     card.addEventListener("click", () => {

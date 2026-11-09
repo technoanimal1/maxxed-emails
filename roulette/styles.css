@@ -1107,7 +1107,7 @@ img { display: block; }
 /* ----- portrait round phases: full table ↔ mini table ---------------------- */
 @media (max-aspect-ratio: 1/1) {
   html.is-spin { --board-k: 0.58; }
-  .mb-grid { width: calc(100% * var(--board-k)); margin: 0 auto; }
+  .mb-grid { width: max-content; margin: 0 auto; }
   html.is-spin .mboard .hs { pointer-events: none; }
 
   /* result card: winning number fanned between its two wheel neighbours */
@@ -1184,18 +1184,18 @@ img { display: block; }
     --pad-x: clamp(10px, 3.2vw, 20px);
     --top-h: 52px;
     --dock-h: 154px;        /* info row 44 + 10, controls 100 */
-    --video-min: 96px;
-    --video-ideal: 28dvh;
+    --video-min: 116px;     /* room above the table for round pill, history and the BETS OPEN tab */
     --row-max: 34px;
     --gap: 2px;
-    /* table rows take whatever height is left after the bars and a comfortable video;
-       the video shrinks first, then the rows (down to 17px) on short screens */
-    --row-full: clamp(17px, calc((100dvh - var(--top-h) - var(--dock-h) - max(var(--video-min), var(--video-ideal)) - 36px - var(--safe-t) - var(--safe-b)) / 14.1), var(--row-max));
-    /* --board-k: 1 while betting (full table), 0.58 while spinning (mini table, video grows) */
+    /* square number cells: each row is as tall as the screen allows after the bars and the
+       strip of video above the table; columns use the same size, so the table is a narrow
+       column with the live video visible either side */
+    --row-full: clamp(17px, calc((100dvh - var(--top-h) - var(--dock-h) - var(--video-min) - 36px - var(--safe-t) - var(--safe-b)) / 14.1), var(--row-max));
+    /* --board-k: 1 while betting (full table), 0.58 while spinning (mini table) */
     --board-k: 1;
     --row: calc(var(--row-full) * var(--board-k));
     --zero-row: calc(var(--row) * 1.1);
-    --out: calc(clamp(30px, 8.6vw, 46px) * var(--board-k));
+    --out: calc(var(--row) * 1.15);
   }
 
   html, body { background: var(--bg); }
@@ -1272,21 +1272,24 @@ img { display: block; }
 
   /* ---- live video ---- */
   .body__bg {
-    grid-area: video;
+    grid-row: video-start / table-end;
+    grid-column: 1;
     left: auto;
     top: auto;
     width: 100%;
     height: 100%;
   }
   /* crop centred on the wheel so it lines up with the BETS OPEN tab */
-  .body__media { object-position: 53% 45%; }
+  .body__media { object-position: 51% 45%; }
   .left__fade {
-    grid-area: video;
-    align-self: end;
+    grid-row: video-start / table-end;
+    grid-column: 1;
+    align-self: stretch;
     left: auto;
     bottom: auto;
     width: 100%;
-    height: 32%;
+    height: auto;
+    background: linear-gradient(180deg, rgba(10, 13, 20, 0) 0%, rgba(10, 13, 20, 0) 22%, rgba(10, 13, 20, 0.45) 55%, rgba(10, 13, 20, 0.85) 100%);
   }
   .fx {
     grid-area: video;
@@ -1389,7 +1392,7 @@ img { display: block; }
   }
   .mb-grid {
     display: grid;
-    grid-template-columns: var(--out) var(--out) repeat(3, minmax(0, 1fr));
+    grid-template-columns: var(--out) var(--out) repeat(3, var(--row));
     grid-template-rows: var(--zero-row) repeat(12, var(--row)) var(--row);
     gap: var(--gap);
     padding: 4px;
@@ -1627,7 +1630,7 @@ img { display: block; }
 }
 /* short screens (small phones, or Safari with its bars showing): compact chrome */
 @media (max-aspect-ratio: 1/1) and (max-height: 720px) {
-  :root { --top-h: 44px; --dock-h: 130px; --video-min: 84px; --video-ideal: 24dvh; }
+  :root { --top-h: 44px; --dock-h: 130px; --video-min: 100px; }
   .topbar__logo { width: 76px; height: 16.5px; }
   .balance, .switch, .chat-fab { margin-top: 6px; }
   .controls { padding-top: 6px; padding-bottom: calc(6px + var(--safe-b)); }
@@ -1641,7 +1644,7 @@ img { display: block; }
 }
 /* tablets upright: roomier rows and type */
 @media (max-aspect-ratio: 1/1) and (min-width: 600px) {
-  :root { --row-max: 40px; --out: 52px; }
+  :root { --row-max: 46px; }
   .party__avatars { zoom: 0.85; }
 }
 

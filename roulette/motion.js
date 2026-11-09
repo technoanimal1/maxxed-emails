@@ -179,6 +179,8 @@
     const mobile = portrait.matches;
     if (mobile) {
       boardSize(1, 0.58, "power3.inOut");
+      // the table shrinks away from the wheel and the camera pushes in
+      g.to(".body__media", { scale: 1.16, transformOrigin: "51% 40%", duration: 1.4, ease: "power2.inOut" });
       g.to([".controls", ".racetrack"], { opacity: 0.45, duration: 0.4 });
       return;
     }
