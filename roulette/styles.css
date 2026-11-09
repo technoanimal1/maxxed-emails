@@ -1164,7 +1164,8 @@ img { display: block; }
   .vtrack svg { display: block; height: 100%; width: auto; overflow: visible; }
   .vt-base { fill: #0f131c; }
   .vt-field { fill: #0f131c; }
-  .vt-outline { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 1; pointer-events: none; }
+  .vt-outline { fill: none; stroke: rgba(255, 255, 255, 0.12); stroke-width: 1; pointer-events: none; }
+  .vt-inner-edge { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 1; pointer-events: none; }
   .vt-cell { cursor: pointer; }
   .vt-cell path { stroke-width: 0.75; transition: filter 0.15s; }
   .vt--red path { fill: var(--red); stroke: var(--red-stroke); }   /* same red as the betting table */
@@ -1186,8 +1187,8 @@ img { display: block; }
   .vt-sec:hover .vt-sec__hit { fill: rgba(255, 255, 255, 0.05); }
   .vt-pill { fill: none; stroke: rgba(255, 255, 255, 0.14); stroke-width: 1; }
   .vt-sec text {
-    font: 600 10.5px var(--f-ui);
-    letter-spacing: 0.05em;
+    font: 600 9.5px var(--f-ui);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     fill: #e6e9ee;
     text-anchor: middle;

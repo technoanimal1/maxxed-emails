@@ -414,59 +414,66 @@
     buildVerticalTrack();
   }
 
-  // portrait racetrack: the original rounded track stood upright (SVG), numbers kept upright.
-  // Clockwise = wheel order: top cap 8 23 10 5 → right side 24…35 → bottom cap 3 26 0 → left side 32…30
+  // portrait racetrack: the original racetrack stood upright (SVG), numbers kept upright.
+  // Concentric geometry: semicircular ends and an inner pill share centres, so the band of
+  // numbers is the same thickness all the way round.
+  // Clockwise = wheel order: top end 8 23 10 5 → right side 24…35 → bottom end 3 26 0 → left side 32…30
   function buildVerticalTrack() {
-    const W = 172, H = 387, T = 34;          // track size and ring thickness (SVG units)
-    const rx = W / 2, ry = 46;               // rounded ends (semi-ellipses)
-    const rxIn = rx - T, ryIn = ry - 22;     // inner edge of the ring
-    const cx = W / 2, topCy = ry, botCy = H - ry;
+    const W = 132, H = 387, T = 32;          // track width/height and band thickness (SVG units)
+    const R = W / 2, r = R - T;              // outer radius of the ends, inner (field) radius
+    const cx = W / 2, topCy = R, botCy = H - R;
     const ch = (botCy - topCy) / 15;         // height of a straight-side cell
     const f = (v) => +v.toFixed(2);
-    const pt = (cy, a, rX, rY, dir) => [f(cx + rX * Math.cos(a)), f(cy - dir * rY * Math.sin(a))];
-    // a curved wedge of a rounded end; dir 1 = top end, -1 = bottom end
+    const pt = (cy, a, rad, dir) => [f(cx + rad * Math.cos(a)), f(cy - dir * rad * Math.sin(a))];
+    // a wedge of a semicircular end; dir 1 = top end, -1 = bottom end
     const wedge = (cy, a0, a1, dir) => {
-      const [x1, y1] = pt(cy, a0, rx, ry, dir), [x2, y2] = pt(cy, a1, rx, ry, dir);
-      const [x3, y3] = pt(cy, a1, rxIn, ryIn, dir), [x4, y4] = pt(cy, a0, rxIn, ryIn, dir);
+      const [x1, y1] = pt(cy, a0, R, dir), [x2, y2] = pt(cy, a1, R, dir);
+      const [x3, y3] = pt(cy, a1, r, dir), [x4, y4] = pt(cy, a0, r, dir);
       const sw = dir === 1 ? 1 : 0;
-      return `M${x1} ${y1}A${rx} ${ry} 0 0 ${sw} ${x2} ${y2}L${x3} ${y3}A${rxIn} ${ryIn} 0 0 ${1 - sw} ${x4} ${y4}Z`;
+      return `M${x1} ${y1}A${R} ${R} 0 0 ${sw} ${x2} ${y2}L${x3} ${y3}A${r} ${r} 0 0 ${1 - sw} ${x4} ${y4}Z`;
     };
     const cell = (n, d, tx, ty) =>
       `<g class="race-hit vt-cell vt--${colorOf(n)}" data-race="${n}" role="button" aria-label="${n} and its neighbours"><path d="${d}"/><text x="${f(tx)}" y="${f(ty)}">${n}</text></g>`;
     const capCells = (nums, cy, dir) => nums.map((n, i) => {
       const step = Math.PI / nums.length;
-      const a0 = Math.PI - i * step, a1 = Math.PI - (i + 1) * step, am = (a0 + a1) / 2;
-      const [tx, ty] = pt(cy, am, (rx + rxIn) / 2, (ry + ryIn) / 2, dir);
+      const a0 = Math.PI - i * step, a1 = Math.PI - (i + 1) * step;
+      const [tx, ty] = pt(cy, (a0 + a1) / 2, (R + r) / 2, dir);
       return cell(n, wedge(cy, a0, a1, dir), tx, ty);
     }).join("");
     const side = (nums, x0) => nums.map((n, i) => {
       const y0 = topCy + i * ch;
       return cell(n, `M${x0} ${f(y0)}h${T}v${f(ch)}h${-T}Z`, x0 + T / 2, y0 + ch / 2);
     }).join("");
-    // whole track and its inner field, both rounded
-    const stadium = (x0, w, rX, rY) =>
-      `M${x0} ${topCy}A${rX} ${rY} 0 0 1 ${x0 + w} ${topCy}V${botCy}A${rX} ${rY} 0 0 1 ${x0} ${botCy}Z`;
+    // a stadium (pill) shape with semicircular ends of radius rad, centred on the track
+    const pill = (rad) => `M${cx - rad} ${topCy}A${rad} ${rad} 0 0 1 ${cx + rad} ${topCy}V${botCy}A${rad} ${rad} 0 0 1 ${cx - rad} ${botCy}Z`;
     const yAt = (k) => f(topCy + k * ch);
+    // sections down the inner field; names run along the track, like the original
     const secs = [
-      ["Tiers", topCy - ryIn, yAt(4)],
+      ["Tiers", topCy - r, yAt(4)],
       ["Orphelins", yAt(4), yAt(8)],
       ["Voisins", yAt(8), yAt(12)],
-      ["Zero", yAt(12), botCy + ryIn],
+      ["Zero", yAt(12), botCy + r],
     ].map(([label, y0, y1], i) => {
       const mid = f((y0 + y1) / 2);
-      const pill = i === 3 ? `<rect class="vt-pill" x="${T + 6}" y="${f(y0 + 5)}" width="${W - 2 * T - 12}" height="${f(y1 - y0 - 12)}" rx="18"/>` : "";
-      return `<g class="race-sec vt-sec" data-section="${i}" role="button" aria-label="${RACE_SECTIONS[i].name}"><rect class="vt-sec__hit" x="${T}" y="${f(y0)}" width="${W - 2 * T}" height="${f(y1 - y0)}"/>${pill}<text x="${cx}" y="${mid}">${label}</text></g>`;
+      const zero = i === 3
+        ? `<rect class="vt-pill" x="${cx - r + 6}" y="${f(y0 + 6)}" width="${2 * (r - 6)}" height="${f(y1 - y0 - 12)}" rx="${r - 6}"/>`
+        : "";
+      // long names are squeezed to fit their section (≈7 units per letter at this size)
+      const room = f(y1 - y0 - 16);
+      const fit = label.length * 7 > room ? ` textLength="${room}" lengthAdjust="spacingAndGlyphs"` : "";
+      return `<g class="race-sec vt-sec" data-section="${i}" role="button" aria-label="${RACE_SECTIONS[i].name}"><rect class="vt-sec__hit" x="${cx - r}" y="${f(y0)}" width="${2 * r}" height="${f(y1 - y0)}"/>${zero}<text x="${cx}" y="${mid}" transform="rotate(-90 ${cx} ${mid})"${fit}>${label}</text></g>`;
     }).join("");
-    const rules = [4, 8, 12].map((k) => `<line class="vt-rule" x1="${T + 8}" x2="${W - T - 8}" y1="${yAt(k)}" y2="${yAt(k)}"/>`).join("");
+    const rules = [4, 8, 12].map((k) => `<line class="vt-rule" x1="${cx - r + 8}" x2="${cx + r - 8}" y1="${yAt(k)}" y2="${yAt(k)}"/>`).join("");
     $("#vtrack").innerHTML = `<svg viewBox="-1 -1 ${W + 2} ${H + 2}" aria-label="Racetrack">
-      <path class="vt-base" d="${stadium(0, W, rx, ry)}"/>
-      <path class="vt-field" d="${stadium(T, W - 2 * T, rxIn, ryIn)}"/>
+      <path class="vt-base" d="${pill(R)}"/>
       ${capCells([8, 23, 10, 5], topCy, 1)}
       ${side([30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32], 0)}
       ${side([24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35], W - T)}
       ${capCells([0, 26, 3], botCy, -1)}
+      <path class="vt-field" d="${pill(r)}"/>
       ${rules}${secs}
-      <path class="vt-outline" d="${stadium(0, W, rx, ry)}"/>
+      <path class="vt-outline" d="${pill(R)}"/>
+      <path class="vt-inner-edge" d="${pill(r)}"/>
     </svg>`;
   }
 
