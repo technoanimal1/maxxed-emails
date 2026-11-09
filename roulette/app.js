@@ -791,6 +791,17 @@
     el.addEventListener("animationend", () => el.remove());
   }
 
+  // a sticker you send: launched from the button you tapped, flying up the screen
+  function stickerFly(emoji, from) {
+    const r = from.getBoundingClientRect();
+    const el = document.createElement("span");
+    el.className = "sticker";
+    el.textContent = emoji;
+    el.style.cssText = `left:${r.left + r.width / 2}px;top:${r.top}px;--dx:${(-30 - Math.random() * 60).toFixed(0)}px;--rot:${(Math.random() * 40 - 20).toFixed(0)}deg;--dur:${(2.4 + Math.random() * 0.8).toFixed(2)}s`;
+    document.body.appendChild(el);
+    el.addEventListener("animationend", () => el.remove());
+  }
+
   // portrait reactions: small, no bubble, drifting up the side column and fading
   function sideEmoji(emoji) {
     const box = $("#sideEmojis");
@@ -949,7 +960,7 @@
       const b = e.target.closest("[data-emoji]");
       if (!b) return;
       e.stopPropagation();
-      floatEmoji(b.dataset.emoji);
+      stickerFly(b.dataset.emoji, qtoggle);
       blip(1300, 0.05);
     });
     document.addEventListener("click", (e) => { if (!qemojis.hidden && !qchat.contains(e.target)) setEmojis(false); });

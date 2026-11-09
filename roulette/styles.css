@@ -1247,7 +1247,7 @@ img { display: block; }
     z-index: 3;
     pointer-events: none;
   }
-  .side-feed__emojis { position: absolute; left: 0; right: 0; top: 0; bottom: 48%; overflow: hidden; }
+  .side-feed__emojis { position: absolute; left: 0; right: 0; top: -40px; bottom: 0; overflow: hidden; }
   .side-feed__chat { display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; }
 
   .feed-msg {
@@ -1277,7 +1277,22 @@ img { display: block; }
     0% { opacity: 0; transform: translate(0, 0) scale(calc(var(--s) * 0.5)) rotate(0deg); }
     12% { opacity: 1; transform: translate(calc(var(--dx) * 0.2), -18px) scale(var(--s)) rotate(calc(var(--rot) * 0.3)); }
     70% { opacity: 1; }
-    100% { opacity: 0; transform: translate(var(--dx), -210px) scale(calc(var(--s) * 0.9)) rotate(var(--rot)); }
+    100% { opacity: 0; transform: translate(var(--dx), -380px) scale(calc(var(--s) * 0.9)) rotate(var(--rot)); }
+  }
+  /* stickers you send launch from the 😊 button and fly up the screen */
+  .sticker {
+    position: fixed;
+    z-index: 80;
+    font: 30px/1 var(--f-emoji);
+    pointer-events: none;
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5));
+    animation: sticker-fly var(--dur, 2.8s) cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  }
+  @keyframes sticker-fly {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+    10% { opacity: 1; transform: translate(-50%, calc(-50% - 30px)) scale(1.25) rotate(calc(var(--rot) * 0.3)); }
+    75% { opacity: 1; }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% - 420px)) scale(0.9) rotate(var(--rot)); }
   }
   /* host toasts are replaced by the side feed */
   .toasts { display: none; }
@@ -1393,10 +1408,13 @@ img { display: block; }
   .body__bg {
     grid-row: video-start / table-end;
     grid-column: 1 / -1;
+    align-self: start;
     left: auto;
     top: auto;
     width: 100%;
-    height: 100%;
+    /* top half of the screen, from just under the top bar; never zoomed */
+    height: calc(50dvh - var(--top-h) - var(--safe-t));
+    min-height: var(--video-min);
   }
   /* crop centred on the wheel so it lines up with the BETS OPEN tab */
   /* wheel stays lined up under the BETS OPEN tab as the table slides */
@@ -1404,12 +1422,14 @@ img { display: block; }
   .left__fade {
     grid-row: video-start / table-end;
     grid-column: 1 / -1;
-    align-self: stretch;
+    align-self: start;
     left: auto;
     bottom: auto;
     width: 100%;
-    height: auto;
-    background: linear-gradient(180deg, rgba(10, 13, 20, 0) 0%, rgba(10, 13, 20, 0) 22%, rgba(10, 13, 20, 0.45) 55%, rgba(10, 13, 20, 0.85) 100%);
+    height: calc(50dvh - var(--top-h) - var(--safe-t));
+    min-height: var(--video-min);
+    /* soft edge where the video panel meets the dark table area */
+    background: linear-gradient(180deg, rgba(10, 13, 20, 0) 0%, rgba(10, 13, 20, 0) 70%, var(--bg) 100%);
   }
   .fx {
     grid-area: video;
