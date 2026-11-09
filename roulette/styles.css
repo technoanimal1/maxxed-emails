@@ -1215,7 +1215,8 @@ img { display: block; }
 }
 
 /* ----- portrait: on-screen chat + reactions beside the table ---------------- */
-.side-feed { display: none; }
+.side-feed,
+.qchat { display: none; }
 @media (max-aspect-ratio: 1/1) {
   :root {
     /* full-size table width (rows at --row-full) and its mini (spinning) width */
@@ -1234,11 +1235,11 @@ img { display: block; }
 
   .side-feed {
     grid-row: video-start / table-end;
-    grid-column: 1;
+    grid-column: 1 / -1;
     justify-self: start;
     align-self: stretch;
     width: var(--chat-w);
-    margin: 84px 0 4px var(--pad-x);
+    margin: 84px 0 54px var(--pad-x);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -1367,9 +1368,9 @@ img { display: block; }
     flex: 1 1 auto;
     min-height: 0;
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-rows: minmax(var(--video-min), 1fr) auto auto auto;
-    grid-template-areas: "video" "table" "info" "controls";
+    grid-template-areas: "video video video" "table table table" "bal chat fab" "controls controls controls";
     background: linear-gradient(180deg, var(--bg) 0%, #050608 100%);
   }
   .left,
@@ -1391,7 +1392,7 @@ img { display: block; }
   /* ---- live video ---- */
   .body__bg {
     grid-row: video-start / table-end;
-    grid-column: 1;
+    grid-column: 1 / -1;
     left: auto;
     top: auto;
     width: 100%;
@@ -1402,7 +1403,7 @@ img { display: block; }
   .body__media { object-position: calc(51% + var(--board-x)) 45%; }
   .left__fade {
     grid-row: video-start / table-end;
-    grid-column: 1;
+    grid-column: 1 / -1;
     align-self: stretch;
     left: auto;
     bottom: auto;
@@ -1598,7 +1599,7 @@ img { display: block; }
 
   /* ---- info row: balance · table/racetrack switch · chat ---- */
   .balance {
-    grid-area: info;
+    grid-area: bal;
     justify-self: start;
     left: auto;
     top: auto;
@@ -1607,20 +1608,94 @@ img { display: block; }
     background: rgba(0, 0, 0, 0.35);
   }
   .switch {
-    grid-area: info;
-    justify-self: end;
-    align-self: center;
+    grid-row: table;
+    grid-column: 1 / -1;
+    justify-self: start;
+    align-self: end;
     left: auto;
     top: auto;
-    width: auto;
-    height: 36px;
-    margin: 10px calc(var(--pad-x) + 52px) 0 0;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.06);
+    width: 42px;
+    height: 42px;
+    margin: 0 0 4px var(--pad-x);
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
     border: 1px solid var(--stroke-hi);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 4;
   }
+  .switch__icon { width: 20px; height: 20px; }
+  .switch__icon img { left: 3.2px; top: 3.2px; width: 13.6px; height: 13.6px; }
+  .switch__label { display: none; }
+  .app.is-race .switch { background: rgba(224, 202, 58, 0.22); border-color: rgba(224, 202, 58, 0.7); }
+
+  /* quick chat field in the info row */
+  .qchat {
+    grid-area: chat;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    height: 44px;
+    margin: 10px 8px 0;
+    padding: 0 4px 0 14px;
+    border-radius: 22px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--stroke-hi);
+    position: relative;
+  }
+  .qchat input {
+    all: unset;
+    flex: 1;
+    min-width: 0;
+    font: 400 16px/20px var(--f-ui); /* 16px: no iOS zoom on focus */
+    color: var(--text);
+    user-select: text;
+  }
+  .qchat input::placeholder { color: var(--text-muted); opacity: 0.6; }
+  .qchat__emoji {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 17px;
+    background: rgba(255, 255, 255, 0.08);
+    font: 18px/1 var(--f-emoji);
+    cursor: pointer;
+  }
+  .qchat__emoji[aria-expanded="true"] { background: rgba(224, 202, 58, 0.3); }
+  .qchat__emojis {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 8px);
+    display: flex;
+    gap: 2px;
+    padding: 4px;
+    border-radius: 22px;
+    background: rgba(14, 14, 16, 0.92);
+    border: 1px solid var(--stroke-hi);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 30;
+    animation: pop-in 0.18s ease-out;
+  }
+  .qchat__emojis button {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 18px;
+    background: none;
+    font: 20px/1 var(--f-emoji);
+    cursor: pointer;
+  }
+  .qchat__emojis button:active { background: rgba(255, 255, 255, 0.12); transform: scale(1.15); }
   .chat-fab {
-    grid-area: info;
+    grid-area: fab;
     justify-self: end;
     align-self: center;
     display: block;
@@ -1749,7 +1824,7 @@ img { display: block; }
 @media (max-aspect-ratio: 1/1) and (max-height: 720px) {
   :root { --top-h: 44px; --dock-h: 130px; --video-min: 110px; }
   .topbar__logo { width: 76px; height: 16.5px; }
-  .balance, .switch, .chat-fab { margin-top: 6px; }
+  .balance, .qchat, .chat-fab { margin-top: 6px; }
   .controls { padding-top: 6px; padding-bottom: calc(6px + var(--safe-b)); }
   .controls__group { gap: 4px; }
   .round-btn { width: 32px; height: 32px; }

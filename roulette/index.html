@@ -215,6 +215,21 @@
         </button>
         <div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
 
+        <!-- portrait: quick chat in the info row (the racetrack toggle moved onto the table area) -->
+        <form class="qchat" id="qchat" autocomplete="off">
+          <input id="qchatInput" type="text" maxlength="80" placeholder="Message…" aria-label="Message the table" enterkeyhint="send" />
+          <button class="qchat__emoji" id="qchatEmoji" type="button" aria-label="Send a reaction" aria-expanded="false">😊</button>
+          <div class="qchat__emojis" id="qchatEmojis" hidden>
+            <button type="button" data-emoji="🔥">🔥</button>
+            <button type="button" data-emoji="😍">😍</button>
+            <button type="button" data-emoji="🎉">🎉</button>
+            <button type="button" data-emoji="🍀">🍀</button>
+            <button type="button" data-emoji="👏">👏</button>
+            <button type="button" data-emoji="🥲">🥲</button>
+            <button type="button" data-emoji="🤡">🤡</button>
+          </div>
+        </form>
+
         <!-- ───────────── Chat ───────────── -->
         <aside class="chat" id="chat" aria-label="Table chat">
           <button class="chat__grabber" id="chatClose" type="button" aria-label="Close chat"></button>

@@ -928,6 +928,31 @@
     const mic = $("#micBtn");
 
     $("#chatFab").addEventListener("click", () => setChat(!chatOpen()));
+
+    // portrait quick chat: type → Enter posts to the on-screen feed; 😊 opens reactions
+    const qchat = $("#qchat");
+    const qinput = $("#qchatInput");
+    const qemojis = $("#qchatEmojis");
+    const qtoggle = $("#qchatEmoji");
+    const setEmojis = (open) => { qemojis.hidden = !open; qtoggle.setAttribute("aria-expanded", open); };
+    qchat.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = qinput.value.trim();
+      if (!text) return;
+      addMessage("me", text);
+      qinput.value = "";
+      qinput.blur();
+      blip(1000, 0.04);
+    });
+    qtoggle.addEventListener("click", (e) => { e.stopPropagation(); setEmojis(qemojis.hidden); });
+    qemojis.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-emoji]");
+      if (!b) return;
+      e.stopPropagation();
+      floatEmoji(b.dataset.emoji);
+      blip(1300, 0.05);
+    });
+    document.addEventListener("click", (e) => { if (!qemojis.hidden && !qchat.contains(e.target)) setEmojis(false); });
     $("#chatClose").addEventListener("click", () => setChat(false));
     $("#sheetBackdrop").addEventListener("click", () => setChat(false));
     M?.sheetDrag($("#chat"), $("#chatClose"), () => setChat(false));
