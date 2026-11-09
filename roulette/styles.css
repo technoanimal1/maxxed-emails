@@ -1167,9 +1167,9 @@ img { display: block; }
   .vt-outline { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 1; pointer-events: none; }
   .vt-cell { cursor: pointer; }
   .vt-cell path { stroke-width: 0.75; transition: filter 0.15s; }
-  .vt--red path { fill: #ef426c; stroke: #ff6288; }
+  .vt--red path { fill: var(--red); stroke: var(--red-stroke); }   /* same red as the betting table */
   .vt--black path { fill: #0e1419; stroke: #21292e; }
-  .vt--zero path { fill: #3fa000; stroke: #5cbc32; }
+  .vt--zero path { fill: #009440; stroke: #10c35e; }              /* same green as the table's 0 */
   .vt-cell text {
     font: 700 11px var(--f-sans);
     fill: #fff;
