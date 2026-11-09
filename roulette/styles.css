@@ -1164,9 +1164,9 @@ img { display: block; }
     --top-h: 52px;
     --dock-h: 154px;        /* info row 44 + 10, controls 100 */
     --video-min: 116px;     /* room above the table for round pill, history and the BETS OPEN tab */
-    --row-max: 34px;
+    --row-max: 28px;        /* active table: ~48 x 27px number cells, like the reference */
     --gap: 2px;
-    /* square number cells: each row is as tall as the screen allows after the bars and the
+    /* number cells: each row is as tall as the screen allows after the bars and the
        strip of video above the table; columns use the same size, so the table is a narrow
        column with the live video visible either side */
     --row-full: clamp(17px, calc((100dvh - var(--top-h) - var(--dock-h) - var(--video-min) - 36px - var(--safe-t) - var(--safe-b)) / 14.1), var(--row-max));
@@ -1174,7 +1174,8 @@ img { display: block; }
     --board-k: 1;
     --row: calc(var(--row-full) * var(--board-k));
     --zero-row: calc(var(--row) * 1.1);
-    --out: calc(var(--row) * 1.15);
+    --col: calc(var(--row) * 1.75);   /* number cells are wide rectangles (1.75 : 1) */
+    --out: calc(var(--row) * 0.98);
   }
 
   html, body { background: var(--bg); }
@@ -1371,7 +1372,7 @@ img { display: block; }
   }
   .mb-grid {
     display: grid;
-    grid-template-columns: var(--out) var(--out) repeat(3, var(--row));
+    grid-template-columns: var(--out) var(--out) repeat(3, var(--col));
     grid-template-rows: var(--zero-row) repeat(12, var(--row)) var(--row);
     gap: var(--gap);
     padding: 4px;
@@ -1423,7 +1424,7 @@ img { display: block; }
   .mb-vlabel {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    font-size: clamp(7px, calc(var(--out) * 0.33), 14px);
+    font-size: clamp(7px, calc(var(--row) * 0.5), 15px);
   }
   .mb-diamond { width: 18.769px; height: 34.857px; position: relative; pointer-events: none; transform: scale(var(--board-k)); }
   .mb-diamond img {
@@ -1623,7 +1624,7 @@ img { display: block; }
 }
 /* tablets upright: roomier rows and type */
 @media (max-aspect-ratio: 1/1) and (min-width: 600px) {
-  :root { --row-max: 46px; }
+  :root { --row-max: 40px; }
   .party__avatars { zoom: 0.85; }
 }
 
