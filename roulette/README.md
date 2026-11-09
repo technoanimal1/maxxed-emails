@@ -38,8 +38,26 @@ Results use `crypto.getRandomValues` in the browser. This is a **demo**: no real
 
 ## Layout
 
-The stage is built at the design's native 1440 × 810 using the Figma coordinates,
-then scaled to fit the window (letterboxed), the usual approach for casino game UIs.
+**Landscape / desktop:** the stage is built at the design's native 1440 × 810 using the
+Figma coordinates, then scaled to fit the window (letterboxed).
+
+**Portrait (phones and tablets held upright, any window taller than it is wide):** the same
+components re-flow into a mobile layout:
+
+- live dealer video on top with the round pill, results history, floating reactions and the
+  party card (shows for 6 s, then tucks into its avatars; tap to reopen)
+- a **vertical betting table**: zero on top, 12 rows × 3 numbers, dozens and even-money bets
+  down the left, 2:1 columns at the bottom
+- table row height is computed from the real screen height, so it fits from a 553px-tall
+  iPhone SE (Safari bars showing) up to iPad; the video gives up space first, then the rows
+- "Racetrack" swaps the table for a scaled-up racetrack
+- thumb-reach dock: balance, racetrack switch, chat button, then rebet/X2 · chips · undo/clear
+- chat opens as a **bottom sheet** from the host's avatar; new messages pop over the video
+  with an unread badge
+- respects notches / home indicator (safe areas), no iOS zoom on the chat field,
+  44px touch targets on the top bar icons
+
+Rotating the device mid-round swaps layouts without losing bets.
 
 ## Files
 

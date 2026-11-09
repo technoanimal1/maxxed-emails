@@ -47,6 +47,10 @@
     sound: true,
   };
 
+  /* portrait phones/tablets get the re-flowed layout (see styles.css) */
+  const portrait = window.matchMedia("(max-aspect-ratio: 1/1)");
+  const isMobile = () => portrait.matches;
+
   /* --------------------------------------------------------------- helpers */
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -140,6 +144,36 @@
     $("#numbers").innerHTML = rows.join("");
   }
 
+  // portrait table: zero on top, 12 rows of 3 numbers, outside bets down the left, 2:1 at the bottom
+  function buildMobileBoard() {
+    const outs = [
+      ["low", "1-18"], ["even", "EVEN"], ["red", null], ["black", null], ["odd", "ODD"], ["high", "19-36"],
+    ];
+    const label = (t) => `<span class="out__label mb-vlabel">${t}</span>`;
+    const stake = '<span class="stake"></span>';
+    const html = [
+      `<button class="mb-zero" type="button" data-bet="n:0" aria-label="Straight up 0"><span class="cell__num">0</span>${stake}</button>`,
+      `<span class="mb-corner" style="grid-row:1" aria-hidden="true"></span>`,
+    ];
+    [1, 2, 3].forEach((d) => {
+      html.push(`<button class="mb-out" type="button" data-bet="doz:${d}" style="grid-column:2;grid-row:${2 + (d - 1) * 4} / span 4" aria-label="${["1st", "2nd", "3rd"][d - 1]} dozen">${label(["1st 12", "2nd 12", "3rd 12"][d - 1])}${stake}</button>`);
+    });
+    outs.forEach(([key, text], i) => {
+      const inner = text ? label(text) : `<span class="mb-diamond"><img src="./assets/img/diamond-${key}.svg" alt=""></span>`;
+      const cls = i === 0 ? " mb-tl" : i === 5 ? " mb-bl" : "";
+      html.push(`<button class="mb-out${cls}" type="button" data-bet="${key}" style="grid-column:1;grid-row:${2 + i * 2} / span 2" aria-label="${key}">${inner}${stake}</button>`);
+    });
+    for (let n = 1; n <= 36; n++) {
+      html.push(`<button class="cell cell--${colorOf(n)} mb-num" type="button" data-bet="n:${n}" style="grid-row:${1 + Math.ceil(n / 3)};grid-column:${3 + ((n - 1) % 3)}" aria-label="Straight up ${n}"><span class="cell__num">${n}</span>${stake}</button>`);
+    }
+    [1, 2, 3].forEach((c) => {
+      const cls = c === 1 ? " mb-col--left" : c === 3 ? " mb-col--right" : "";
+      html.push(`<button class="mb-col${cls}" type="button" data-bet="col:${c}" style="grid-row:14;grid-column:${2 + c}" aria-label="Column ${c}, pays 2 to 1"><span class="out__label">2:1</span>${stake}</button>`);
+    });
+    html.push(`<span class="mb-corner" style="grid-row:14" aria-hidden="true"></span>`);
+    $("#mboard").innerHTML = `<div class="mb-grid">${html.join("")}</div>`;
+  }
+
   function buildRacetrack() {
     const hits = RACE_NUMBERS.map(
       ([n, x, y]) => `<button class="race-hit" type="button" data-race="${n}" aria-label="Racetrack ${n}" style="left:${x - 1}px;top:${y - 6}px;width:17px;height:18px"></button>`
@@ -184,6 +218,7 @@
     bar.classList.remove("is-short");
     void bar.offsetWidth;
     bar.classList.add("is-short");
+    bar.addEventListener("animationend", () => bar.classList.remove("is-short"), { once: true });
     blip(180, 0.15, "sawtooth", 0.04);
   }
 
@@ -218,6 +253,7 @@
   function wireBoard() {
     const board = $("#board");
     board.addEventListener("click", onBoardClick);
+    $("#mboard").addEventListener("click", onBoardClick);
     // hovering an outside bet previews which numbers it covers
     board.addEventListener("mouseover", (e) => {
       const t = e.target.closest("[data-bet]");
@@ -283,6 +319,7 @@
 
   function lock(locked) {
     $("#board").classList.toggle("is-locked", locked);
+    $("#mboard").classList.toggle("is-locked", locked);
     $("#racetrack").classList.toggle("is-locked", locked);
   }
 
@@ -375,8 +412,14 @@
     const tone = { "👎": "red", "🤡": "red", "🔥": "red" }[emoji] || "grey";
     el.className = `react react--${tone} fly`;
     el.textContent = emoji;
-    const x = opts.x ?? 1010 + Math.random() * 90;
-    el.style.cssText = `--x:${x}px;--y:${opts.y ?? 560}px;--box:50px;--rot:${(Math.random() * 60 - 30).toFixed(1)}deg;--dx:${(Math.random() * 40 - 20).toFixed(0)}px;--dur:${(2.8 + Math.random()).toFixed(2)}s`;
+    const fx = $("#fxLayer");
+    let x = opts.x ?? 1010 + Math.random() * 90;
+    let y = opts.y ?? 560;
+    if (isMobile()) {
+      x = fx.clientWidth - 76 - Math.random() * 40;
+      y = fx.clientHeight - 64;
+    }
+    el.style.cssText = `--x:${x}px;--y:${y}px;--box:50px;--rot:${(Math.random() * 60 - 30).toFixed(1)}deg;--dx:${(Math.random() * 40 - 20).toFixed(0)}px;--dur:${(2.8 + Math.random()).toFixed(2)}s`;
     $("#fxLayer").appendChild(el);
     el.addEventListener("animationend", () => el.remove());
   }
@@ -393,9 +436,45 @@
       `<div class="msg__meta"><span>${escapeHTML(author || "Me")}</span><img src="./assets/img/dot-sep.svg" width="3" height="3" alt=""><span>${timeNow()}</span></div>`;
     el.innerHTML = `${meta}<p class="msg__text">${escapeHTML(text)}</p>`;
     box.appendChild(el);
-    // keep the DOM small; older bubbles slide off the top under a fade
-    while (box.children.length > 6) box.firstElementChild.remove();
+    // older bubbles slide off the top under a fade (desktop) or scroll (mobile sheet)
+    while (box.children.length > 40) box.firstElementChild.remove();
     box.classList.toggle("is-overflow", box.scrollHeight > box.clientHeight + 1);
+    box.scrollTop = box.scrollHeight;
+    if (kind !== "me" && isMobile() && !chatOpen()) {
+      toast(el);
+      unread += 1;
+      const badge = $("#chatBadge");
+      badge.textContent = unread > 9 ? "9+" : unread;
+      badge.hidden = false;
+    }
+  }
+
+  /* mobile: chat lives in a bottom sheet; new messages pop over the video */
+  let unread = 0;
+  const chatOpen = () => $("#app").classList.contains("is-chat");
+
+  function toast(msgEl) {
+    const t = msgEl.cloneNode(true);
+    t.classList.add("toast");
+    const box = $("#toasts");
+    box.appendChild(t);
+    while (box.children.length > 2) box.firstElementChild.remove();
+    t.addEventListener("animationend", (e) => { if (e.animationName === "toast") t.remove(); });
+  }
+
+  function setChat(open) {
+    $("#app").classList.toggle("is-chat", open);
+    $("#sheetBackdrop").hidden = !open;
+    $("#chatFab").setAttribute("aria-expanded", open);
+    if (open) {
+      unread = 0;
+      $("#chatBadge").hidden = true;
+      $("#toasts").innerHTML = "";
+      const box = $("#chatMessages");
+      box.scrollTop = box.scrollHeight;
+    } else if (document.activeElement === $("#chatInput")) {
+      $("#chatInput").blur();
+    }
   }
 
   function hostLine(n, color, won) {
@@ -412,6 +491,11 @@
     const field = $("#composerField");
     const stickers = $("#stickers");
     const mic = $("#micBtn");
+
+    $("#chatFab").addEventListener("click", () => setChat(!chatOpen()));
+    $("#chatClose").addEventListener("click", () => setChat(false));
+    $("#sheetBackdrop").addEventListener("click", () => setChat(false));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && chatOpen()) setChat(false); });
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -441,7 +525,7 @@
     stickers.addEventListener("click", (e) => {
       const b = e.target.closest("[data-emoji]");
       if (!b) return;
-      floatEmoji(b.dataset.emoji, { x: 1050, y: 600 });
+      floatEmoji(b.dataset.emoji, isMobile() ? {} : { x: 1050, y: 600 });
       blip(1300, 0.05);
     });
 
@@ -506,12 +590,31 @@
       if (document.fullscreenElement) document.exitFullscreen?.();
       else document.documentElement.requestFullscreen?.().catch(() => {});
     });
-    $("#btnRacetrack").addEventListener("click", () => toggleRacetrack());
+    $("#btnRacetrack").addEventListener("click", () => (isMobile() ? toggleRaceView() : toggleRacetrack()));
   }
 
   function setSound(on) {
     state.sound = on;
     $("#btnSound").setAttribute("aria-pressed", on);
+  }
+
+  function toggleRaceView(force) {
+    const app = $("#app");
+    const show = force ?? !app.classList.contains("is-race");
+    app.classList.toggle("is-race", show);
+    $("#btnRacetrack").setAttribute("aria-pressed", show);
+    $("#btnRacetrack .switch__label").textContent = show ? "Table" : "Racetrack";
+    fitRacetrack();
+  }
+
+  // portrait: scale the racetrack to fill the space the table normally takes
+  function fitRacetrack() {
+    const track = $("#racetrack");
+    if (!isMobile()) { track.style.zoom = ""; return; }
+    const area = $("#mboard");
+    const w = area.clientWidth - 24;
+    const h = area.clientHeight - 16;
+    track.style.zoom = Math.max(1, Math.min(w / 302, h / 76, 2.4)).toFixed(3);
   }
 
   function toggleRacetrack(force) {
@@ -538,6 +641,36 @@
     const app = $("#app");
     const s = Math.min(window.innerWidth / 1456, window.innerHeight / 826);
     app.style.setProperty("--s", s.toFixed(4));
+    fitRacetrack();
+  }
+
+  function onLayoutChange() {
+    const mobile = isMobile();
+    const label = $("#btnRacetrack .switch__label");
+    if (mobile) {
+      label.textContent = $("#app").classList.contains("is-race") ? "Table" : "Racetrack";
+    } else {
+      $("#app").classList.remove("is-race");
+      setChat(false);
+      toggleRacetrack(!$("#racetrack").classList.contains("is-hidden"));
+    }
+    fit();
+  }
+
+  // the party card introduces itself, then tucks away to its avatars (tap to reopen)
+  function wireParty() {
+    const card = $(".party");
+    const collapse = () => card.classList.add("is-collapsed");
+    // on short screens the card would hide the dealer, so it starts tucked away
+    const roomy = !isMobile() || $(".body__bg").clientHeight >= 170;
+    if (!roomy) collapse();
+    let timer = roomy ? setTimeout(collapse, 6000) : 0;
+    card.addEventListener("click", () => {
+      if (!isMobile()) return;
+      clearTimeout(timer);
+      card.classList.toggle("is-collapsed");
+      if (!card.classList.contains("is-collapsed")) timer = setTimeout(collapse, 6000);
+    });
   }
 
   /* -------------------------------------------- ambient table reactions */
@@ -550,16 +683,19 @@
   }
 
   /* ----------------------------------------------------------------- boot */
-  fit();
   window.addEventListener("resize", fit);
+  portrait.addEventListener("change", onLayoutChange);
   buildRack();
   buildNumbers();
+  buildMobileBoard();
   buildRacetrack();
   renderHistory();
   wireBoard();
   wireChat();
   wireTopbar();
   wireKeys();
+  wireParty();
+  onLayoutChange();
   selectChip(state.chipIndex, true);
   openBetting();
   requestAnimationFrame(tick);
