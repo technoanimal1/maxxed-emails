@@ -106,6 +106,78 @@
     } catch (_) { /* audio unavailable */ }
   }
 
+  /* Casino chip sounds, synthesised: a clay chip "clack" is a very short burst
+     of band-passed noise (the impact) plus a faint, fast-decaying ping (the
+     chip ringing). Pitch, timing and level are randomised a little so no two
+     chips sound identical, like real ones. */
+  let noiseBuf;
+  function noise() {
+    if (noiseBuf) return noiseBuf;
+    const c = ctx();
+    noiseBuf = c.createBuffer(1, Math.floor(c.sampleRate * 0.4), c.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return noiseBuf;
+  }
+  const CHIP_VOL = 2; // sits clearly above the background music
+  function clack(t, { freq, q, gain, decay, ping = 0.1 }) {
+    const c = ctx();
+    gain *= CHIP_VOL;
+    const src = c.createBufferSource();
+    src.buffer = noise();
+    const bp = c.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = freq;
+    bp.Q.value = q;
+    const hp = c.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 700;
+    const env = c.createGain();
+    env.gain.setValueAtTime(0.0001, t);
+    env.gain.exponentialRampToValueAtTime(gain, t + 0.0015);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+    src.connect(bp).connect(hp).connect(env).connect(c.destination);
+    src.start(t, Math.random() * 0.3);
+    src.stop(t + decay + 0.02);
+    if (ping) {
+      const o = c.createOscillator();
+      const og = c.createGain();
+      o.type = "sine";
+      o.frequency.setValueAtTime(freq * 0.92, t);
+      o.frequency.exponentialRampToValueAtTime(freq * 0.86, t + 0.07);
+      og.gain.setValueAtTime(0.0001, t);
+      og.gain.exponentialRampToValueAtTime(gain * ping, t + 0.002);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+      o.connect(og).connect(c.destination);
+      o.start(t);
+      o.stop(t + 0.1);
+    }
+  }
+  // "felt": first chip on an empty spot (duller tap) · "stack": chip landing on chips (bright double click)
+  function chipSound(kind = "stack", when = 0) {
+    if (!state.sound || state.muted) return;
+    try {
+      const c = ctx();
+      c.resume?.();
+      const r = () => 0.92 + Math.random() * 0.16;
+      const t = c.currentTime + 0.005 + when;
+      if (kind === "felt") {
+        clack(t, { freq: 1900 * r(), q: 2.5, gain: 0.32, decay: 0.05, ping: 0.05 });
+        clack(t + 0.016 + Math.random() * 0.008, { freq: 2900 * r(), q: 5, gain: 0.12, decay: 0.03, ping: 0 });
+      } else {
+        clack(t, { freq: 3300 * r(), q: 7, gain: 0.42, decay: 0.05, ping: 0.12 });
+        clack(t + 0.009 + Math.random() * 0.008, { freq: 4300 * r(), q: 9, gain: 0.22, decay: 0.04, ping: 0.08 });
+        clack(t + 0.03 + Math.random() * 0.01, { freq: 3700 * r(), q: 8, gain: 0.08, decay: 0.03, ping: 0 });
+      }
+    } catch (_) { /* audio unavailable */ }
+  }
+  // a quick run of chip clicks: chips being swept away or collected
+  function chipRiffle(count = 6, spacing = 0.04, delay = 0) {
+    for (let i = 0; i < count; i++) {
+      chipSound(i % 3 ? "stack" : "felt", delay + i * spacing + Math.random() * 0.012);
+    }
+  }
+
   /* ----------------------------------------------------------------- music
      Casino lounge jazz, cut into a seamless 78s loop (the end crossfades into
      the start). Starts on the first tap/click (browser autoplay rules), fades
@@ -309,10 +381,12 @@
     const cost = entries.reduce((a, [, amt]) => a + amt, 0);
     if (totalBet() + cost > state.wallet) { flashShort(); return false; }
     state.undo.push(snapshot());
+    const kinds = new Map(entries.map(([key]) => [key, state.bets.has(key) ? "stack" : "felt"]));
     entries.forEach(([key, amt]) => state.bets.set(key, (state.bets.get(key) || 0) + amt));
     renderStakes();
-    M?.chipFly(entries.map(([key]) => key));
-    blip(760 + Math.random() * 200, 0.05);
+    const land = (key) => chipSound(kinds.get(key));
+    if (M?.enabled) M.chipFly(entries.map(([key]) => key), land);
+    else entries.slice(0, 6).forEach(([key], i) => chipSound(kinds.get(key), i * 0.035));
     return true;
   }
 
@@ -375,7 +449,7 @@
       state.bets = prev;
       renderStakes();
       M?.sweep(gone, -1);
-      blip(520, 0.05);
+      chipRiffle(Math.min(3, Math.max(1, gone.length)), 0.05);
     });
     $("#btnClear").addEventListener("click", () => {
       if (state.phase !== "open" || !state.bets.size) return;
@@ -384,7 +458,7 @@
       state.bets.clear();
       renderStakes();
       M?.sweep(gone);
-      blip(340, 0.08);
+      chipRiffle(Math.min(8, Math.max(3, gone.length + 2)), 0.035);
     });
     $("#btnDouble").addEventListener("click", () => {
       if (state.phase !== "open" || !state.bets.size) return;
@@ -474,6 +548,7 @@
       winPop(`+${fmt(won)}`);
       blip(660, 0.12, "sine", 0.07);
       setTimeout(() => blip(990, 0.2, "sine", 0.07), 120);
+      chipRiffle(Math.min(10, 3 + winClones.length * 2), 0.045, M?.enabled ? 1.15 : 0.3);
     }
     hostLine(n, color, won);
   }

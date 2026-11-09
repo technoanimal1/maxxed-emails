@@ -371,13 +371,24 @@ img { display: block; }
   justify-content: center;
   gap: 6px;
   padding: 0 12px 1px;
-  border: 1px solid var(--tab, var(--gold));
   border-radius: 16px 16px 0 0;
   background-image:
     linear-gradient(180deg, #000 40%, rgba(0, 0, 0, 0.6) 100%),
     linear-gradient(180deg, color-mix(in srgb, var(--tab, var(--gold)) 30%, transparent) 0%, rgba(2, 4, 6, 0) 100%);
   overflow: hidden;
-  transition: border-color 0.3s;
+}
+/* gold border that fades out toward the bottom of the tab */
+.status::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, var(--tab, var(--gold)) 0%, var(--tab, var(--gold)) 30%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
 }
 .status__label {
   display: inline-flex;

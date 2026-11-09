@@ -98,16 +98,18 @@
      Placing a bet: a chip lifts off the rack and arcs onto the cell, shrinking
      to table size, then lands with a small bounce. Section bets (racetrack)
      deal a quick cascade. */
-  function chipFly(keys) {
-    if (!on()) return;
+  // onLand(key) fires the moment each chip touches the table (used for the chip sound)
+  function chipFly(keys, onLand) {
+    const land = (key) => onLand && onLand(key);
+    if (!on()) return keys.slice(0, 6).forEach(land);
     const src = $(".chip-slot.is-active .chip");
-    if (!src) return;
+    if (!src) return keys.slice(0, 6).forEach(land);
     const from = local(src);
     const root = boardRoot();
     const list = keys.slice(0, 17);
     list.forEach((key, i) => {
       const chip = root.querySelector(`[data-bet="${key}"] .stake .chip`);
-      if (!chip) return;
+      if (!chip) return i < 6 && land(key);
       const to = local(chip);
       const clone = chipClone(src, from.cx, from.cy, from.w);
       const lift = Math.min(from.cy, to.cy) - (portrait.matches ? 60 : 110);
@@ -121,6 +123,7 @@
           rotation: g.utils.random(-140, 140),
         }, 0)
         .to(clone, { boxShadow: "0 18px 24px rgba(0,0,0,.45)", duration: 0.25, yoyo: true, repeat: 1 }, 0)
+        .call(() => i < 8 && land(key))
         .set(chip, { opacity: 1 })
         .fromTo(chip, { y: -5 }, { y: 0, duration: 0.35, ease: "bounce.out", clearProps: "transform" });
     });
