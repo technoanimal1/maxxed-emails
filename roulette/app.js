@@ -964,6 +964,7 @@
     const sheet = $("#chat");
     const backdrop = $("#sheetBackdrop");
     if (!open && chatOpen() && M?.enabled && isMobile()) {
+      document.dispatchEvent(new CustomEvent("chatsheet", { detail: false }));
       M.sheetClose(sheet, backdrop, () => {
         $("#app").classList.remove("is-chat");
         backdrop.hidden = true;
@@ -974,6 +975,7 @@
     }
     const wasOpen = chatOpen();
     $("#app").classList.toggle("is-chat", open);
+    document.dispatchEvent(new CustomEvent("chatsheet", { detail: open }));
     backdrop.hidden = !open;
     $("#chatFab").setAttribute("aria-expanded", open);
     if (open && !wasOpen && isMobile()) M?.sheetOpen(sheet, backdrop);
@@ -1171,7 +1173,21 @@
       stopVoice(false);
       qinput.blur();
     }
-    qinput.addEventListener("focus", () => setComposing(true));
+    qinput.addEventListener("focus", () => { if (!chatOpen()) setComposing(true); });
+    // expanded chat (bottom sheet) uses the same composer, docked under the messages
+    document.addEventListener("chatsheet", (e) => {
+      if (!isMobile()) return;
+      if (e.detail) {
+        if (composing()) setComposing(false);
+      } else {
+        setTool(null);
+        stopVoice(false);
+        qinput.blur();
+      }
+    });
+    if (window.ResizeObserver) {
+      new ResizeObserver(() => document.documentElement.style.setProperty("--qchat-h", `${Math.round(qchat.offsetHeight)}px`)).observe(qchat);
+    }
     qinput.addEventListener("input", updateSend);
     // social row → composer: Comment… types, 😊 opens emojis, sticker opens stickers, mic records
     $("#commentBtn").addEventListener("click", (e) => {
@@ -1211,7 +1227,7 @@
       addMessage("me", text);
       qinput.value = "";
       updateSend();
-      setComposing(false);
+      if (!chatOpen()) setComposing(false);
       blip(1000, 0.04);
     });
     wireSocialRow();
