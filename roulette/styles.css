@@ -2237,9 +2237,14 @@ html.has-motion .racetrack { transition: none; }
     -webkit-tap-highlight-color: transparent;
     touch-action: pan-x;
   }
-  .react-btn--like { background: linear-gradient(180deg, #2d8cff, #0866ff); }
-  .react-btn--love { background: linear-gradient(180deg, #ff6b7a, #f02849); }
-  .react-btn--like, .react-btn--love { font-size: 17px; }
+  /* voice: a grey round button at the head of the reactions */
+  .social__btn--fill {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    filter: none;
+  }
+  .social__btn--fill:active { background: rgba(255, 255, 255, 0.2); }
   .react-btn:active { transform: scale(0.9); }
   .react-btn.is-hit { animation: react-hit 0.32s cubic-bezier(0.3, 1.6, 0.5, 1); }
   @keyframes react-hit { 0% { transform: scale(0.82); } 60% { transform: scale(1.14); } 100% { transform: scale(1); } }
