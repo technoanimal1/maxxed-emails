@@ -1398,7 +1398,19 @@
   }
 
   /* ---------------------------------------------------- scale to viewport */
+  // phones: size the app to the visible viewport in px (100dvh disagrees with it in
+  // Safari while its bars move, and in many in-app browsers)
+  function setAppHeight() {
+    const h = Math.round(window.innerHeight);
+    if (h > 0) document.documentElement.style.setProperty("--app-h", `${h}px`);
+  }
+  setAppHeight();
+  window.addEventListener("resize", setAppHeight);
+  window.addEventListener("orientationchange", () => setTimeout(setAppHeight, 250));
+  window.addEventListener("pageshow", setAppHeight);
+
   function fit() {
+    setAppHeight();
     const app = $("#app");
     const s = Math.min(window.innerWidth / 1456, window.innerHeight / 826);
     app.style.setProperty("--s", s.toFixed(4));
