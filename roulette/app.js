@@ -996,6 +996,111 @@
     setTimeout(() => addMessage("host", lines[randInt(lines.length)]), 700);
   }
 
+  /* ------------------------------------------------ portrait social row */
+  // Live-stream style: chat · share · Comment… · reactions, one row you can swipe sideways.
+  // Tap a reaction to send it, hold it to send a stream. Swipe the video sideways to clear
+  // the screen (chat and reactions hide) and back to bring them in again.
+  function wireSocialRow() {
+    const social = $("#social");
+    const track = $("#socialTrack");
+    if (!social || !track) return;
+
+    // edge fades show there is more to swipe to, on whichever side has more
+    const edges = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      social.classList.toggle("has-more-r", track.scrollLeft < max - 2);
+      social.classList.toggle("has-more-l", track.scrollLeft > 2);
+    };
+    track.addEventListener("scroll", edges, { passive: true });
+    addEventListener("resize", edges);
+    requestAnimationFrame(edges);
+
+    // a reaction rises from its button with a little "+1"
+    const sendReact = (btn) => {
+      stickerFly(btn.dataset.react, btn);
+      sideEmoji(btn.dataset.react);
+      btn.classList.remove("is-hit");
+      void btn.offsetWidth;
+      btn.classList.add("is-hit");
+      navigator.vibrate?.(8);
+      blip(1200 + Math.random() * 300, 0.035);
+    };
+    let hold = null;
+    const stopHold = () => { if (hold) { clearTimeout(hold.t); clearInterval(hold.i); hold = null; } };
+    const reacts = $("#socialReacts");
+    reacts.addEventListener("pointerdown", (e) => {
+      const btn = e.target.closest("[data-react]");
+      if (!btn) return;
+      stopHold();
+      hold = { btn, fired: false };
+      hold.t = setTimeout(() => {
+        hold.fired = true;
+        sendReact(btn);
+        hold.i = setInterval(() => sendReact(btn), 140);
+      }, 320);
+    });
+    ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => reacts.addEventListener(ev, () => { if (hold && !hold.fired) { clearTimeout(hold.t); } else stopHold(); }));
+    track.addEventListener("scroll", () => { if (hold && !hold.fired) stopHold(); }, { passive: true });
+    reacts.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-react]");
+      if (!btn) return;
+      if (hold?.fired) { stopHold(); return; } // the hold already sent its stream
+      stopHold();
+      sendReact(btn);
+    });
+    reacts.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    // share: the system share sheet where there is one, otherwise copy the link
+    $("#shareBtn").addEventListener("click", async () => {
+      const data = { title: "Live roulette", text: "Join me at the live roulette table", url: location.href.split("?")[0] };
+      try {
+        if (navigator.share) { await navigator.share(data); return; }
+        await navigator.clipboard.writeText(data.url);
+        hint("Link copied");
+      } catch (err) {
+        if (err?.name !== "AbortError") hint("Link copied");
+      }
+    });
+
+    // swipe-to-clear on the video, like a live stream
+    const hintEl = $("#cleanHint");
+    let hintT = 0;
+    function hint(text) {
+      hintEl.textContent = text;
+      hintEl.hidden = false;
+      hintEl.classList.remove("is-in");
+      void hintEl.offsetWidth;
+      hintEl.classList.add("is-in");
+      clearTimeout(hintT);
+      hintT = setTimeout(() => { hintEl.hidden = true; }, 1800);
+    }
+    const setClean = (on) => {
+      if (document.documentElement.classList.contains("is-clean") === on) return;
+      document.documentElement.classList.toggle("is-clean", on);
+      hint(on ? "Screen cleared · swipe back to show chat" : "Chat is back");
+    };
+    let sw = null;
+    document.addEventListener("touchstart", (e) => {
+      if (!isMobile() || e.touches.length !== 1) return (sw = null);
+      const t = e.touches[0];
+      const app = $("#app");
+      if (app.classList.contains("is-composing") || app.classList.contains("is-chat")) return (sw = null);
+      // only on the live video above the table
+      const tab = $(".status").getBoundingClientRect();
+      if (t.clientY > tab.top + tab.height) return (sw = null);
+      sw = { x: t.clientX, y: t.clientY, t: performance.now() };
+    }, { passive: true });
+    document.addEventListener("touchend", (e) => {
+      if (!sw) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sw.x, dy = t.clientY - sw.y;
+      const quick = performance.now() - sw.t < 700;
+      sw = null;
+      if (!quick || Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.6) return;
+      setClean(dx > 0);
+    }, { passive: true });
+  }
+
   function wireChat() {
     const form = $("#composer");
     const input = $("#chatInput");
@@ -1008,9 +1113,7 @@
     // portrait quick chat: type → Enter posts to the on-screen feed; 😊 opens reactions
     const qchat = $("#qchat");
     const qinput = $("#qchatInput");
-    const qemojis = $("#qchatEmojis");
     const qtoggle = $("#qchatEmoji");
-    const setEmojis = (open) => { qemojis.hidden = !open; qtoggle.setAttribute("aria-expanded", open); };
     // active state: a full-width composer card with emojis, stickers, voice and send
     const app = $("#app");
     const panel = $("#qchatPanel");
@@ -1059,7 +1162,7 @@
       if (on && !isMobile()) return;
       app.classList.toggle("is-composing", on);
       $("#qchatBackdrop").hidden = !on;
-      if (on) { setEmojis(false); return; }
+      if (on) return;
       setTool(null);
       stopVoice(false);
       qinput.blur();
@@ -1067,7 +1170,7 @@
     qinput.addEventListener("focus", () => setComposing(true));
     qinput.addEventListener("input", updateSend);
     qchat.addEventListener("click", (e) => {
-      if (!composing() && !e.target.closest(".qchat__emoji, .qchat__emojis")) qinput.focus();
+      if (!composing() && !e.target.closest(".qchat__emoji")) qinput.focus();
     });
     $("#qchatBackdrop").addEventListener("click", () => setComposing(false));
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && composing()) setComposing(false); });
@@ -1102,15 +1205,14 @@
       setComposing(false);
       blip(1000, 0.04);
     });
-    qtoggle.addEventListener("click", (e) => { e.stopPropagation(); setEmojis(qemojis.hidden); });
-    qemojis.addEventListener("click", (e) => {
-      const b = e.target.closest("[data-emoji]");
-      if (!b) return;
+    // the sticker icon in the Comment pill opens the composer straight onto stickers
+    qtoggle.addEventListener("click", (e) => {
       e.stopPropagation();
-      stickerFly(b.dataset.emoji, qtoggle);
-      blip(1300, 0.05);
+      if (composing()) return;
+      setComposing(true);
+      setTool("stickers");
     });
-    document.addEventListener("click", (e) => { if (!qemojis.hidden && !qchat.contains(e.target)) setEmojis(false); });
+    wireSocialRow();
     $("#chatClose").addEventListener("click", () => setChat(false));
     $("#sheetBackdrop").addEventListener("click", () => setChat(false));
     M?.sheetDrag($("#chat"), $("#chatClose"), () => setChat(false));

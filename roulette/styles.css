@@ -1387,7 +1387,7 @@ img { display: block; }
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-rows: minmax(var(--video-min), 1fr) auto auto auto;
-    grid-template-areas: "video video video" "table table table" "bal chat chat" "controls controls controls";
+    grid-template-areas: "video video video" "table table table" "social social social" "controls controls controls";
     background: linear-gradient(180deg, var(--bg) 0%, #050608 100%);
     overflow: visible;
   }
@@ -2104,4 +2104,172 @@ html.has-motion .racetrack { transition: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+
+/* ----- portrait: live-stream social row ------------------------------------
+   chat · share · Comment… · reactions in one row that swipes sideways.
+   The balance moves up beside the round pill to make room. */
+.social,
+.clean-hint { display: none; }
+@media (max-aspect-ratio: 1/1) {
+  :root { --dock-h: 141px; } /* social row 33 + 8, controls 100 */
+
+  .balance {
+    grid-area: video;
+    align-self: start;
+    justify-self: start;
+    height: 26px;
+    margin: 10px 0 0 calc(var(--pad-x) + 128px);
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .social {
+    grid-area: social;
+    display: block;
+    min-width: 0;
+    margin-top: 8px;
+    /* fades at whichever edge has more to swipe to (no mask while composing: the
+       composer card is fixed inside this row and must not be clipped) */
+    --fl: 0px;
+    --fr: 0px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fl), #000 calc(100% - var(--fr)), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 var(--fl), #000 calc(100% - var(--fr)), transparent 100%);
+  }
+  .social.has-more-r { --fr: 36px; }
+  .social.has-more-l { --fl: 24px; }
+  .app.is-composing .social { -webkit-mask-image: none; mask-image: none; }
+  .social__track {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 var(--pad-x);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scroll-padding: 0 var(--pad-x);
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .social__track::-webkit-scrollbar { display: none; }
+  .social__track > * { scroll-snap-align: start; flex: none; }
+
+  .social__btn {
+    position: relative;
+    width: 33px;
+    height: 33px;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: #fff;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.12s;
+  }
+  .social__btn:active { transform: scale(0.88); }
+  .chat-fab,
+  .chat-fab.social__btn {
+    grid-area: auto;
+    justify-self: auto;
+    align-self: auto;
+    display: grid;
+    width: 33px;
+    height: 33px;
+    margin: 0;
+    border: 0;
+    background: none;
+  }
+  .chat-fab[aria-expanded="true"] { color: var(--gold); }
+  .chat-fab__badge { right: -5px; top: -3px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px; background: #e5484d; font-size: 9.5px; line-height: 13px; }
+
+  /* the Comment… pill (grows into the full-width composer when tapped) */
+  .qchat {
+    grid-area: auto;
+    width: clamp(150px, 46vw, 230px);
+    height: 33px;
+    margin: 0;
+    padding: 0 4px 0 13px;
+    border-radius: 17px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 0;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .qchat input::placeholder { color: #fff; opacity: 0.72; }
+  .qchat__emoji {
+    width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: none;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .app.is-composing .qchat { width: auto; backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+  /* reactions */
+  .social__reacts { display: flex; gap: 8px; padding-right: 4px; }
+  .react-btn {
+    position: relative;
+    width: 33px;
+    height: 33px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font: 18px/1 var(--f-emoji);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-x;
+  }
+  .react-btn--like { background: linear-gradient(180deg, #2d8cff, #0866ff); }
+  .react-btn--love { background: linear-gradient(180deg, #ff6b7a, #f02849); }
+  .react-btn--like, .react-btn--love { font-size: 17px; }
+  .react-btn:active { transform: scale(0.9); }
+  .react-btn.is-hit { animation: react-hit 0.32s cubic-bezier(0.3, 1.6, 0.5, 1); }
+  @keyframes react-hit { 0% { transform: scale(0.82); } 60% { transform: scale(1.14); } 100% { transform: scale(1); } }
+
+  /* swipe the video sideways to clear the screen (chat + reactions), like a live stream */
+  html.is-clean .side-feed { opacity: 0; transition: opacity 0.3s; }
+  .side-feed { transition: opacity 0.3s; }
+  .clean-hint {
+    position: fixed;
+    left: 50%;
+    top: calc(var(--safe-t) + 150px);
+    z-index: 60;
+    display: block;
+    padding: 7px 14px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font: 500 12px/1 var(--f-ui);
+    color: #fff;
+    white-space: nowrap;
+    pointer-events: none;
+    translate: -50% 0;
+  }
+  .clean-hint[hidden] { display: none; }
+  .clean-hint.is-in { animation: hint-life 1.8s ease forwards; }
+  @keyframes hint-life { 0% { opacity: 0; transform: translateY(-6px); } 12%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+}
+@media (max-aspect-ratio: 1/1) and (max-height: 720px) {
+  :root { --dock-h: 119px; }
+  .social { margin-top: 6px; }
 }
