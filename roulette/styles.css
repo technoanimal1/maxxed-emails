@@ -1386,8 +1386,8 @@ img { display: block; }
     min-height: 0;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-rows: minmax(var(--video-min), 1fr) auto auto auto;
-    grid-template-areas: "video video video" "table table table" "social social social" "controls controls controls";
+    grid-template-rows: minmax(var(--video-min), 1fr) auto auto;
+    grid-template-areas: "video video video" "table table table" "social social social";
     background: linear-gradient(180deg, var(--bg) 0%, #050608 100%);
     overflow: visible;
   }
@@ -2113,7 +2113,7 @@ html.has-motion .racetrack { transition: none; }
 .social,
 .clean-hint { display: none; }
 @media (max-aspect-ratio: 1/1) {
-  :root { --dock-h: 141px; } /* social row 33 + 8, controls 100 */
+  :root { --dock-h: calc(51px + var(--safe-b)); } /* social row 33 + 8 above + 10 below; the controls moved beside the table */
 
   .balance {
     grid-area: video;
@@ -2191,30 +2191,29 @@ html.has-motion .racetrack { transition: none; }
   .chat-fab[aria-expanded="true"] { color: var(--gold); }
   .chat-fab__badge { right: -5px; top: -3px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px; background: #e5484d; font-size: 9.5px; line-height: 13px; }
 
-  /* the Comment… pill (grows into the full-width composer when tapped) */
-  .qchat {
-    grid-area: auto;
-    width: clamp(150px, 46vw, 230px);
+  /* the Comment… pill (opens the composer, which grows up from the row) */
+  .social__comment {
+    width: clamp(118px, 33vw, 200px);
     height: 33px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
     margin: 0;
-    padding: 0 4px 0 13px;
+    padding: 0 6px 0 13px;
+    border: 0;
     border-radius: 17px;
     background: rgba(255, 255, 255, 0.12);
-    border: 0;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    font: 400 13px/1 var(--f-ui);
+    color: rgba(255, 255, 255, 0.75);
+    text-align: left;
+    cursor: text;
+    -webkit-tap-highlight-color: transparent;
   }
-  .qchat input::placeholder { color: #fff; opacity: 0.72; }
-  .qchat__emoji {
-    width: 27px;
-    height: 27px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: none;
-    color: rgba(255, 255, 255, 0.85);
-  }
-  .app.is-composing .qchat { width: auto; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .social__comment-emoji { display: grid; place-items: center; width: 24px; height: 24px; color: rgba(255, 255, 255, 0.85); cursor: pointer; }
+  .social__comment:active { background: rgba(255, 255, 255, 0.18); }
 
   /* reactions */
   .social__reacts { display: flex; gap: 8px; padding-right: 4px; }
@@ -2270,6 +2269,70 @@ html.has-motion .racetrack { transition: none; }
   @keyframes hint-life { 0% { opacity: 0; transform: translateY(-6px); } 12%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 }
 @media (max-aspect-ratio: 1/1) and (max-height: 720px) {
-  :root { --dock-h: 119px; }
-  .social { margin-top: 6px; }
+  :root { --dock-h: calc(47px + var(--safe-b)); }
+  .social { margin-top: 6px; margin-bottom: calc(8px + var(--safe-b)); }
+}
+
+
+/* ----- portrait: chips and bet controls stand upright beside the table ------
+   right: the chip rack (vertical) with undo + clear under it, in thumb reach
+   left:  racetrack switch, rebet, ×2 — they slide away while the wheel spins so
+          the live chat can use that side */
+@media (max-aspect-ratio: 1/1) {
+  .social { margin-bottom: calc(10px + var(--safe-b)); }
+  .controls { display: contents; }
+  .controls > * { grid-row: table; grid-column: 1 / -1; align-self: end; z-index: 4; }
+
+  .chips {
+    justify-self: end;
+    flex-direction: column;
+    margin: 0 calc(var(--pad-x) - 1px) var(--chips-b, 90px) 0;
+  }
+  .chips__rack { flex-direction: column; gap: 6px; zoom: 1; }
+  .chip-slot { width: 40px; height: 40px; }
+  .chip-slot.is-active { width: 56px; height: 56px; }
+
+  .controls__group { gap: 8px; }
+  .controls__group:last-child { justify-self: end; margin: 0 calc(var(--pad-x) + 4px) 4px 0; }
+  .controls__group:first-child {
+    justify-self: start;
+    margin: 0 0 4px var(--pad-x);
+    transition: translate 0.45s cubic-bezier(0.3, 0.8, 0.3, 1);
+  }
+  .round-btn { width: 38px; height: 38px; }
+
+  .switch {
+    justify-self: start;
+    margin: 0 0 96px calc(var(--pad-x) - 2px);
+    transition: translate 0.45s cubic-bezier(0.3, 0.8, 0.3, 1);
+  }
+  html.is-spin .controls__group:first-child,
+  html.is-spin .switch { translate: calc(-100% - var(--pad-x) - 8px) 0; pointer-events: none; }
+  :root { --chips-b: 98px; } /* undo + clear (2 × 38 + 8) + 4 + a little air */
+}
+/* shorter phones: a slimmer rack so the column still fits beside the table */
+@media (max-aspect-ratio: 1/1) and (max-height: 720px) {
+  .chips__rack { zoom: 0.84; gap: 4px; }
+  .round-btn { width: 32px; height: 32px; }
+  .controls__group { gap: 6px; }
+  .switch { width: 36px; height: 36px; margin-bottom: 82px; }
+  :root { --chips-b: 82px; }
+}
+
+/* ----- composer: grows up out of the social row, no backdrop blur ---------- */
+@media (max-aspect-ratio: 1/1) {
+  .qchat { display: none; }
+  .qchat-backdrop { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; animation: none; }
+  .app.is-composing .social { visibility: hidden; }
+  .app.is-composing .qchat {
+    display: flex;
+    bottom: max(calc(var(--kb, 0px) + 8px), var(--compose-b, 10px));
+    transform-origin: 50% 100%;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+    animation: composer-up 0.26s cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  @keyframes composer-up {
+    from { clip-path: inset(calc(100% - 34px) 0 0 0 round 17px); }
+    to { clip-path: inset(0 0 0 0 round 24px); }
+  }
 }

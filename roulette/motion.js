@@ -179,12 +179,12 @@
     const mobile = portrait.matches;
     if (mobile) {
       boardSize(1, 0.58, "power3.inOut");
-      g.to([".controls", ".racetrack"], { opacity: 0.45, duration: 0.4 });
+      g.to([".controls > *", ".racetrack"], { opacity: 0.45, duration: 0.4 });
       return;
     }
     g.to(boardSurface(), { rotationX: mobile ? 12 : 18, y: mobile ? 10 : 16, scale: 0.965, filter: "brightness(0.55) saturate(0.7)", transformPerspective: 1000, transformOrigin: "50% 100%", duration: 0.75, ease: "power2.inOut" });
     g.to(".body__media", { scale: 1.08, transformOrigin: mobile ? "58% 55%" : "50% 62%", duration: 3, ease: "sine.inOut" });
-    g.to([".controls", ".racetrack"], { opacity: 0.45, duration: 0.4 });
+    g.to([".controls > *", ".racetrack"], { opacity: 0.45, duration: 0.4 });
   }
 
   // result: lift the table halfway back so the winning highlights read clearly
@@ -202,7 +202,7 @@
     // portrait tables are positioned by CSS (--board-x) while they grow, so leave their transform alone
     if (!portrait.matches) g.to(boardSurface(), { rotationX: 0, y: 0, scale: 1, filter: "brightness(1) saturate(1)", duration: 0.9, ease: "back.out(1.5)", clearProps: "transform,filter" });
     g.to(".body__media", { scale: 1, duration: 1.4, ease: "power2.inOut", clearProps: "transform" });
-    g.to([".controls", ".racetrack"], { opacity: 1, duration: 0.4, clearProps: "opacity" });
+    g.to([".controls > *", ".racetrack"], { opacity: 1, duration: 0.4, clearProps: "opacity" });
   }
 
   /* ========================================================= STATUS TAB

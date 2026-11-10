@@ -1113,7 +1113,6 @@
     // portrait quick chat: type → Enter posts to the on-screen feed; 😊 opens reactions
     const qchat = $("#qchat");
     const qinput = $("#qchatInput");
-    const qtoggle = $("#qchatEmoji");
     // active state: a full-width composer card with emojis, stickers, voice and send
     const app = $("#app");
     const panel = $("#qchatPanel");
@@ -1160,6 +1159,11 @@
     }
     function setComposing(on) {
       if (on && !isMobile()) return;
+      if (on && !composing()) {
+        // the card's bottom edge sits on the social row's bottom edge, then grows upward
+        const r = $("#social").getBoundingClientRect();
+        document.documentElement.style.setProperty("--compose-b", `${Math.max(8, Math.round(window.innerHeight - r.bottom))}px`);
+      }
       app.classList.toggle("is-composing", on);
       $("#qchatBackdrop").hidden = !on;
       if (on) return;
@@ -1169,9 +1173,14 @@
     }
     qinput.addEventListener("focus", () => setComposing(true));
     qinput.addEventListener("input", updateSend);
-    qchat.addEventListener("click", (e) => {
-      if (!composing() && !e.target.closest(".qchat__emoji")) qinput.focus();
+    // social row → composer: Comment… types, 😊 opens emojis, sticker opens stickers, mic records
+    $("#commentBtn").addEventListener("click", (e) => {
+      setComposing(true);
+      if (e.target.closest("#commentEmoji")) return setTool("emoji");
+      qinput.focus();
     });
+    $("#stickerBtn").addEventListener("click", () => { setComposing(true); setTool("stickers"); });
+    $("#voiceBtn").addEventListener("click", () => { setComposing(true); if (!rec) startVoice(); });
     $("#qchatBackdrop").addEventListener("click", () => setComposing(false));
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && composing()) setComposing(false); });
     $(".qchat__bar").addEventListener("click", (e) => {
@@ -1204,13 +1213,6 @@
       updateSend();
       setComposing(false);
       blip(1000, 0.04);
-    });
-    // the sticker icon in the Comment pill opens the composer straight onto stickers
-    qtoggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (composing()) return;
-      setComposing(true);
-      setTool("stickers");
     });
     wireSocialRow();
     $("#chatClose").addEventListener("click", () => setChat(false));

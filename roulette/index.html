@@ -219,27 +219,12 @@
             <button class="social__btn" id="shareBtn" type="button" aria-label="Share this table">
               <svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><path d="M13.5 4.2v4.1C7.6 9 4.4 12.9 3.6 19.3c2.3-3.3 5.4-4.9 9.9-5v4.2l7.2-7.1-7.2-7.2Z" fill="currentColor"/></svg>
             </button>
-            <form class="qchat" id="qchat" autocomplete="off">
-              <!-- active state: emoji / sticker picker opens here, inside the card -->
-              <div class="qchat__panel" id="qchatPanel" hidden></div>
-              <div class="qchat__row">
-                <input id="qchatInput" type="text" maxlength="120" placeholder="Comment…" aria-label="Comment on the live table" enterkeyhint="send" />
-                <span class="qchat__rec" id="qchatRec" hidden><i></i>Recording… <b id="qchatRecTime">0:00</b></span>
-                <button class="qchat__emoji" id="qchatEmoji" type="button" aria-label="Stickers">
-                  <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M8.3 14c.9 1.4 2.2 2.1 3.7 2.1s2.8-.7 3.7-2.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M18.5 2.8v4.4M16.3 5h4.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                </button>
-              </div>
-              <!-- active state toolbar -->
-              <div class="qchat__bar">
-                <button class="qchat__tool" type="button" data-tool="emoji" aria-label="Emojis" aria-pressed="false">😊</button>
-                <button class="qchat__tool qchat__pill" type="button" data-tool="stickers" aria-pressed="false">Stickers</button>
-                <span class="qchat__spacer"></span>
-                <button class="qchat__tool qchat__mic" type="button" data-tool="voice" aria-label="Record a voice message" aria-pressed="false"><img src="./assets/icons/mic.svg" width="18" height="18" alt="" /></button>
-                <button class="qchat__send" id="qchatSend" type="submit" aria-label="Send" disabled>
-                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-              </div>
-            </form>
+            <button class="social__comment" id="commentBtn" type="button" aria-label="Write a comment">
+              <span>Comment…</span>
+              <i class="social__comment-emoji" id="commentEmoji" aria-label="Emojis" role="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M8.3 14c.9 1.4 2.2 2.1 3.7 2.1s2.8-.7 3.7-2.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></i>
+            </button>
+            <button class="social__btn" id="stickerBtn" type="button" aria-label="Send a sticker"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20.5 13.2V8.5a5 5 0 0 0-5-5h-7a5 5 0 0 0-5 5v7a5 5 0 0 0 5 5h4.7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M20.5 13.2h-3.3a4 4 0 0 0-4 4v3.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="9.3" cy="10" r="1.15" fill="currentColor"/><circle cx="14.7" cy="10" r="1.15" fill="currentColor"/><path d="M9 13.6c.8.9 1.8 1.3 3 1.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+            <button class="social__btn" id="voiceBtn" type="button" aria-label="Record a voice message"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="8.6" y="3" width="6.8" height="11.6" rx="3.4" fill="currentColor"/><path d="M5.6 11.2a6.4 6.4 0 0 0 12.8 0M12 17.6V21" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></button>
             <!-- reactions: tap to send one, hold for a stream; swipe the row for more -->
             <div class="social__reacts" id="socialReacts" role="group" aria-label="Reactions">
               <button class="react-btn react-btn--like" type="button" data-react="👍" aria-label="Like">👍</button>
@@ -254,6 +239,26 @@
             </div>
           </div>
         </div>
+
+        <!-- composer: opens from the social row and grows upward (no backdrop blur) -->
+        <form class="qchat" id="qchat" autocomplete="off">
+          <!-- active state: emoji / sticker picker opens here, inside the card -->
+          <div class="qchat__panel" id="qchatPanel" hidden></div>
+          <div class="qchat__row">
+            <input id="qchatInput" type="text" maxlength="120" placeholder="Comment…" aria-label="Comment on the live table" enterkeyhint="send" />
+            <span class="qchat__rec" id="qchatRec" hidden><i></i>Recording… <b id="qchatRecTime">0:00</b></span>
+          </div>
+          <!-- active state toolbar -->
+          <div class="qchat__bar">
+            <button class="qchat__tool" type="button" data-tool="emoji" aria-label="Emojis" aria-pressed="false">😊</button>
+            <button class="qchat__tool qchat__pill" type="button" data-tool="stickers" aria-pressed="false">Stickers</button>
+            <span class="qchat__spacer"></span>
+            <button class="qchat__tool qchat__mic" type="button" data-tool="voice" aria-label="Record a voice message" aria-pressed="false"><img src="./assets/icons/mic.svg" width="18" height="18" alt="" /></button>
+            <button class="qchat__send" id="qchatSend" type="submit" aria-label="Send" disabled>
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </form>
 
         <!-- swipe-to-clear hint (portrait) -->
         <div class="clean-hint" id="cleanHint" hidden></div>
